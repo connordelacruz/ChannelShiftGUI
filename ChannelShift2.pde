@@ -183,7 +183,7 @@ void processImg() {
 
     // Use target as source for next iteration if recursive
     if (recursiveIterations)
-      sourceImg.pixels = targetImg.pixels
+      sourceImg.pixels = targetImg.pixels;
   }
   // Update target pixels and set complete to true
   targetImg.updatePixels();
