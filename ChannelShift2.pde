@@ -28,6 +28,7 @@ boolean shiftHorizontal = true;
 boolean shiftVertical = !shiftHorizontal;
 // Multiplier for the shift amount. Lower numbers = less drastic shifts
 float shiftMultiplier = 1.0;
+// TODO: future options: uniformShift (per-dimension?), perlinNoise, manualMode
 
 // Interface -------------------------------------------------------------------
 // Preview window size (does not affect output image size)
@@ -42,6 +43,14 @@ PImage sourceImg, targetImg;
 int windowWidth, windowHeight;
 // Used to check sketch progress
 boolean sketchComplete, imgSaved, completeMsgShown;
+
+// Maps index 0-2 to corresponding color channel. Used as a shorthand when
+// making operations more human readable
+String[] CHANNELS = new String[]{"R","G","B"};
+
+// Store shift values and which channels were shifted/swapped. Will be appended
+// to filename if verboseName is true
+String sketchSteps;
 
 // String to use for indent in output msgs
 String INDENT = "   ";
@@ -81,13 +90,30 @@ void printCompleteMsg() {
 
 // Saving ----------------------------------------------------------------------
 
+/**
+ * TODO: doc
+ */
+String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, int targetChannel) {
+  String step = "";
+  // Only show what channel was shifted if not swapped
+  if (sourceChannel == targetChannel)
+    step += CHANNELS[sourceChannel];
+  else
+    step += "s" + CHANNELS[sourceChannel] + "t" + CHANNELS[targetChannel];
+  if (shiftHorizontal)
+    step += "-x" + horizontalShift;
+  if (shiftVertical)
+    step += "-y" + verticalShift;
+  return step;
+}
+
 String outputFilename() {
   // Append suffix with unique id
+  // TODO: remove? If an image has the exact same name then it's probably the same image
   String suffix = hex((int)random(0xffff),4);
   // Add details if verboseName
-  // TODO: store details on iterations
   if (verboseName) {
-    suffix = "_" + shiftIterations + "it";
+    suffix += "-" + shiftIterations + "it";
     if (swapChannels)
       suffix += "-swap";
     if (recursiveIterations)
@@ -96,6 +122,8 @@ String outputFilename() {
       suffix += "-hori"; 
     if (shiftVertical)
       suffix += "-vert"; 
+    // Append steps
+    suffix += sketchSteps;
   }
   return outputPath + imgFile + suffix + ".png";
 }
@@ -169,7 +197,6 @@ void processImg() {
   sourceImg.loadPixels();
   targetImg.loadPixels();
 
-  // TODO: keep track of channels, shift values, etc for each iteration for verbose filenames
   for (int i = 0; i < shiftIterations; i++) {
     // Pick random color channel from source
     int sourceChannel = int(random(3));
@@ -180,6 +207,9 @@ void processImg() {
     int verticalShift = verticalShiftAmount(targetImg);
 
     shiftChannel(sourceImg, targetImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
+
+    // Update steps
+    sketchSteps += "_" + stringifyStep(horizontalShift, verticalShift, sourceChannel, targetChannel);
 
     // Use target as source for next iteration if recursive
     if (recursiveIterations)
@@ -199,6 +229,8 @@ void setup() {
   targetImg = sourceImg.copy();
   // Set initial state
   sketchComplete = imgSaved = completeMsgShown = false;
+  // Reset steps string
+  sketchSteps = "";
   // Window
   size(1,1);
   surface.setResizable(true);
