@@ -43,6 +43,9 @@ int windowWidth, windowHeight;
 // Used to check sketch progress
 boolean sketchComplete, imgSaved, completeMsgShown;
 
+// String to use for indent in output msgs
+String INDENT = "   ";
+
 
 // Helper Methods ==============================================================
 
@@ -65,13 +68,50 @@ int[] getWindowDimensions(PImage img) {
 
 // Output ----------------------------------------------------------------------
 
-// TODO: doc
 void printCompleteMsg() {
-  return // TODO
+  println("SKETCH COMPLETE.");
+  println(INDENT + "SPACEBAR: Save and run again");
+  println(INDENT + "X: Discard and run again");
+  println(INDENT + "CLICK: Save and quit");
+  println(INDENT + "ESC: Discard and quit");
+  println("");
+  // Update state
+  completeMsgShown = true;
+}
+
+// Saving ----------------------------------------------------------------------
+
+String outputFilename() {
+  // Append suffix with unique id
+  String suffix = hex((int)random(0xffff),4);
+  // Add details if verboseName
+  // TODO: store details on iterations
+  if (verboseName) {
+    suffix = "_" + shiftIterations + "it";
+    if (swapChannels)
+      suffix += "-swap";
+    if (recursiveIterations)
+      suffix += "-recursive";
+    if (shiftHorizontal)
+      suffix += "-hori"; 
+    if (shiftVertical)
+      suffix += "-vert"; 
+  }
+  return outputPath + imgFile + suffix + ".png";
+}
+
+void saveResult() {
+  println("Saving...");
+  String outputFile = outputFilename();
+  targetImg.save(outputFile);
+  // Update state
+  imgSaved = true;
+  println("Result saved:");
+  println(INDENT + outputFile);
+  println("");
 }
 
 // Channel Shift ---------------------------------------------------------------
-// TODO: re-organize?
 
 // TODO: doc
 int shiftAmount(boolean horizontal, PImage img) {
@@ -136,9 +176,8 @@ void processImg() {
     // Pick random target channel to swap with if swapChannels = true
     int targetChannel = swapChannels ? int(random(3)) : sourceChannel;
     // Calculate shift amounts
-    // TODO: Do these need to be globals? That was for the save file name
-    horizontalShift = horizontalShiftAmount(targetImg);
-    verticalShift = verticalShiftAmount(targetImg);
+    int horizontalShift = horizontalShiftAmount(targetImg);
+    int verticalShift = verticalShiftAmount(targetImg);
 
     shiftChannel(sourceImg, targetImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
 
@@ -182,5 +221,41 @@ void draw() {
   }
 }
 
-// TODO: input listeners
+// Input Listeners =============================================================
+// TODO: Move up?
+
+void keyPressed() {
+  // TODO: check if sketch complete first?
+  // TODO: see re-factored version and use that setup
+  // TODO: extract all actions to methods
+  switch (key) {
+    // Space - Save and re-run
+    case ' ':
+      if (!imgSaved)
+        saveResult();
+    // X - Discard and re-run
+    case 'x':
+    case 'X':
+      println("Running sketch...");
+      setup();
+      draw();
+      break;
+    // ESC - Discard and exit
+    case ESC:
+      System.exit(0);
+      break;
+    default:
+      break;
+  }
+}
+
+void mouseClicked() {
+  // TODO: see re-factored version and update?
+  if (sketchComplete) {
+    // Save result
+    if (!imgSaved)
+      saveResult();
+    System.exit(0);
+  }
+}
 
