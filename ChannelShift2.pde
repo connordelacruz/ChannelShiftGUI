@@ -60,8 +60,11 @@ String INDENT = "   ";
 
 // Window ----------------------------------------------------------------------
 
-// Calculate window dimensions based on image size and maxWindowSize config
-// Returns a 2D array where [0] = width and [1] = height
+/**
+ * Calculate window dimensions based on image size and maxWindowSize config
+ * @param img The PImage object that will be displayed in the window
+ * @return A 2D array where [0] = width and [1] = height 
+ */
 int[] getWindowDimensions(PImage img) {
   int[] dimensions;
   float ratio = (float) img.width/img.height;
@@ -77,6 +80,10 @@ int[] getWindowDimensions(PImage img) {
 
 // Output ----------------------------------------------------------------------
 
+/**
+ * Prints "SKETCH COMPLETE" message with list of input actions. Sets
+ * completeMsgShown to true after message is printed
+ */
 void printCompleteMsg() {
   println("SKETCH COMPLETE.");
   println(INDENT + "SPACEBAR: Save and run again");
@@ -91,7 +98,17 @@ void printCompleteMsg() {
 // Saving ----------------------------------------------------------------------
 
 /**
- * TODO: doc
+ * Returns a string representation of a channel shift step.
+ * @param horizontalShift Amount channel was shifted horizontally
+ * @param verticalShift Amount channel was shifted vertically
+ * @param sourceChannel Channel from the source image (Index into CHANNELS)
+ * @param targetChannel Channel from the target image (Index into CHANNELS)
+ * @return String representation of the sketch step. The general format is:
+ * "s{RGB}-t{RGB}-x{int}-y{int}"
+ * If source and target channels are the same, a single RGB channel will be
+ * listed instead of "s{RGB}-t{RGB}".
+ * If shiftHorizontal or shiftVertical are set to false, the "-x{int}" or
+ * "-y{int}" will be omitted, respectively.
  */
 String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, int targetChannel) {
   String step = "";
@@ -107,9 +124,15 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
   return step;
 }
 
+/**
+ * Returns an output file path based on sketch configurations.
+ * @return A unique output filepath based on sketch configs. If verboseName is
+ * true, a suffix will be appended to the filename detailing the sketch configs
+ * and shifts/swaps that occurred at each iteration
+ */
 String outputFilename() {
   // Append suffix with unique id
-  // TODO: remove? If an image has the exact same name then it's probably the same image
+  // TODO: remove unless not verbose? If an image has the exact same name then it's probably the same image
   String suffix = hex((int)random(0xffff),4);
   // Add details if verboseName
   if (verboseName) {
@@ -128,6 +151,10 @@ String outputFilename() {
   return outputPath + imgFile + suffix + ".png";
 }
 
+/**
+ * Save the resulting image. Path is based on output configs and generated
+ * using outputFilename(). Sets imgSaved to true once file is written
+ */
 void saveResult() {
   println("Saving...");
   String outputFile = outputFilename();
@@ -141,7 +168,15 @@ void saveResult() {
 
 // Channel Shift ---------------------------------------------------------------
 
-// TODO: doc
+/**
+ * Calculates shift amount based on sketch configs.
+ * @param horizontal If true, calculate horizontal shift, else calculate
+ * vertical shift
+ * @param img PImage object that will be channel shifted. Used to determine
+ * shift amount based on dimensions
+ * @return Shift amount based on configs. If the type of shift is disabled,
+ * will always return 0
+ */
 int shiftAmount(boolean horizontal, PImage img) {
   // Get corresponding config and dimension based on shift type
   boolean doShift = horizontal ? shiftHorizontal : shiftVertical;
@@ -151,22 +186,48 @@ int shiftAmount(boolean horizontal, PImage img) {
   return int(random(imgDimension * shiftMultiplier));
 }
 
+/**
+ * Calculates horizontal shift amount based on sketch configs. Wrapper around
+ * shiftAmount()
+ * @param img PImage object that will be channel shifted. Used to determine
+ * shift amount based on dimensions
+ * @return Shift amount based on configs. If the type of shift is disabled,
+ * will always return 0
+ */
 int horizontalShiftAmount(PImage img) {
   return shiftAmount(true, img);
 }
 
+/**
+ * Calculates vertical shift amount based on sketch configs. Wrapper around
+ * shiftAmount()
+ * @param img PImage object that will be channel shifted. Used to determine
+ * shift amount based on dimensions
+ * @return Shift amount based on configs. If the type of shift is disabled,
+ * will always return 0
+ */
 int verticalShiftAmount(PImage img) {
   return shiftAmount(false, img);
 }
 
-// TODO: doc, take img instead of pixels so we have dimensions
+/**
+ * Shift and swap color channels
+ * @param sourceImg The base PImage object to be channel shifted
+ * @param targetImg The PImage object to apply channel swaps/shifts to
+ * @param xShift Amount to shift channel horizontally
+ * @param yShift Amount to shift channel vertically
+ * @param sourceChannel Color channel to grab from sourceImg (Index into
+ * CHANNELS)
+ * @param targetChannel Color channel to insert shifted sourceChannel as in
+ * targetImg (Index into CHANNELS). Set to the same value as sourceChannel if
+ * you don't want to swap color channels
+ */
 void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, int sourceChannel, int targetChannel) {
   // Get pixels
   color[] sourcePixels = sourceImg.pixels;
   color[] targetPixels = targetImg.pixels;
   // Loop thru rows
   for (int y = 0; y < targetImg.height; y++) {
-    // TODO: test mod
     int yOffset = (y + yShift) % targetImg.height;
 
     // Loop thru pixels in current row
@@ -192,7 +253,10 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
 
 // Sketch ----------------------------------------------------------------------
 
-// TODO: doc
+/**
+ * Runs the sketch. Sets sketchComplete to true after running through all
+ * iterations and updating targetImg pixels
+ */
 void processImg() {
   sourceImg.loadPixels();
   targetImg.loadPixels();
