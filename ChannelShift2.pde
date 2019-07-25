@@ -1,4 +1,4 @@
-
+import g4p_controls.*;
 // Configs =====================================================================
 
 // Input File ------------------------------------------------------------------
@@ -344,6 +344,8 @@ void setup() {
   surface.setSize(windowWidth, windowHeight);
   // Load image
   image(sourceImg, 0, 0, windowWidth, windowHeight);
+  // Display controls window
+  createGUI();
 }
 
 
@@ -372,4 +374,3 @@ void mouseClicked() {
     System.exit(0);
   }
 }
-
