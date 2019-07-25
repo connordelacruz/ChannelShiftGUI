@@ -18,58 +18,6 @@ synchronized public void win_draw1(PApplet appc, GWinData data) { //_CODE_:contr
   appc.background(230);
 } //_CODE_:controlsWindow:848299:
 
-public void option1_clicked1(GOption source, GEvent event) { //_CODE_:srcR:723362:
-  println("option1 - GOption >> GEvent." + event + " @ " + millis());
-} //_CODE_:srcR:723362:
-
-public void option2_clicked1(GOption source, GEvent event) { //_CODE_:srcG:663851:
-  println("option2 - GOption >> GEvent." + event + " @ " + millis());
-} //_CODE_:srcG:663851:
-
-public void option3_clicked1(GOption source, GEvent event) { //_CODE_:srcB:834511:
-  println("option3 - GOption >> GEvent." + event + " @ " + millis());
-} //_CODE_:srcB:834511:
-
-public void option4_clicked1(GOption source, GEvent event) { //_CODE_:targR:594833:
-  println("option4 - GOption >> GEvent." + event + " @ " + millis());
-} //_CODE_:targR:594833:
-
-public void option5_clicked1(GOption source, GEvent event) { //_CODE_:targG:802122:
-  println("option5 - GOption >> GEvent." + event + " @ " + millis());
-} //_CODE_:targG:802122:
-
-public void option6_clicked1(GOption source, GEvent event) { //_CODE_:targB:979900:
-  println("option6 - GOption >> GEvent." + event + " @ " + millis());
-} //_CODE_:targB:979900:
-
-public void slider1_change1(GSlider source, GEvent event) { //_CODE_:xSlider:739546:
-  println("slider1 - GSlider >> GEvent." + event + " @ " + millis());
-} //_CODE_:xSlider:739546:
-
-public void slider2_change1(GSlider source, GEvent event) { //_CODE_:ySlider:334762:
-  println("slider2 - GSlider >> GEvent." + event + " @ " + millis());
-} //_CODE_:ySlider:334762:
-
-public void button1_click1(GButton source, GEvent event) { //_CODE_:randomizeBtn:517784:
-  println("button1 - GButton >> GEvent." + event + " @ " + millis());
-} //_CODE_:randomizeBtn:517784:
-
-public void button2_click1(GButton source, GEvent event) { //_CODE_:resetBtn:841959:
-  println("button2 - GButton >> GEvent." + event + " @ " + millis());
-} //_CODE_:resetBtn:841959:
-
-public void button3_click1(GButton source, GEvent event) { //_CODE_:previewBtn:835641:
-  println("button3 - GButton >> GEvent." + event + " @ " + millis());
-} //_CODE_:previewBtn:835641:
-
-public void button4_click1(GButton source, GEvent event) { //_CODE_:confirmBtn:409845:
-  println("button4 - GButton >> GEvent." + event + " @ " + millis());
-} //_CODE_:confirmBtn:409845:
-
-public void button5_click1(GButton source, GEvent event) { //_CODE_:saveBtn:790224:
-  println("button5 - GButton >> GEvent." + event + " @ " + millis());
-} //_CODE_:saveBtn:790224:
-
 
 
 // Create all the GUI controls. 
@@ -79,28 +27,30 @@ public void createGUI(){
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setMouseOverEnabled(false);
   surface.setTitle("Sketch Window");
+  // Controls window -----------------------------------------------------------
   controlsWindow = GWindow.getWindow(this, "Channel Shift", 0, 0, 400, 400, JAVA2D);
   controlsWindow.noLoop();
   controlsWindow.setActionOnClose(G4P.KEEP_OPEN);
   controlsWindow.addDrawHandler(this, "win_draw1");
+  // Source channel toggle -----------------------------------------------------
   srcChannelToggle = new GToggleGroup();
   srcR = new GOption(controlsWindow, 10, 40, 120, 20);
   srcR.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   srcR.setText("R");
   srcR.setLocalColorScheme(GCScheme.RED_SCHEME);
   srcR.setOpaque(true);
-  srcR.addEventHandler(this, "option1_clicked1");
+  srcR.addEventHandler(this, "srcR_clicked");
   srcG = new GOption(controlsWindow, 10, 60, 120, 20);
   srcG.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   srcG.setText("G");
   srcG.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   srcG.setOpaque(true);
-  srcG.addEventHandler(this, "option2_clicked1");
+  srcG.addEventHandler(this, "srcG_clicked");
   srcB = new GOption(controlsWindow, 10, 80, 120, 20);
   srcB.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   srcB.setText("B");
   srcB.setOpaque(true);
-  srcB.addEventHandler(this, "option3_clicked1");
+  srcB.addEventHandler(this, "srcB_clicked");
   srcChannelToggle.addControl(srcR);
   srcR.setSelected(true);
   srcChannelToggle.addControl(srcG);
@@ -110,24 +60,25 @@ public void createGUI(){
   srcChannelLabel.setText("Source Channel");
   srcChannelLabel.setTextBold();
   srcChannelLabel.setOpaque(false);
+  // Target channel toggle -----------------------------------------------------
   targChannelToggle = new GToggleGroup();
   targR = new GOption(controlsWindow, 150, 40, 120, 20);
   targR.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   targR.setText("R");
   targR.setLocalColorScheme(GCScheme.RED_SCHEME);
   targR.setOpaque(true);
-  targR.addEventHandler(this, "option4_clicked1");
+  targR.addEventHandler(this, "targR_clicked");
   targG = new GOption(controlsWindow, 150, 60, 120, 20);
   targG.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   targG.setText("G");
   targG.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   targG.setOpaque(true);
-  targG.addEventHandler(this, "option5_clicked1");
+  targG.addEventHandler(this, "targG_clicked");
   targB = new GOption(controlsWindow, 150, 80, 120, 20);
   targB.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   targB.setText("B");
   targB.setOpaque(true);
-  targB.addEventHandler(this, "option6_clicked1");
+  targB.addEventHandler(this, "targB_clicked");
   targChannelToggle.addControl(targR);
   targR.setSelected(true);
   targChannelToggle.addControl(targG);
@@ -137,6 +88,7 @@ public void createGUI(){
   targChannelLabel.setText("Target Channel");
   targChannelLabel.setTextBold();
   targChannelLabel.setOpaque(false);
+  // Horizontal shift slider ---------------------------------------------------
   xSlider = new GSlider(controlsWindow, 10, 140, 380, 50, 10.0);
   xSlider.setShowValue(true);
   xSlider.setShowLimits(true);
@@ -145,13 +97,14 @@ public void createGUI(){
   xSlider.setNumberFormat(G4P.INTEGER, 0);
   xSlider.setLocalColorScheme(GCScheme.RED_SCHEME);
   xSlider.setOpaque(true);
-  xSlider.addEventHandler(this, "slider1_change1");
+  xSlider.addEventHandler(this, "xSlider_change");
   xSliderLabel = new GLabel(controlsWindow, 10, 120, 120, 20);
   xSliderLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   xSliderLabel.setText("Horizontal Shift");
   xSliderLabel.setTextBold();
   xSliderLabel.setLocalColorScheme(GCScheme.RED_SCHEME);
   xSliderLabel.setOpaque(true);
+  // Vertical shift slider -----------------------------------------------------
   ySlider = new GSlider(controlsWindow, 10, 230, 380, 50, 10.0);
   ySlider.setShowValue(true);
   ySlider.setShowLimits(true);
@@ -160,32 +113,39 @@ public void createGUI(){
   ySlider.setNumberFormat(G4P.INTEGER, 0);
   ySlider.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   ySlider.setOpaque(true);
-  ySlider.addEventHandler(this, "slider2_change1");
+  ySlider.addEventHandler(this, "ySlider_change");
   ySliderLabel = new GLabel(controlsWindow, 10, 210, 120, 20);
   ySliderLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   ySliderLabel.setText("Vertical Shift");
   ySliderLabel.setTextBold();
   ySliderLabel.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   ySliderLabel.setOpaque(true);
+  // Randomize button ----------------------------------------------------------
   randomizeBtn = new GButton(controlsWindow, 280, 20, 100, 30);
   randomizeBtn.setText("Randomize");
   randomizeBtn.setLocalColorScheme(GCScheme.CYAN_SCHEME);
-  randomizeBtn.addEventHandler(this, "button1_click1");
+  randomizeBtn.addEventHandler(this, "randomizeBtn_click");
+  // Reset button --------------------------------------------------------------
   resetBtn = new GButton(controlsWindow, 280, 70, 100, 30);
   resetBtn.setText("Reset");
   resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
-  resetBtn.addEventHandler(this, "button2_click1");
+  resetBtn.addEventHandler(this, "resetBtn_click");
+  // Preview button ------------------------------------------------------------
   previewBtn = new GButton(controlsWindow, 10, 310, 180, 30);
   previewBtn.setText("Preview");
   previewBtn.setLocalColorScheme(GCScheme.PURPLE_SCHEME);
-  previewBtn.addEventHandler(this, "button3_click1");
+  previewBtn.addEventHandler(this, "previewBtn_click");
+  // Confirm button ------------------------------------------------------------
   confirmBtn = new GButton(controlsWindow, 210, 310, 180, 30);
   confirmBtn.setText("Confirm Step");
-  confirmBtn.addEventHandler(this, "button4_click1");
+  confirmBtn.addEventHandler(this, "confirmBtn_click");
+  // Save button ---------------------------------------------------------------
   saveBtn = new GButton(controlsWindow, 10, 350, 380, 30);
   saveBtn.setText("Save Result");
+  saveBtn.setTextBold();
   saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  saveBtn.addEventHandler(this, "button5_click1");
+  saveBtn.addEventHandler(this, "saveBtn_click");
+
   controlsWindow.loop();
 }
 
