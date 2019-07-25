@@ -88,7 +88,7 @@ void printCompleteMsg() {
   println("SKETCH COMPLETE.");
   println(INDENT + "SPACEBAR: Save and run again");
   println(INDENT + "X: Discard and run again");
-  println(INDENT + "CLICK: Save and quit");
+  println(INDENT + "ENTER: Save and quit");
   println(INDENT + "ESC: Discard and quit");
   println("");
   // Update state
@@ -164,6 +164,36 @@ void saveResult() {
   println("Result saved:");
   println(INDENT + outputFile);
   println("");
+}
+
+// Input Handlers --------------------------------------------------------------
+
+/**
+ * Handle key presses
+ * @param k Character for the key that was pressed
+ */
+void keyHandler(char k) {
+  switch (k) {
+    // Space - Save and re-run
+    case ' ':
+      if (!imgSaved)
+        saveResult();
+    // X - Discard and re-run
+    case 'x':
+    case 'X':
+      restartSketch();
+      break;
+    // ENTER - Save and exit
+    case ENTER:
+      if (!imgSaved)
+        saveResult();
+    // ESC - Discard and exit
+    case ESC:
+      System.exit(0);
+      break;
+    default:
+      break;
+  }
 }
 
 // Channel Shift ---------------------------------------------------------------
@@ -284,6 +314,15 @@ void processImg() {
   sketchComplete = true;
 }
 
+/**
+ * Run setup() and draw()
+ */
+void restartSketch() {
+  println("Running sketch...");
+  setup();
+  draw();
+}
+
 
 // Processing ==================================================================
 
@@ -318,35 +357,14 @@ void draw() {
 }
 
 // Input Listeners =============================================================
-// TODO: Move up?
 
 void keyPressed() {
-  // TODO: check if sketch complete first?
-  // TODO: see re-factored version and use that setup
-  // TODO: extract all actions to methods
-  switch (key) {
-    // Space - Save and re-run
-    case ' ':
-      if (!imgSaved)
-        saveResult();
-    // X - Discard and re-run
-    case 'x':
-    case 'X':
-      println("Running sketch...");
-      setup();
-      draw();
-      break;
-    // ESC - Discard and exit
-    case ESC:
-      System.exit(0);
-      break;
-    default:
-      break;
-  }
+  // TODO: check if sketch complete first? Input seems to be buffered so might not matter
+  keyHandler(key);
 }
 
+// TODO: Remove? Or click to just save?
 void mouseClicked() {
-  // TODO: see re-factored version and update?
   if (sketchComplete) {
     // Save result
     if (!imgSaved)
