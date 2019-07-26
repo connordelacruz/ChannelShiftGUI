@@ -40,10 +40,11 @@ int maxWindowSize = 600;
 
 // TODO: have a 3rd previewImg?
 // Original image and working image
-PImage sourceImg, targetImg;
+PImage sourceImg, targetImg, previewImg;
 // Window dimensions
 int windowWidth, windowHeight;
 // Used to check sketch progress
+// TODO: are these necessary anymore?
 boolean sketchComplete, imgSaved, completeMsgShown;
 
 // Maps index 0-2 to corresponding color channel. Used as a shorthand when
@@ -265,6 +266,7 @@ int verticalShiftAmount(PImage img) {
  * you don't want to swap color channels
  */
 void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, int sourceChannel, int targetChannel) {
+  // TODO: loadPixels() here?
   // Get pixels
   color[] sourcePixels = sourceImg.pixels;
   color[] targetPixels = targetImg.pixels;
@@ -420,9 +422,15 @@ public void randomizeBtn_click(GButton source, GEvent event) { //_CODE_:randomiz
 
 // Reset Button ----------------------------------------------------------------
 
-// TODO: implement: set globals and update GUI elements
+// TODO: should this also revert the image to its original state?
 public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841959:
-  println("button2 - GButton >> GEvent." + event + " @ " + millis());
+  srcR.setSelected(true);
+  targR.setSelected(true);
+  sourceChannel = targetChannel = 0;
+  xSlider.setValue(0.0);
+  ySlider.setValue(0.0);
+  setShift(true, 0);
+  setShift(false, 0);
 } //_CODE_:resetBtn:841959:
 
 // Preview Button --------------------------------------------------------------
@@ -460,6 +468,7 @@ void setup() {
   // Load image
   sourceImg = loadImage(imgPath + imgFile+"."+imgExt);
   targetImg = sourceImg.copy();
+  previewImg = sourceImg.copy();
   // Set initial state
   sketchComplete = imgSaved = completeMsgShown = false;
   // Reset steps string
@@ -484,6 +493,7 @@ void draw() {
   if (!sketchComplete) {
     // TODO: TESTING
     /* processImg(); */
+    // TODO: previewImg
     image(targetImg, 0, 0, windowWidth, windowHeight);
   } else if (!completeMsgShown) {
     printCompleteMsg();
