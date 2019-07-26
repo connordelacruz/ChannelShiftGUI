@@ -59,6 +59,10 @@ String INDENT = "   ";
 int sourceChannel, targetChannel;
 int horizontalShift, verticalShift;
 
+// Set when controls window is drawn so it doesn't get duplicated on subsequent
+// calls to setup()
+boolean controlsWindowCreated = false;
+
 
 // Helper Methods ==============================================================
 
@@ -333,6 +337,14 @@ void restartSketch() {
 
 // TODO: implement, re-work existing setup, cleanup generated code
 
+// Controls Window -------------------------------------------------------------
+
+// Sets controlsWindowCreated to true
+synchronized public void controlsWindow_draw(PApplet appc, GWinData data) { //_CODE_:controlsWindow:848299:
+  appc.background(230);
+  controlsWindowCreated = true;
+} //_CODE_:controlsWindow:848299:
+
 // Source/Target Channel -------------------------------------------------------
 
 /**
@@ -398,22 +410,35 @@ public void ySlider_change(GSlider source, GEvent event) { //_CODE_:ySlider:3347
 
 // Randomize Button ------------------------------------------------------------
 
+// TODO: implement: randomly pick channels/shift amounts similar to how original sketch worked
 public void randomizeBtn_click(GButton source, GEvent event) { //_CODE_:randomizeBtn:517784:
   println("button1 - GButton >> GEvent." + event + " @ " + millis());
 } //_CODE_:randomizeBtn:517784:
 
+// Reset Button ----------------------------------------------------------------
+
+// TODO: implement: set globals and update GUI elements
 public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841959:
   println("button2 - GButton >> GEvent." + event + " @ " + millis());
 } //_CODE_:resetBtn:841959:
 
+// Preview Button --------------------------------------------------------------
+
+// TODO: implement: apply shifts/swaps based on globals and update display
 public void previewBtn_click(GButton source, GEvent event) { //_CODE_:previewBtn:835641:
   println("button3 - GButton >> GEvent." + event + " @ " + millis());
 } //_CODE_:previewBtn:835641:
 
+// Confirm Button --------------------------------------------------------------
+
+// TODO: implement: apply, preview, save step info, reset globals/GUI
 public void confirmBtn_click(GButton source, GEvent event) { //_CODE_:confirmBtn:409845:
   println("button4 - GButton >> GEvent." + event + " @ " + millis());
 } //_CODE_:confirmBtn:409845:
 
+// Save Button -----------------------------------------------------------------
+
+// TODO: implement: Save currently displayed unless file exists; Allow for custom filename?
 public void saveBtn_click(GButton source, GEvent event) { //_CODE_:saveBtn:790224:
   println("button5 - GButton >> GEvent." + event + " @ " + millis());
 } //_CODE_:saveBtn:790224:
@@ -441,8 +466,8 @@ void setup() {
   // Load image
   image(sourceImg, 0, 0, windowWidth, windowHeight);
   // Display controls window
-  // TODO: only if currently doesn't exist
-  createGUI();
+  if (!controlsWindowCreated)
+    createGUI();
 }
 
 
