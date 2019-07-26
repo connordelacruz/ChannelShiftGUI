@@ -55,6 +55,10 @@ String sketchSteps;
 // String to use for indent in output msgs
 String INDENT = "   ";
 
+// TODO: doc and organize
+int sourceChannel, targetChannel;
+int horizontalShift, verticalShift;
+
 
 // Helper Methods ==============================================================
 
@@ -79,6 +83,8 @@ int[] getWindowDimensions(PImage img) {
 }
 
 // Output ----------------------------------------------------------------------
+
+// TODO: add output panel to GUI
 
 /**
  * Prints "SKETCH COMPLETE" message with list of input actions. Sets
@@ -293,12 +299,12 @@ void processImg() {
 
   for (int i = 0; i < shiftIterations; i++) {
     // Pick random color channel from source
-    int sourceChannel = int(random(3));
+    sourceChannel = int(random(3));
     // Pick random target channel to swap with if swapChannels = true
-    int targetChannel = swapChannels ? int(random(3)) : sourceChannel;
+    targetChannel = swapChannels ? int(random(3)) : sourceChannel;
     // Calculate shift amounts
-    int horizontalShift = horizontalShiftAmount(targetImg);
-    int verticalShift = verticalShiftAmount(targetImg);
+    horizontalShift = horizontalShiftAmount(targetImg);
+    verticalShift = verticalShiftAmount(targetImg);
 
     shiftChannel(sourceImg, targetImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
 
@@ -325,39 +331,72 @@ void restartSketch() {
 
 // GUI =========================================================================
 
-// TODO: implement, re-work existing setup
+// TODO: implement, re-work existing setup, cleanup generated code
+
+// Source/Target Channel -------------------------------------------------------
+
+/**
+ * Set the current source/target channel
+ * @param source If true, set sourceChannel, else set targetChannel
+ * @param channel Channel to set (Index into CHANNELS)
+ */
+void selectChannel(boolean source, int channel) {
+  if (source)
+    sourceChannel = channel;
+  else
+    targetChannel = channel;
+}
 
 public void srcR_clicked(GOption source, GEvent event) { //_CODE_:srcR:723362:
-  println("option1 - GOption >> GEvent." + event + " @ " + millis());
+  selectChannel(true, 0);
 } //_CODE_:srcR:723362:
 
 public void srcG_clicked(GOption source, GEvent event) { //_CODE_:srcG:663851:
-  println("option2 - GOption >> GEvent." + event + " @ " + millis());
+  selectChannel(true, 1);
 } //_CODE_:srcG:663851:
 
 public void srcB_clicked(GOption source, GEvent event) { //_CODE_:srcB:834511:
-  println("option3 - GOption >> GEvent." + event + " @ " + millis());
+  selectChannel(true, 2);
 } //_CODE_:srcB:834511:
 
 public void targR_clicked(GOption source, GEvent event) { //_CODE_:targR:594833:
-  println("option4 - GOption >> GEvent." + event + " @ " + millis());
+  selectChannel(false, 0);
 } //_CODE_:targR:594833:
 
 public void targG_clicked(GOption source, GEvent event) { //_CODE_:targG:802122:
-  println("option5 - GOption >> GEvent." + event + " @ " + millis());
+  selectChannel(false, 1);
 } //_CODE_:targG:802122:
 
 public void targB_clicked(GOption source, GEvent event) { //_CODE_:targB:979900:
-  println("option6 - GOption >> GEvent." + event + " @ " + millis());
+  selectChannel(false, 2);
 } //_CODE_:targB:979900:
 
+// Horizontal/Vertical Shift ---------------------------------------------------
+
+/**
+ * Set horizontal or vertical shift
+ * @param horizontal If true, set horizontal shift, else set vertical shift
+ * @param shiftPercent Percent of image dimension to shift by
+ */
+void setShift(boolean horizontal, int shiftPercent) {
+  // Calculate amount of pixels to shift
+  int imgDimension = horizontal ? targetImg.width : targetImg.height;
+  int shiftAmount = (int)(imgDimension * shiftPercent / 100);
+  if (horizontal)
+    horizontalShift = shiftAmount;
+  else
+    verticalShift = shiftAmount;
+}
+
 public void xSlider_change(GSlider source, GEvent event) { //_CODE_:xSlider:739546:
-  println("slider1 - GSlider >> GEvent." + event + " @ " + millis());
+  setShift(true, source.getValueI());
 } //_CODE_:xSlider:739546:
 
 public void ySlider_change(GSlider source, GEvent event) { //_CODE_:ySlider:334762:
-  println("slider2 - GSlider >> GEvent." + event + " @ " + millis());
+  setShift(false, source.getValueI());
 } //_CODE_:ySlider:334762:
+
+// Randomize Button ------------------------------------------------------------
 
 public void randomizeBtn_click(GButton source, GEvent event) { //_CODE_:randomizeBtn:517784:
   println("button1 - GButton >> GEvent." + event + " @ " + millis());
@@ -402,6 +441,7 @@ void setup() {
   // Load image
   image(sourceImg, 0, 0, windowWidth, windowHeight);
   // Display controls window
+  // TODO: only if currently doesn't exist
   createGUI();
 }
 
