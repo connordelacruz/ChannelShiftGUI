@@ -266,7 +266,8 @@ int verticalShiftAmount(PImage img) {
  * you don't want to swap color channels
  */
 void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, int sourceChannel, int targetChannel) {
-  // TODO: loadPixels() here?
+  sourceImg.loadPixels();
+  targetImg.loadPixels();
   // Get pixels
   color[] sourcePixels = sourceImg.pixels;
   color[] targetPixels = targetImg.pixels;
@@ -302,9 +303,6 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
  * iterations and updating targetImg pixels
  */
 void processImg() {
-  sourceImg.loadPixels();
-  targetImg.loadPixels();
-
   for (int i = 0; i < shiftIterations; i++) {
     // Pick random color channel from source
     sourceChannel = int(random(3));
