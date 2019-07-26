@@ -186,6 +186,7 @@ void saveResult() {
 }
 
 // Input Handlers --------------------------------------------------------------
+// TODO: Remove?
 
 /**
  * Handle key presses
