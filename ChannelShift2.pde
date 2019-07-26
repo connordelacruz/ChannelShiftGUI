@@ -429,6 +429,7 @@ public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841
 
 // TODO: implement: apply shifts/swaps based on globals and update display
 public void previewBtn_click(GButton source, GEvent event) { //_CODE_:previewBtn:835641:
+  // TODO: extract preview to method? Reuse in confirm
   // TODO: restore current targetImg after displaying
   shiftChannel(sourceImg, targetImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
   targetImg.updatePixels();
@@ -445,7 +446,10 @@ public void confirmBtn_click(GButton source, GEvent event) { //_CODE_:confirmBtn
 
 // TODO: implement: Save currently displayed unless file exists; Allow for custom filename?
 public void saveBtn_click(GButton source, GEvent event) { //_CODE_:saveBtn:790224:
-  println("button5 - GButton >> GEvent." + event + " @ " + millis());
+  saveResult();
+  // TODO: Have imgSaved set to false after a change is made
+  // For now just ignore it
+  imgSaved = false;
 } //_CODE_:saveBtn:790224:
 
 
