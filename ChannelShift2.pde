@@ -38,7 +38,6 @@ int maxWindowSize = 600;
 
 // Globals =====================================================================
 
-// TODO: have a 3rd previewImg?
 // Original image and working image
 PImage sourceImg, targetImg, previewImg;
 // Window dimensions
@@ -135,6 +134,13 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
   if (shiftVertical)
     step += "-y" + verticalShift;
   return step;
+}
+
+/**
+ * Update sketchSteps using globals
+ */
+void updateSteps() {
+  sketchSteps += "_" + stringifyStep(horizontalShift, verticalShift, sourceChannel, targetChannel);
 }
 
 /**
@@ -314,8 +320,8 @@ void processImg() {
 
     shiftChannel(sourceImg, targetImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
 
-    // Update steps
-    sketchSteps += "_" + stringifyStep(horizontalShift, verticalShift, sourceChannel, targetChannel);
+    // Update sketch steps
+    updateSteps();
 
     // Use target as source for next iteration if recursive
     if (recursiveIterations)
@@ -420,8 +426,8 @@ public void randomizeBtn_click(GButton source, GEvent event) { //_CODE_:randomiz
 
 // Reset Button ----------------------------------------------------------------
 
-// TODO: should this also revert the image to its original state?
-public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841959:
+// TODO: doc
+void resetShift() {
   srcR.setSelected(true);
   targR.setSelected(true);
   sourceChannel = targetChannel = 0;
@@ -429,23 +435,38 @@ public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841
   ySlider.setValue(0.0);
   setShift(true, 0);
   setShift(false, 0);
+}
+
+// TODO: should this also revert the image to its original state?
+public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841959:
+  resetShift();
 } //_CODE_:resetBtn:841959:
 
 // Preview Button --------------------------------------------------------------
 
-// TODO: implement: apply shifts/swaps based on globals and update display
+// TODO: doc
+void showPreview() {
+  previewImg = targetImg.copy();
+  shiftChannel(sourceImg, previewImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
+  previewImg.updatePixels();
+}
+
 public void previewBtn_click(GButton source, GEvent event) { //_CODE_:previewBtn:835641:
-  // TODO: extract preview to method? Reuse in confirm
-  // TODO: restore current targetImg after displaying
-  shiftChannel(sourceImg, targetImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
-  targetImg.updatePixels();
+  showPreview();
 } //_CODE_:previewBtn:835641:
 
 // Confirm Button --------------------------------------------------------------
 
-// TODO: implement: apply, preview, save step info, reset globals/GUI
 public void confirmBtn_click(GButton source, GEvent event) { //_CODE_:confirmBtn:409845:
-  println("button4 - GButton >> GEvent." + event + " @ " + millis());
+  // Display preview
+  showPreview();
+  // Update sketch steps
+  updateSteps();
+  // Update targetImg to match preview
+  targetImg = previewImg.copy();
+  // Reset shift values and UI
+  resetShift();
+  // TODO: recursive?
 } //_CODE_:confirmBtn:409845:
 
 // Save Button -----------------------------------------------------------------
@@ -491,8 +512,7 @@ void draw() {
   if (!sketchComplete) {
     // TODO: TESTING
     /* processImg(); */
-    // TODO: previewImg
-    image(targetImg, 0, 0, windowWidth, windowHeight);
+    image(previewImg, 0, 0, windowWidth, windowHeight);
   } else if (!completeMsgShown) {
     printCompleteMsg();
   }
