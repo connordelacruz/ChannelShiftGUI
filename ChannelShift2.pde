@@ -17,7 +17,8 @@ boolean verboseName = true;
 
 // Sketch Settings -------------------------------------------------------------
 // Number of times to repeat the process
-int shiftIterations = 3;
+/* int shiftIterations = 3; */
+int shiftIterations = 0; // TODO: disabling for testing
 // Randomly swap channels
 boolean swapChannels = true;
 // Use resulting image as the source for subsequent iterations
@@ -37,6 +38,7 @@ int maxWindowSize = 600;
 
 // Globals =====================================================================
 
+// TODO: have a 3rd previewImg?
 // Original image and working image
 PImage sourceImg, targetImg;
 // Window dimensions
@@ -336,6 +338,7 @@ void restartSketch() {
 // GUI =========================================================================
 
 // TODO: implement, re-work existing setup, cleanup generated code
+// TODO: figure out how recursive will work
 
 // Controls Window -------------------------------------------------------------
 
@@ -426,7 +429,9 @@ public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841
 
 // TODO: implement: apply shifts/swaps based on globals and update display
 public void previewBtn_click(GButton source, GEvent event) { //_CODE_:previewBtn:835641:
-  println("button3 - GButton >> GEvent." + event + " @ " + millis());
+  // TODO: restore current targetImg after displaying
+  shiftChannel(sourceImg, targetImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
+  targetImg.updatePixels();
 } //_CODE_:previewBtn:835641:
 
 // Confirm Button --------------------------------------------------------------
@@ -473,7 +478,8 @@ void setup() {
 
 void draw() {
   if (!sketchComplete) {
-    processImg();
+    // TODO: TESTING
+    /* processImg(); */
     image(targetImg, 0, 0, windowWidth, windowHeight);
   } else if (!completeMsgShown) {
     printCompleteMsg();
@@ -481,6 +487,7 @@ void draw() {
 }
 
 // Input Listeners =============================================================
+// TODO: Remove? Modify?
 
 void keyPressed() {
   // TODO: check if sketch complete first? Input seems to be buffered so might not matter
