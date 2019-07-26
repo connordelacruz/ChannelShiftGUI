@@ -13,7 +13,8 @@ String imgExt = "jpg";
 // File path relative to current directory
 String outputPath = imgPath + imgFile + "/";
 // Use a verbose filename w/ details on the sketch config
-boolean verboseName = true;
+// TODO: checkbox for this
+boolean verboseName = true; 
 
 // Sketch Settings -------------------------------------------------------------
 // Number of times to repeat the process
@@ -26,7 +27,7 @@ boolean recursiveIterations = true;
 // Shift channels horizontally
 boolean shiftHorizontal = true;
 // Shift channels vertically
-boolean shiftVertical = !shiftHorizontal;
+boolean shiftVertical = shiftHorizontal; // TODO: setting both to true so GUI works
 // Multiplier for the shift amount. Lower numbers = less drastic shifts
 float shiftMultiplier = 1.0;
 // TODO: future options: uniformShift (per-dimension?), perlinNoise, manualMode
@@ -228,6 +229,7 @@ void keyHandler(char k) {
  * will always return 0
  */
 int shiftAmount(boolean horizontal, PImage img) {
+  // TODO: remove this after GUI implemented
   // Get corresponding config and dimension based on shift type
   boolean doShift = horizontal ? shiftHorizontal : shiftVertical;
   if (!doShift)
@@ -369,6 +371,17 @@ void selectChannel(boolean source, int channel) {
     targetChannel = channel;
 }
 
+// TODO: doc and implement
+// TODO: just have this automatically update to match globals?
+void setChannelToggle(boolean source, int channel) {
+  GOption[] toggles;
+  if (source)
+    toggles = new GOption[]{ srcR, srcG, srcB };
+  else
+    toggles = new GOption[]{ targR, targG, targB };
+  toggles[channel].setSelected(true);
+}
+
 public void srcR_clicked(GOption source, GEvent event) { //_CODE_:srcR:723362:
   selectChannel(true, 0);
 } //_CODE_:srcR:723362:
@@ -422,13 +435,23 @@ public void ySlider_change(GSlider source, GEvent event) { //_CODE_:ySlider:3347
 
 // TODO: implement: randomly pick channels/shift amounts similar to how original sketch worked
 public void randomizeBtn_click(GButton source, GEvent event) { //_CODE_:randomizeBtn:517784:
-  println("button1 - GButton >> GEvent." + event + " @ " + millis());
+  // Channels
+  sourceChannel = int(random(3));
+  setChannelToggle(true, sourceChannel);
+  targetChannel = int(random(3));
+  setChannelToggle(false, targetChannel);
+  // Shift
+  // TODO: just pick 0-100
+  horizontalShift = horizontalShiftAmount(targetImg);
+  verticalShift = verticalShiftAmount(targetImg);
+  // TODO: update GUI
 } //_CODE_:randomizeBtn:517784:
 
 // Reset Button ----------------------------------------------------------------
 
 // TODO: doc
 void resetShift() {
+  // TODO: method that updates toggles based on globals, use in randomize
   srcR.setSelected(true);
   targR.setSelected(true);
   sourceChannel = targetChannel = 0;
@@ -467,7 +490,7 @@ public void confirmBtn_click(GButton source, GEvent event) { //_CODE_:confirmBtn
   targetImg = previewImg.copy();
   // Reset shift values and UI
   resetShift();
-  // TODO: recursive?
+  // TODO: recursive checkbox?
 } //_CODE_:confirmBtn:409845:
 
 // Save Button -----------------------------------------------------------------
