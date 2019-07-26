@@ -497,6 +497,7 @@ public void confirmBtn_click(GButton source, GEvent event) { //_CODE_:confirmBtn
 
 // TODO: implement: Save currently displayed unless file exists; Allow for custom filename?
 public void saveBtn_click(GButton source, GEvent event) { //_CODE_:saveBtn:790224:
+  // TODO: set targetImg to previewImg before saving so you get what you see
   saveResult();
   // TODO: Have imgSaved set to false after a change is made
   // For now just ignore it
