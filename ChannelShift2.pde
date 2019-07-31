@@ -152,7 +152,7 @@ void updateSteps() {
  */
 String outputFilename() {
   // Append suffix with unique id
-  // TODO: remove unless not verbose? If an image has the exact same name then it's probably the same image
+  // TODO: remove unless not verbose
   String suffix = hex((int)random(0xffff),4);
   // Add details if verboseName
   if (verboseName) {
@@ -168,23 +168,39 @@ String outputFilename() {
     // Append steps
     suffix += sketchSteps;
   }
-  return outputPath + imgFile + suffix + ".png";
+  return sketchPath(outputPath + imgFile + suffix + ".png");
 }
 
+// TODO: update docstring
 /**
  * Save the resulting image. Path is based on output configs and generated
  * using outputFilename(). Sets imgSaved to true once file is written
  */
 void saveResult() {
-  println("Saving...");
-  String outputFile = outputFilename();
-  targetImg.save(outputFile);
-  // Update state
-  imgSaved = true;
-  println("Result saved:");
-  println(INDENT + outputFile);
-  println("");
+  String outputFile = outputFilename(); // TODO: make sure this all works w/ save dialog
+  // TODO: create outputPath if !exist?
+  File defaultOutFile = new File(outputFile);
+  selectOutput("Save as:", "outFileSelected", defaultOutFile);
 }
+
+// TODO: doc/implement
+void outFileSelected(File selection) {
+  if (selection != null) {
+    println("Saving...");
+    String outputFile = selection.getAbsolutePath();
+    targetImg.save(outputFile);
+    // Update state and print output
+    imgSaved = true;
+    println("Result saved:");
+    println(INDENT + outputFile);
+    println("");
+  }
+}
+
+// Loading ---------------------------------------------------------------------
+
+// TODO: implement load button and selectInput() method similar to above
+// TODO: if imgFile null or empty, show dialog?
 
 // Input Handlers --------------------------------------------------------------
 // TODO: Remove?

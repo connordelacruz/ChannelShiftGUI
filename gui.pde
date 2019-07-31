@@ -86,6 +86,7 @@ public void createGUI(){
   xSlider = new GSlider(controlsWindow, 10, 140, 380, 50, 10.0);
   xSlider.setShowValue(true);
   xSlider.setShowLimits(true);
+  // TODO: use total pixels instead of percent for more accurate sliders
   xSlider.setLimits(0, 0, 100);
   xSlider.setShowTicks(true);
   xSlider.setNumberFormat(G4P.INTEGER, 0);
@@ -102,6 +103,7 @@ public void createGUI(){
   ySlider = new GSlider(controlsWindow, 10, 230, 380, 50, 10.0);
   ySlider.setShowValue(true);
   ySlider.setShowLimits(true);
+  // TODO: use total pixels instead of percent for more accurate sliders
   ySlider.setLimits(0, 0, 100);
   ySlider.setShowTicks(true);
   ySlider.setNumberFormat(G4P.INTEGER, 0);
