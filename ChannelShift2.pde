@@ -89,6 +89,17 @@ int[] getWindowDimensions(PImage img) {
   return dimensions;
 }
 
+/**
+ * Set windowWidth and windowHeight and resize surface
+ */
+void updateWindowSize() {
+  int[] dimensions = getWindowDimensions(sourceImg);
+  // Set globals for later use
+  windowWidth = dimensions[0];
+  windowHeight = dimensions[1];
+  surface.setSize(windowWidth, windowHeight);
+}
+
 // Output ----------------------------------------------------------------------
 
 // TODO: add output panel to GUI
@@ -168,10 +179,11 @@ String outputFilename() {
     // Append steps
     suffix += sketchSteps;
   }
+  // TODO: update docstring w/ sketchPath stuff
   return sketchPath(outputPath + imgFile + suffix + ".png");
 }
 
-// TODO: update docstring
+// TODO: update docstring, rename saveResultAs() for clarity?
 /**
  * Save the resulting image. Path is based on output configs and generated
  * using outputFilename(). Sets imgSaved to true once file is written
@@ -183,7 +195,9 @@ void saveResult() {
   selectOutput("Save as:", "outFileSelected", defaultOutFile);
 }
 
-// TODO: doc/implement
+/**
+ * Callback function for selectOutput() when saving result
+ */
 void outFileSelected(File selection) {
   if (selection != null) {
     println("Saving...");
@@ -199,8 +213,41 @@ void outFileSelected(File selection) {
 
 // Loading ---------------------------------------------------------------------
 
-// TODO: implement load button and selectInput() method similar to above
-// TODO: if imgFile null or empty, show dialog?
+// TODO: document all, move before saving section
+
+/**
+ * Show file select dialog and attempt to load image on callback
+ */
+void selectFile() {
+  // TODO: 3rd arg sketchPath() file so it starts relative to current?
+  selectInput("Load image:", "imageFileSelected");
+}
+
+/**
+ * Callback function for selectInput() when loading a file
+ */
+void imageFileSelected(File selection) {
+  if (selection != null) {
+    println("Loading...");
+    loadImageFile(selection.getAbsolutePath());
+    println("Image loaded.");
+    println("");
+  }
+}
+
+/**
+ * Load an image file. Sets global variables and updates window size accordingly
+ * @param filename Path to the image file
+ */
+void loadImageFile(String filename) {
+  // Set globals
+  sourceImg = loadImage(filename);
+  targetImg = sourceImg.copy();
+  previewImg = sourceImg.copy();
+  // Update window size
+  updateWindowSize();
+  // TODO: update output dir name to match?
+}
 
 // Input Handlers --------------------------------------------------------------
 // TODO: Remove?
@@ -323,6 +370,7 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
 
 // Sketch ----------------------------------------------------------------------
 
+// TODO: REMOVE
 /**
  * Runs the sketch. Sets sketchComplete to true after running through all
  * iterations and updating targetImg pixels
@@ -509,26 +557,32 @@ public void confirmBtn_click(GButton source, GEvent event) { //_CODE_:confirmBtn
   // TODO: recursive checkbox?
 } //_CODE_:confirmBtn:409845:
 
+// Load Button -----------------------------------------------------------------
+
+// TODO: implement
+public void loadBtn_click(GButton source, GEvent event) {
+  selectFile();
+}
+
 // Save Button -----------------------------------------------------------------
 
 // TODO: implement: Save currently displayed unless file exists; Allow for custom filename?
-public void saveBtn_click(GButton source, GEvent event) { //_CODE_:saveBtn:790224:
+public void saveBtn_click(GButton source, GEvent event) {
   // TODO: set targetImg to previewImg before saving so you get what you see
   saveResult();
   // TODO: Have imgSaved set to false after a change is made
   // For now just ignore it
   imgSaved = false;
-} //_CODE_:saveBtn:790224:
+} 
 
 
 
 // Processing ==================================================================
 
 void setup() {
-  // Load image
-  sourceImg = loadImage(imgPath + imgFile+"."+imgExt);
-  targetImg = sourceImg.copy();
-  previewImg = sourceImg.copy();
+  // TODO: selectFile() on setup if imgFile is not set
+  // Load image (initializes global PImage objects)
+  loadImageFile(imgPath + imgFile + "." + imgExt);
   // Set initial state
   sketchComplete = imgSaved = completeMsgShown = false;
   // Reset steps string
@@ -536,11 +590,7 @@ void setup() {
   // Window
   size(1,1);
   surface.setResizable(true);
-  int[] dimensions = getWindowDimensions(sourceImg);
-  // Set globals for later use
-  windowWidth = dimensions[0];
-  windowHeight = dimensions[1];
-  surface.setSize(windowWidth, windowHeight);
+  updateWindowSize();
   // Load image
   image(sourceImg, 0, 0, windowWidth, windowHeight);
   // Display controls window

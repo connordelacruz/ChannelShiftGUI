@@ -135,8 +135,14 @@ public void createGUI(){
   confirmBtn = new GButton(controlsWindow, 210, 310, 180, 30);
   confirmBtn.setText("Confirm Step");
   confirmBtn.addEventHandler(this, "confirmBtn_click");
+  // Load button ---------------------------------------------------------------
+  loadBtn = new GButton(controlsWindow, 10, 350, 180, 30);
+  loadBtn.setText("Load Image");
+  loadBtn.setTextBold();
+  loadBtn.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
+  loadBtn.addEventHandler(this, "loadBtn_click");
   // Save button ---------------------------------------------------------------
-  saveBtn = new GButton(controlsWindow, 10, 350, 380, 30);
+  saveBtn = new GButton(controlsWindow, 210, 350, 180, 30);
   saveBtn.setText("Save Result");
   saveBtn.setTextBold();
   saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
@@ -166,5 +172,6 @@ GButton randomizeBtn;
 GButton resetBtn; 
 GButton previewBtn; 
 GButton confirmBtn; 
+GButton loadBtn; 
 GButton saveBtn; 
 
