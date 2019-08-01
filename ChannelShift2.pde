@@ -219,8 +219,12 @@ void outFileSelected(File selection) {
  * Show file select dialog and attempt to load image on callback
  */
 void selectFile() {
-  // TODO: 3rd arg sketchPath() file so it starts relative to current?
-  selectInput("Load image:", "imageFileSelected");
+  // NOTE: doing this so that the file select dialog starts in the sketch
+  // directory. selectInput() is kinda limited, so passing it the sketch file
+  // as a starting point as a hack-y workaround
+  // TODO: Should this just start in the last selected directory?
+  File defaultInFile = new File(sketchPath(getClass().getName() + ".pde"));
+  selectInput("Load image:", "imageFileSelected", defaultInFile);
 }
 
 /**
