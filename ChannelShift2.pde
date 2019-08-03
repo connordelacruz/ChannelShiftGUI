@@ -13,13 +13,11 @@ String imgExt = "jpg";
 // File path relative to current directory
 String outputPath = imgPath + imgFile + "/";
 // Use a verbose filename w/ details on the sketch config
-// TODO: checkbox for this
+// TODO: remove, always use verbose as default name
 boolean verboseName = true; 
 
+// TODO: get rid of these, all GUI
 // Sketch Settings -------------------------------------------------------------
-// Number of times to repeat the process
-/* int shiftIterations = 3; */
-int shiftIterations = 0; // TODO: disabling for testing
 // Randomly swap channels
 boolean swapChannels = true;
 // Use resulting image as the source for subsequent iterations
@@ -167,7 +165,6 @@ String outputFilename() {
   String suffix = hex((int)random(0xffff),4);
   // Add details if verboseName
   if (verboseName) {
-    suffix += "-" + shiftIterations + "it";
     if (swapChannels)
       suffix += "-swap";
     if (recursiveIterations)
@@ -189,8 +186,9 @@ String outputFilename() {
  * using outputFilename(). Sets imgSaved to true once file is written
  */
 void saveResult() {
-  String outputFile = outputFilename(); // TODO: make sure this all works w/ save dialog
-  // TODO: create outputPath if !exist?
+  String outputFile = outputFilename();
+  // TODO: create outputPath if !exist
+  // TODO: can't tell if setting the filepath is actually opening it in the sketch directory?
   File defaultOutFile = new File(outputFile);
   selectOutput("Save as:", "outFileSelected", defaultOutFile);
 }
@@ -250,7 +248,7 @@ void loadImageFile(String filename) {
   previewImg = sourceImg.copy();
   // Update window size
   updateWindowSize();
-  // TODO: update output dir name to match?
+  // TODO: update output dir and file names to match
 }
 
 // Input Handlers --------------------------------------------------------------
@@ -373,35 +371,6 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
 }
 
 // Sketch ----------------------------------------------------------------------
-
-// TODO: REMOVE
-/**
- * Runs the sketch. Sets sketchComplete to true after running through all
- * iterations and updating targetImg pixels
- */
-void processImg() {
-  for (int i = 0; i < shiftIterations; i++) {
-    // Pick random color channel from source
-    sourceChannel = int(random(3));
-    // Pick random target channel to swap with if swapChannels = true
-    targetChannel = swapChannels ? int(random(3)) : sourceChannel;
-    // Calculate shift amounts
-    horizontalShift = horizontalShiftAmount(targetImg);
-    verticalShift = verticalShiftAmount(targetImg);
-
-    shiftChannel(sourceImg, targetImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
-
-    // Update sketch steps
-    updateSteps();
-
-    // Use target as source for next iteration if recursive
-    if (recursiveIterations)
-      sourceImg.pixels = targetImg.pixels;
-  }
-  // Update target pixels and set complete to true
-  targetImg.updatePixels();
-  sketchComplete = true;
-}
 
 /**
  * Run setup() and draw()
@@ -605,8 +574,6 @@ void setup() {
 
 void draw() {
   if (!sketchComplete) {
-    // TODO: TESTING
-    /* processImg(); */
     image(previewImg, 0, 0, windowWidth, windowHeight);
   } else if (!completeMsgShown) {
     printCompleteMsg();
