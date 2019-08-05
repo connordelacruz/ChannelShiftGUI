@@ -297,6 +297,8 @@ void keyHandler(char k) {
 
 // Channel Shift ---------------------------------------------------------------
 
+// TODO: clean up and re-organize for new setup, update docs to remove old info
+
 /**
  * Calculates shift amount based on sketch configs.
  * @param horizontal If true, calculate horizontal shift, else calculate
@@ -306,38 +308,17 @@ void keyHandler(char k) {
  * @return Shift amount based on configs. If the type of shift is disabled,
  * will always return 0
  */
-int shiftAmount(boolean horizontal, PImage img) {
-  // TODO: remove this after GUI implemented
-  // Get corresponding config and dimension based on shift type
-  boolean doShift = horizontal ? shiftHorizontal : shiftVertical;
-  if (!doShift)
-    return 0;
+// TODO: no longer using shiftMultiplier? Maybe add a config for that for the randomize btn?
+int randomShiftAmount(boolean horizontal, PImage img) {
   int imgDimension = horizontal ? img.width : img.height;
-  return int(random(imgDimension * shiftMultiplier));
+  /* return int(random(imgDimension * shiftMultiplier)); */
+  return int(random(imgDimension));
 }
 
-/**
- * Calculates horizontal shift amount based on sketch configs. Wrapper around
- * shiftAmount()
- * @param img PImage object that will be channel shifted. Used to determine
- * shift amount based on dimensions
- * @return Shift amount based on configs. If the type of shift is disabled,
- * will always return 0
- */
-int horizontalShiftAmount(PImage img) {
-  return shiftAmount(true, img);
-}
-
-/**
- * Calculates vertical shift amount based on sketch configs. Wrapper around
- * shiftAmount()
- * @param img PImage object that will be channel shifted. Used to determine
- * shift amount based on dimensions
- * @return Shift amount based on configs. If the type of shift is disabled,
- * will always return 0
- */
-int verticalShiftAmount(PImage img) {
-  return shiftAmount(false, img);
+// TODO: doc and implement
+int randomShiftPercent() {
+  // Leaving 100 as upper bound since a 100% shift is identical
+  return int(random(100));
 }
 
 /**
@@ -475,7 +456,7 @@ int shiftPercentToPixels(boolean horizontal, int shiftPercent) {
  */
 int shiftPixelsToPercent(boolean horizontal, int shiftAmount) {
   int imgDimension = horizontal ? targetImg.width : targetImg.height;
-  return (int)(imgDimension / shiftPercent * 100);
+  return (int)(100 * shiftAmount / imgDimension);
 }
 
 /**
@@ -501,37 +482,37 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   // Set bounds and current value
   target.setLimits(updatedValue, 0, upperBound);
   // Update globals
-  if (horizontal)
-    horizontalShift = updatedValue;
-  else
-    verticalShift = updatedValue;
   sliderPercentValue[configIndex] = setPercentValue;
+  setShift(horizontal, updatedValue);
 }
 
 /**
  * Set horizontal or vertical shift
  * @param horizontal If true, set horizontal shift, else set vertical shift
- * @param shiftPercent Percent of image dimension to shift by
+ * @param shiftAmount Percent/number of pixels to shift by. If the specified
+ * slider is set to use percent values, it will be converted
  */
-// TODO: re-work to handle percent or pixels
-void setShift(boolean horizontal, int shiftPercent) {
+void setShift(boolean horizontal, int shiftAmount) {
   // Calculate amount of pixels to shift
-  int imgDimension = horizontal ? targetImg.width : targetImg.height;
-  int shiftAmount = (int)(imgDimension * shiftPercent / 100);
+  // TODO: should this function be aware of the GUI implementation? or should percentage calc happen before call?
+  boolean percentValue = sliderPercentValue[horizontal ? 0 : 1];
+  // If slider is using a percent value, convert it, otherwise it's already an
+  // exact pixel value
+  if (percentValue)
+    shiftAmount = shiftPercentToPixels(horizontal, shiftAmount);
   if (horizontal)
     horizontalShift = shiftAmount;
   else
     verticalShift = shiftAmount;
 }
 
-// TODO: re-work to handle percent or pixels
-public void xSlider_change(GSlider source, GEvent event) { //_CODE_:xSlider:739546:
+public void xSlider_change(GSlider source, GEvent event) { 
   setShift(true, source.getValueI());
-} //_CODE_:xSlider:739546:
+} 
 
-public void ySlider_change(GSlider source, GEvent event) { //_CODE_:ySlider:334762:
+public void ySlider_change(GSlider source, GEvent event) { 
   setShift(false, source.getValueI());
-} //_CODE_:ySlider:334762:
+} 
 
 // Slider Toggles --------------------------------------------------------------
 
@@ -553,19 +534,20 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 
 // Randomize Button ------------------------------------------------------------
 
-// TODO: implement: randomly pick channels/shift amounts similar to how original sketch worked
-public void randomizeBtn_click(GButton source, GEvent event) { //_CODE_:randomizeBtn:517784:
+public void randomizeBtn_click(GButton source, GEvent event) {
   // Channels
   sourceChannel = int(random(3));
   setChannelToggle(true, sourceChannel);
   targetChannel = int(random(3));
   setChannelToggle(false, targetChannel);
   // Shift
-  // TODO: just pick 0-100
-  horizontalShift = horizontalShiftAmount(targetImg);
-  verticalShift = verticalShiftAmount(targetImg);
-  // TODO: update GUI
-} //_CODE_:randomizeBtn:517784:
+  int xShift = sliderPercentValue[0] ? randomShiftPercent() : randomShiftAmount(true, targetImg);
+  xSlider.setValue(xShift);
+  setShift(true, xShift);
+  int yShift = sliderPercentValue[1] ? randomShiftPercent() : randomShiftAmount(false, targetImg);
+  setShift(false, yShift);
+  ySlider.setValue(yShift);
+} 
 
 // Reset Button ----------------------------------------------------------------
 
