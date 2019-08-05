@@ -16,8 +16,8 @@ GSlider xSlider;
 GToggleGroup xSliderToggle; 
 GOption xSliderPercent, xSliderPixels; 
 // Y Slider --------------------------------------------------------------------
+GPanel yShiftPanel;
 GSlider ySlider; 
-GLabel ySliderLabel; 
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
 // Buttons ---------------------------------------------------------------------
@@ -130,38 +130,7 @@ public void createGUI(){
   // Horizontal shift slider ---------------------------------------------------
   createXShiftPanel();
   // Vertical shift slider -----------------------------------------------------
-  ySlider = new GSlider(controlsWindow, X_START, Y_SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
-  ySlider.setShowValue(true);
-  ySlider.setShowLimits(true);
-  ySlider.setLimits(0, 0, 100);
-  ySlider.setShowTicks(true);
-  ySlider.setNumberFormat(G4P.INTEGER, 0);
-  ySlider.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  ySlider.setOpaque(true);
-  ySlider.addEventHandler(this, "ySlider_change");
-  ySliderLabel = new GLabel(controlsWindow, X_START, 210, 120, 20);
-  ySliderLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
-  ySliderLabel.setText("Vertical Shift");
-  ySliderLabel.setTextBold();
-  ySliderLabel.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  ySliderLabel.setOpaque(true);
-  // Vertical shift toggles ----------------------------------------------------
-  ySliderToggle = new GToggleGroup();
-  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, Y_SLIDER_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  ySliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  ySliderPercent.setText("Percent");
-  ySliderPercent.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  ySliderPercent.setOpaque(true);
-  ySliderPercent.addEventHandler(this, "ySliderPercent_clicked");
-  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, Y_SLIDER_Y + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  ySliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  ySliderPixels.setText("Pixels");
-  ySliderPixels.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  ySliderPixels.setOpaque(true);
-  ySliderPixels.addEventHandler(this, "ySliderPixels_clicked");
-  ySliderToggle.addControl(ySliderPercent);
-  ySliderPercent.setSelected(true);
-  ySliderToggle.addControl(ySliderPixels);
+  createYShiftPanel();
   // Randomize button ----------------------------------------------------------
   randomizeBtn = new GButton(controlsWindow, 280, 20, 100, 30);
   randomizeBtn.setText("Randomize");
@@ -197,43 +166,60 @@ public void createGUI(){
   controlsWindow.loop();
 }
 
+// Helpers ---------------------------------------------------------------------
 
+// TODO: doc
+public void createChannelShiftPanel(GPanel shiftPanel, int colorScheme, GSlider slider, String sliderEventHandler, GToggleGroup sliderToggle, GOption sliderPercent, String percentEventHandler, GOption sliderPixels, String pixelsEventHandler) {
+  shiftPanel.setTextBold();
+  shiftPanel.setCollapsible(false);
+  shiftPanel.setDraggable(false);
+  shiftPanel.setLocalColorScheme(colorScheme);
+  shiftPanel.setOpaque(true);
+  slider.setShowValue(true);
+  slider.setShowLimits(true);
+  slider.setLimits(0, 0, 100);
+  slider.setShowTicks(true);
+  slider.setNumberFormat(G4P.INTEGER, 0);
+  slider.setLocalColorScheme(colorScheme);
+  slider.setOpaque(true);
+  slider.addEventHandler(this, sliderEventHandler);
+  shiftPanel.addControl(slider);
+  sliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  sliderPercent.setText("Percent");
+  sliderPercent.setLocalColorScheme(colorScheme);
+  sliderPercent.setOpaque(true);
+  sliderPercent.addEventHandler(this, percentEventHandler);
+  sliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  sliderPixels.setText("Pixels");
+  sliderPixels.setLocalColorScheme(colorScheme);
+  sliderPixels.setOpaque(true);
+  sliderPixels.addEventHandler(this, pixelsEventHandler);
+  sliderToggle.addControl(sliderPercent);
+  shiftPanel.addControl(sliderPercent);
+  sliderPercent.setSelected(true);
+  sliderToggle.addControl(sliderPixels);
+  shiftPanel.addControl(sliderPixels);
+}
+
+
+// TODO: positioning variables
 public void createXShiftPanel() {
-  // TODO: variables, extract and reuse w/ ySlider
   xShiftPanel = new GPanel(controlsWindow, X_START, 120, WINDOW_WIDTH - X_MARGINS, SLIDER_HEIGHT + 20, "Horizontal Shift");
-  xShiftPanel.setTextBold();
-  xShiftPanel.setCollapsible(false);
-  xShiftPanel.setDraggable(false);
-  xShiftPanel.setLocalColorScheme(GCScheme.RED_SCHEME);
-  xShiftPanel.setOpaque(true);
   xSlider = new GSlider(controlsWindow, 0, 20, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
-  xSlider.setShowValue(true);
-  xSlider.setShowLimits(true);
-  xSlider.setLimits(0, 0, 100);
-  xSlider.setShowTicks(true);
-  xSlider.setNumberFormat(G4P.INTEGER, 0);
-  xSlider.setLocalColorScheme(GCScheme.RED_SCHEME);
-  xSlider.setOpaque(true);
-  xSlider.addEventHandler(this, "xSlider_change");
-  xShiftPanel.addControl(xSlider);
-  // Horizontal shift toggles --------------------------------------------------
   xSliderToggle = new GToggleGroup();
   xSliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, 20, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  xSliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  xSliderPercent.setText("Percent");
-  xSliderPercent.setLocalColorScheme(GCScheme.RED_SCHEME);
-  xSliderPercent.setOpaque(true);
-  xSliderPercent.addEventHandler(this, "xSliderPercent_clicked");
   xSliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, 20 + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  xSliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  xSliderPixels.setText("Pixels");
-  xSliderPixels.setLocalColorScheme(GCScheme.RED_SCHEME);
-  xSliderPixels.setOpaque(true);
-  xSliderPixels.addEventHandler(this, "xSliderPixels_clicked");
-  xSliderToggle.addControl(xSliderPercent);
-  xShiftPanel.addControl(xSliderPercent);
-  xSliderPercent.setSelected(true);
-  xSliderToggle.addControl(xSliderPixels);
-  xShiftPanel.addControl(xSliderPixels);
+  createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
+}
+
+
+// TODO: positioning variables
+public void createYShiftPanel() {
+  yShiftPanel = new GPanel(controlsWindow, X_START, 210, WINDOW_WIDTH - X_MARGINS, SLIDER_HEIGHT + 20, "Vertical Shift");
+  ySlider = new GSlider(controlsWindow, 0, 20, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  ySliderToggle = new GToggleGroup();
+  ySliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, 20, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  ySliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, 20 + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
 }
 
