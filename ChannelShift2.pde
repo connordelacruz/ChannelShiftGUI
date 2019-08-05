@@ -63,6 +63,9 @@ int horizontalShift, verticalShift;
 // Set when controls window is drawn so it doesn't get duplicated on subsequent
 // calls to setup()
 boolean controlsWindowCreated = false;
+// Set to true if the preview image has been modified since the last time it
+// was rendered, telling the draw() method that it needs to be re-drawn
+boolean previewUpdated = true;
 
 
 // Helper Methods ==============================================================
@@ -96,6 +99,14 @@ void updateWindowSize() {
   windowWidth = dimensions[0];
   windowHeight = dimensions[1];
   surface.setSize(windowWidth, windowHeight);
+}
+
+/**
+ * Re-draws previewImg and sets previewUpdated to false
+ */
+void updatePreview() {
+  image(previewImg, 0, 0, windowWidth, windowHeight);
+  previewUpdated = false;
 }
 
 // Output ----------------------------------------------------------------------
@@ -505,10 +516,14 @@ public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841
 
 // Preview Button --------------------------------------------------------------
 
-// TODO: doc
+/**
+ * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
+ * previewUpdated to true and calls previewImg.updatePixels() after shifting
+ */
 void showPreview() {
   previewImg = targetImg.copy();
   shiftChannel(sourceImg, previewImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
+  previewUpdated = true;
   previewImg.updatePixels();
 }
 
@@ -573,8 +588,8 @@ void setup() {
 
 
 void draw() {
-  if (!sketchComplete) {
-    image(previewImg, 0, 0, windowWidth, windowHeight);
+  if (previewUpdated) {
+    updatePreview();
   } else if (!completeMsgShown) {
     printCompleteMsg();
   }
