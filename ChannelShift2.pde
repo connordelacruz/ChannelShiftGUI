@@ -57,6 +57,7 @@ String sketchSteps;
 String INDENT = "   ";
 
 // TODO: doc and organize
+// TODO: make these 2D arrays?
 int sourceChannel, targetChannel;
 int horizontalShift, verticalShift;
 
@@ -66,6 +67,9 @@ boolean controlsWindowCreated = false;
 // Set to true if the preview image has been modified since the last time it
 // was rendered, telling the draw() method that it needs to be re-drawn
 boolean previewImgUpdated = true;
+// Whether the sliders are using percentages of dimensions or exact pixel
+// values. Default is percentages. [0] is x slider and [1] is y slider
+boolean[] sliderPercentValue = new boolean[]{true, true};
 
 
 // Helper Methods ==============================================================
@@ -454,11 +458,36 @@ public void targB_clicked(GOption source, GEvent event) { //_CODE_:targB:979900:
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
+// TODO: doc and implement, extract reusable code
+void setSliderValueType(boolean horizontal, boolean setPercentValue) {
+  // Determine which slider to update
+  int configIndex = horizontal ? 0 : 1;
+  GSlider target = horizontal ? xSlider : ySlider;
+  int imgDimension = horizontal ? targetImg.width : targetImg.height;
+  int upperBound = setPercentValue ? 100 : imgDimension;
+  // Convert existing value to new value type
+  int currentValue = target.getValueI();
+  int updatedValue = currentValue;
+  if (setPercentValue && !sliderPercentValue[configIndex])
+    updatedValue = (int)(100 * currentValue / imgDimension);
+  else if (!setPercentValue && sliderPercentValue[configIndex])
+    updatedValue = (int)(imgDimension * currentValue / 100);
+  // Set bounds and current value
+  target.setLimits(updatedValue, 0, upperBound);
+  // Update globals
+  if (horizontal)
+    horizontalShift = updatedValue;
+  else
+    verticalShift = updatedValue;
+  sliderPercentValue[configIndex] = setPercentValue;
+}
+
 /**
  * Set horizontal or vertical shift
  * @param horizontal If true, set horizontal shift, else set vertical shift
  * @param shiftPercent Percent of image dimension to shift by
  */
+// TODO: re-work to handle percent or pixels
 void setShift(boolean horizontal, int shiftPercent) {
   // Calculate amount of pixels to shift
   int imgDimension = horizontal ? targetImg.width : targetImg.height;
@@ -480,24 +509,20 @@ public void ySlider_change(GSlider source, GEvent event) { //_CODE_:ySlider:3347
 
 // Slider Toggles --------------------------------------------------------------
 
-// TODO: implement
 public void xSliderPercent_clicked(GOption source, GEvent event) {
-  println("xSliderPercent_clicked");
+  setSliderValueType(true, true);
 }
 
-// TODO: implement
 public void xSliderPixels_clicked(GOption source, GEvent event) {
-  println("xSliderPixels_clicked");
+  setSliderValueType(true, false);
 }
 
-// TODO: implement
 public void ySliderPercent_clicked(GOption source, GEvent event) {
-  println("ySliderPercent_clicked");
+  setSliderValueType(false, true);
 }
 
-// TODO: implement
 public void ySliderPixels_clicked(GOption source, GEvent event) {
-  println("ySliderPixels_clicked");
+  setSliderValueType(false, false);
 }
 
 // Randomize Button ------------------------------------------------------------
