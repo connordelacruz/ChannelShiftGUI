@@ -469,6 +469,7 @@ void setShift(boolean horizontal, int shiftPercent) {
     verticalShift = shiftAmount;
 }
 
+// TODO: re-work to handle percent or pixels
 public void xSlider_change(GSlider source, GEvent event) { //_CODE_:xSlider:739546:
   setShift(true, source.getValueI());
 } //_CODE_:xSlider:739546:
@@ -476,6 +477,28 @@ public void xSlider_change(GSlider source, GEvent event) { //_CODE_:xSlider:7395
 public void ySlider_change(GSlider source, GEvent event) { //_CODE_:ySlider:334762:
   setShift(false, source.getValueI());
 } //_CODE_:ySlider:334762:
+
+// Slider Toggles --------------------------------------------------------------
+
+// TODO: implement
+public void xSliderPercent_clicked(GOption source, GEvent event) {
+  println("xSliderPercent_clicked");
+}
+
+// TODO: implement
+public void xSliderPixels_clicked(GOption source, GEvent event) {
+  println("xSliderPixels_clicked");
+}
+
+// TODO: implement
+public void ySliderPercent_clicked(GOption source, GEvent event) {
+  println("ySliderPercent_clicked");
+}
+
+// TODO: implement
+public void ySliderPixels_clicked(GOption source, GEvent event) {
+  println("ySliderPixels_clicked");
+}
 
 // Randomize Button ------------------------------------------------------------
 

@@ -23,14 +23,18 @@ int X_START = 10;
 // Subtract from widths to get margins on either side
 int X_MARGINS = 2 * X_START;
 // Window ----------------------------------------------------------------------
-int WINDOW_WIDTH  = 400;
+int WINDOW_WIDTH  = 600;
 int WINDOW_HEIGHT = 400;
-// Sliders ---------------------------------------------------------------------
-int SLIDER_WIDTH = WINDOW_WIDTH - X_MARGINS;
-int SLIDER_HEIGHT = 50;
-// Channel Toggles -------------------------------------------------------------
+// Toggles ---------------------------------------------------------------------
 int TOGGLE_WIDTH = 120;
 int TOGGLE_HEIGHT = 20;
+// Sliders ---------------------------------------------------------------------
+int SLIDER_WIDTH = WINDOW_WIDTH - 2*TOGGLE_WIDTH - X_MARGINS;
+int SLIDER_HEIGHT = 50;
+int X_SLIDER_Y = 140;
+int Y_SLIDER_Y = 230;
+// Slider Toggles --------------------------------------------------------------
+int SLIDER_TOGGLE_X_START = X_START + SLIDER_WIDTH;
 
 
 public void createGUI(){
@@ -100,10 +104,10 @@ public void createGUI(){
   targChannelLabel.setTextBold();
   targChannelLabel.setOpaque(false);
   // Horizontal shift slider ---------------------------------------------------
-  xSlider = new GSlider(controlsWindow, X_START, 140, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  xSlider = new GSlider(controlsWindow, X_START, X_SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
   xSlider.setShowValue(true);
   xSlider.setShowLimits(true);
-  // TODO: use total pixels instead of percent for more accurate sliders
+  // TODO: use total pixels instead of percent for more accurate sliders? But also show/toggle percent?
   xSlider.setLimits(0, 0, 100);
   xSlider.setShowTicks(true);
   xSlider.setNumberFormat(G4P.INTEGER, 0);
@@ -116,11 +120,28 @@ public void createGUI(){
   xSliderLabel.setTextBold();
   xSliderLabel.setLocalColorScheme(GCScheme.RED_SCHEME);
   xSliderLabel.setOpaque(true);
+  // Horizontal shift toggles --------------------------------------------------
+  xSliderToggle = new GToggleGroup();
+  xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, X_SLIDER_Y, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  xSliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  xSliderPercent.setText("Percent");
+  xSliderPercent.setLocalColorScheme(GCScheme.RED_SCHEME);
+  xSliderPercent.setOpaque(true);
+  xSliderPercent.addEventHandler(this, "xSliderPercent_clicked");
+  xSliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X_START + TOGGLE_WIDTH, X_SLIDER_Y, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  xSliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  xSliderPixels.setText("Pixels");
+  xSliderPixels.setLocalColorScheme(GCScheme.RED_SCHEME);
+  xSliderPixels.setOpaque(true);
+  xSliderPixels.addEventHandler(this, "xSliderPixels_clicked");
+  xSliderToggle.addControl(xSliderPercent);
+  xSliderPercent.setSelected(true);
+  xSliderToggle.addControl(xSliderPixels);
   // Vertical shift slider -----------------------------------------------------
-  ySlider = new GSlider(controlsWindow, X_START, 230, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  ySlider = new GSlider(controlsWindow, X_START, Y_SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
   ySlider.setShowValue(true);
   ySlider.setShowLimits(true);
-  // TODO: use total pixels instead of percent for more accurate sliders
+  // TODO: use total pixels instead of percent for more accurate sliders? But also show/toggle percent?
   ySlider.setLimits(0, 0, 100);
   ySlider.setShowTicks(true);
   ySlider.setNumberFormat(G4P.INTEGER, 0);
@@ -183,8 +204,14 @@ GOption targB;
 GLabel targChannelLabel; 
 GSlider xSlider; 
 GLabel xSliderLabel; 
+GToggleGroup xSliderToggle; 
+GOption xSliderPercent; 
+GOption xSliderPixels; 
 GSlider ySlider; 
 GLabel ySliderLabel; 
+GToggleGroup ySliderToggle; 
+GOption ySliderPercent; 
+GOption ySliderPixels; 
 GButton randomizeBtn; 
 GButton resetBtn; 
 GButton previewBtn; 
