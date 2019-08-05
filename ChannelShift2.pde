@@ -458,7 +458,33 @@ public void targB_clicked(GOption source, GEvent event) { //_CODE_:targB:979900:
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
-// TODO: doc and implement, extract reusable code
+/**
+ * Convert shift percent to number of pixels
+ * @param horizontal If true, calculate horizontal shift, else vertical shift
+ * @param shiftPercent Percent of image dimension to convert to pixels
+ */
+int shiftPercentToPixels(boolean horizontal, int shiftPercent) {
+  int imgDimension = horizontal ? targetImg.width : targetImg.height;
+  return (int)(imgDimension * shiftPercent / 100);
+}
+
+/**
+ * Convert shift pixel amount to a percent of the image size
+ * @param horizontal If true, calculate horizontal shift, else vertical shift
+ * @param shiftAmount Amount of pixels to convert to a percentage
+ */
+int shiftPixelsToPercent(boolean horizontal, int shiftAmount) {
+  int imgDimension = horizontal ? targetImg.width : targetImg.height;
+  return (int)(imgDimension / shiftPercent * 100);
+}
+
+/**
+ * Set whether a shift slider is using a percentage or exact pixel values.
+ * Converts the existing value of the slider accordingly
+ * @param horizontal If true, set horizontal slider, else set vertical slider
+ * @param setPercentValue If true, use a percentage for the slider, else use
+ * exact pixel values
+ */
 void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   // Determine which slider to update
   int configIndex = horizontal ? 0 : 1;
@@ -469,9 +495,9 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   int currentValue = target.getValueI();
   int updatedValue = currentValue;
   if (setPercentValue && !sliderPercentValue[configIndex])
-    updatedValue = (int)(100 * currentValue / imgDimension);
+    updatedValue = shiftPixelsToPercent(horizontal, currentValue);
   else if (!setPercentValue && sliderPercentValue[configIndex])
-    updatedValue = (int)(imgDimension * currentValue / 100);
+    updatedValue = shiftPercentToPixels(horizontal, currentValue);
   // Set bounds and current value
   target.setLimits(updatedValue, 0, upperBound);
   // Update globals

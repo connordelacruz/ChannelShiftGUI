@@ -107,7 +107,6 @@ public void createGUI(){
   xSlider = new GSlider(controlsWindow, X_START, X_SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
   xSlider.setShowValue(true);
   xSlider.setShowLimits(true);
-  // TODO: use total pixels instead of percent for more accurate sliders? But also show/toggle percent?
   xSlider.setLimits(0, 0, 100);
   xSlider.setShowTicks(true);
   xSlider.setNumberFormat(G4P.INTEGER, 0);
@@ -141,7 +140,6 @@ public void createGUI(){
   ySlider = new GSlider(controlsWindow, X_START, Y_SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
   ySlider.setShowValue(true);
   ySlider.setShowLimits(true);
-  // TODO: use total pixels instead of percent for more accurate sliders? But also show/toggle percent?
   ySlider.setLimits(0, 0, 100);
   ySlider.setShowTicks(true);
   ySlider.setNumberFormat(G4P.INTEGER, 0);
@@ -154,6 +152,23 @@ public void createGUI(){
   ySliderLabel.setTextBold();
   ySliderLabel.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   ySliderLabel.setOpaque(true);
+  // Vertical shift toggles ----------------------------------------------------
+  ySliderToggle = new GToggleGroup();
+  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, Y_SLIDER_Y, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  ySliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  ySliderPercent.setText("Percent");
+  ySliderPercent.setLocalColorScheme(GCScheme.GREEN_SCHEME);
+  ySliderPercent.setOpaque(true);
+  ySliderPercent.addEventHandler(this, "ySliderPercent_clicked");
+  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X_START + TOGGLE_WIDTH, Y_SLIDER_Y, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  ySliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  ySliderPixels.setText("Pixels");
+  ySliderPixels.setLocalColorScheme(GCScheme.GREEN_SCHEME);
+  ySliderPixels.setOpaque(true);
+  ySliderPixels.addEventHandler(this, "ySliderPixels_clicked");
+  ySliderToggle.addControl(ySliderPercent);
+  ySliderPercent.setSelected(true);
+  ySliderToggle.addControl(ySliderPixels);
   // Randomize button ----------------------------------------------------------
   randomizeBtn = new GButton(controlsWindow, 280, 20, 100, 30);
   randomizeBtn.setText("Randomize");
