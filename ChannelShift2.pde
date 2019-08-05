@@ -65,7 +65,7 @@ int horizontalShift, verticalShift;
 boolean controlsWindowCreated = false;
 // Set to true if the preview image has been modified since the last time it
 // was rendered, telling the draw() method that it needs to be re-drawn
-boolean previewUpdated = true;
+boolean previewImgUpdated = true;
 
 
 // Helper Methods ==============================================================
@@ -102,11 +102,11 @@ void updateWindowSize() {
 }
 
 /**
- * Re-draws previewImg and sets previewUpdated to false
+ * Re-draws previewImg and sets previewImgUpdated to false
  */
 void updatePreview() {
   image(previewImg, 0, 0, windowWidth, windowHeight);
-  previewUpdated = false;
+  previewImgUpdated = false;
 }
 
 // Output ----------------------------------------------------------------------
@@ -126,6 +126,46 @@ void printCompleteMsg() {
   println("");
   // Update state
   completeMsgShown = true;
+}
+
+// Loading ---------------------------------------------------------------------
+
+/**
+ * Show file select dialog and attempt to load image on callback
+ */
+void selectFile() {
+  // NOTE: doing this so that the file select dialog starts in the sketch
+  // directory. selectInput() is kinda limited, so passing it the sketch file
+  // as a starting point as a hack-y workaround
+  // TODO: Should this just start in the last selected directory?
+  File defaultInFile = new File(sketchPath(getClass().getName() + ".pde"));
+  selectInput("Load image:", "imageFileSelected", defaultInFile);
+}
+
+/**
+ * Callback function for selectInput() when loading a file
+ */
+void imageFileSelected(File selection) {
+  if (selection != null) {
+    println("Loading...");
+    loadImageFile(selection.getAbsolutePath());
+    println("Image loaded.");
+    println("");
+  }
+}
+
+/**
+ * Load an image file. Sets global variables and updates window size accordingly
+ * @param filename Path to the image file
+ */
+void loadImageFile(String filename) {
+  // Set globals
+  sourceImg = loadImage(filename);
+  targetImg = sourceImg.copy();
+  previewImg = sourceImg.copy();
+  // Update window size
+  updateWindowSize();
+  // TODO: update output dir and file names to match
 }
 
 // Saving ----------------------------------------------------------------------
@@ -218,48 +258,6 @@ void outFileSelected(File selection) {
     println(INDENT + outputFile);
     println("");
   }
-}
-
-// Loading ---------------------------------------------------------------------
-
-// TODO: document all, move before saving section
-
-/**
- * Show file select dialog and attempt to load image on callback
- */
-void selectFile() {
-  // NOTE: doing this so that the file select dialog starts in the sketch
-  // directory. selectInput() is kinda limited, so passing it the sketch file
-  // as a starting point as a hack-y workaround
-  // TODO: Should this just start in the last selected directory?
-  File defaultInFile = new File(sketchPath(getClass().getName() + ".pde"));
-  selectInput("Load image:", "imageFileSelected", defaultInFile);
-}
-
-/**
- * Callback function for selectInput() when loading a file
- */
-void imageFileSelected(File selection) {
-  if (selection != null) {
-    println("Loading...");
-    loadImageFile(selection.getAbsolutePath());
-    println("Image loaded.");
-    println("");
-  }
-}
-
-/**
- * Load an image file. Sets global variables and updates window size accordingly
- * @param filename Path to the image file
- */
-void loadImageFile(String filename) {
-  // Set globals
-  sourceImg = loadImage(filename);
-  targetImg = sourceImg.copy();
-  previewImg = sourceImg.copy();
-  // Update window size
-  updateWindowSize();
-  // TODO: update output dir and file names to match
 }
 
 // Input Handlers --------------------------------------------------------------
@@ -518,12 +516,12 @@ public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841
 
 /**
  * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
- * previewUpdated to true and calls previewImg.updatePixels() after shifting
+ * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
  */
 void showPreview() {
   previewImg = targetImg.copy();
   shiftChannel(sourceImg, previewImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
-  previewUpdated = true;
+  previewImgUpdated = true;
   previewImg.updatePixels();
 }
 
@@ -588,7 +586,7 @@ void setup() {
 
 
 void draw() {
-  if (previewUpdated) {
+  if (previewImgUpdated) {
     updatePreview();
   } else if (!completeMsgShown) {
     printCompleteMsg();
