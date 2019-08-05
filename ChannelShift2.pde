@@ -3,6 +3,7 @@ import g4p_controls.*;
 
 // Input File ------------------------------------------------------------------
 // File path relative to current directory
+// TODO: Figure out what to do with these and how to handle loading new images
 String imgPath = "source/";
 // File name
 String imgFile = "test";
@@ -11,12 +12,10 @@ String imgExt = "jpg";
 
 // Output File -----------------------------------------------------------------
 // File path relative to current directory
+// TODO: remove, generate path on save
 String outputPath = imgPath + imgFile + "/";
-// Use a verbose filename w/ details on the sketch config
-// TODO: remove, always use verbose as default name
-boolean verboseName = true; 
 
-// TODO: get rid of these, all GUI
+// TODO: get rid of these, all GUI (or add GUI to configure randomization bounds)
 // Sketch Settings -------------------------------------------------------------
 // Randomly swap channels
 boolean swapChannels = true;
@@ -25,10 +24,9 @@ boolean recursiveIterations = true;
 // Shift channels horizontally
 boolean shiftHorizontal = true;
 // Shift channels vertically
-boolean shiftVertical = shiftHorizontal; // TODO: setting both to true so GUI works
+boolean shiftVertical = shiftHorizontal; 
 // Multiplier for the shift amount. Lower numbers = less drastic shifts
 float shiftMultiplier = 1.0;
-// TODO: future options: uniformShift (per-dimension?), perlinNoise, manualMode
 
 // Interface -------------------------------------------------------------------
 // Preview window size (does not affect output image size)
@@ -50,7 +48,7 @@ boolean sketchComplete, imgSaved, completeMsgShown;
 String[] CHANNELS = new String[]{"R","G","B"};
 
 // Store shift values and which channels were shifted/swapped. Will be appended
-// to filename if verboseName is true
+// to default filename 
 String sketchSteps;
 
 // String to use for indent in output msgs
@@ -209,30 +207,14 @@ void updateSteps() {
 }
 
 /**
- * Returns an output file path based on sketch configurations.
- * @return A unique output filepath based on sketch configs. If verboseName is
- * true, a suffix will be appended to the filename detailing the sketch configs
- * and shifts/swaps that occurred at each iteration
+ * Returns an output file path based on source image name and sketch steps.
+ * @return A full file name and path with the image file and sketch steps.
+ * Relative path is passed to sketchPath(), so default output will be within
+ * the current directory
  */
+// TODO: update docs, rename to defaultOutputFilename()?
 String outputFilename() {
-  // Append suffix with unique id
-  // TODO: remove unless not verbose
-  String suffix = hex((int)random(0xffff),4);
-  // Add details if verboseName
-  if (verboseName) {
-    if (swapChannels)
-      suffix += "-swap";
-    if (recursiveIterations)
-      suffix += "-recursive";
-    if (shiftHorizontal)
-      suffix += "-hori"; 
-    if (shiftVertical)
-      suffix += "-vert"; 
-    // Append steps
-    suffix += sketchSteps;
-  }
-  // TODO: update docstring w/ sketchPath stuff
-  return sketchPath(outputPath + imgFile + suffix + ".png");
+  return sketchPath(outputPath + imgFile + sketchSteps + ".png");
 }
 
 // TODO: update docstring, rename saveResultAs() for clarity?

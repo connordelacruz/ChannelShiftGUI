@@ -16,6 +16,7 @@
 
 // Globals =====================================================================
 
+// TODO: re-organize and use better calculations for easier changes (e.g. grouped items use relative sizes)
 // Positioning -----------------------------------------------------------------
 // Use 10 as the left-most position to add padding to the window
 int X_START = 10;
@@ -23,14 +24,19 @@ int X_START = 10;
 // Subtract from widths to get margins on either side
 int X_MARGINS = 2 * X_START;
 // Window ----------------------------------------------------------------------
-int WINDOW_WIDTH  = 600;
+int WINDOW_WIDTH  = 500;
 int WINDOW_HEIGHT = 400;
 // Toggles ---------------------------------------------------------------------
-int TOGGLE_WIDTH = 120;
-int TOGGLE_HEIGHT = 20;
+int CHANNEL_TOGGLE_WIDTH = 120;
+int CHANNEL_TOGGLE_HEIGHT = 20;
 // Sliders ---------------------------------------------------------------------
-int SLIDER_WIDTH = WINDOW_WIDTH - 2*TOGGLE_WIDTH - X_MARGINS;
+// Slider and Toggle Widths
+int SLIDER_TOGGLE_WIDTH = 100;
+int SLIDER_WIDTH = WINDOW_WIDTH - SLIDER_TOGGLE_WIDTH - X_MARGINS;
+// Slider and Toggle Heights
 int SLIDER_HEIGHT = 50;
+int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
+// Slider Y Positions
 int X_SLIDER_Y = 140;
 int Y_SLIDER_Y = 230;
 // Slider Toggles --------------------------------------------------------------
@@ -49,19 +55,19 @@ public void createGUI(){
   controlsWindow.addDrawHandler(this, "controlsWindow_draw");
   // Source channel toggle -----------------------------------------------------
   srcChannelToggle = new GToggleGroup();
-  srcR = new GOption(controlsWindow, X_START, 2*TOGGLE_HEIGHT, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  srcR = new GOption(controlsWindow, X_START, 2*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   srcR.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   srcR.setText("R");
   srcR.setLocalColorScheme(GCScheme.RED_SCHEME);
   srcR.setOpaque(true);
   srcR.addEventHandler(this, "srcR_clicked");
-  srcG = new GOption(controlsWindow, X_START, 3*TOGGLE_HEIGHT, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  srcG = new GOption(controlsWindow, X_START, 3*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   srcG.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   srcG.setText("G");
   srcG.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   srcG.setOpaque(true);
   srcG.addEventHandler(this, "srcG_clicked");
-  srcB = new GOption(controlsWindow, X_START, 4*TOGGLE_HEIGHT, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  srcB = new GOption(controlsWindow, X_START, 4*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   srcB.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   srcB.setText("B");
   srcB.setOpaque(true);
@@ -70,26 +76,26 @@ public void createGUI(){
   srcR.setSelected(true);
   srcChannelToggle.addControl(srcG);
   srcChannelToggle.addControl(srcB);
-  srcChannelLabel = new GLabel(controlsWindow, X_START, TOGGLE_HEIGHT, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  srcChannelLabel = new GLabel(controlsWindow, X_START, CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   srcChannelLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   srcChannelLabel.setText("Source Channel");
   srcChannelLabel.setTextBold();
   srcChannelLabel.setOpaque(false);
   // Target channel toggle -----------------------------------------------------
   targChannelToggle = new GToggleGroup();
-  targR = new GOption(controlsWindow, 150, 2*TOGGLE_HEIGHT, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  targR = new GOption(controlsWindow, 150, 2*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   targR.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   targR.setText("R");
   targR.setLocalColorScheme(GCScheme.RED_SCHEME);
   targR.setOpaque(true);
   targR.addEventHandler(this, "targR_clicked");
-  targG = new GOption(controlsWindow, 150, 3*TOGGLE_HEIGHT, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  targG = new GOption(controlsWindow, 150, 3*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   targG.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   targG.setText("G");
   targG.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   targG.setOpaque(true);
   targG.addEventHandler(this, "targG_clicked");
-  targB = new GOption(controlsWindow, 150, 4*TOGGLE_HEIGHT, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  targB = new GOption(controlsWindow, 150, 4*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   targB.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   targB.setText("B");
   targB.setOpaque(true);
@@ -98,7 +104,7 @@ public void createGUI(){
   targR.setSelected(true);
   targChannelToggle.addControl(targG);
   targChannelToggle.addControl(targB);
-  targChannelLabel = new GLabel(controlsWindow, 150, TOGGLE_HEIGHT, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  targChannelLabel = new GLabel(controlsWindow, 150, CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   targChannelLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   targChannelLabel.setText("Target Channel");
   targChannelLabel.setTextBold();
@@ -121,13 +127,13 @@ public void createGUI(){
   xSliderLabel.setOpaque(true);
   // Horizontal shift toggles --------------------------------------------------
   xSliderToggle = new GToggleGroup();
-  xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, X_SLIDER_Y, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, X_SLIDER_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   xSliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   xSliderPercent.setText("Percent");
   xSliderPercent.setLocalColorScheme(GCScheme.RED_SCHEME);
   xSliderPercent.setOpaque(true);
   xSliderPercent.addEventHandler(this, "xSliderPercent_clicked");
-  xSliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X_START + TOGGLE_WIDTH, X_SLIDER_Y, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  xSliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, X_SLIDER_Y + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   xSliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   xSliderPixels.setText("Pixels");
   xSliderPixels.setLocalColorScheme(GCScheme.RED_SCHEME);
@@ -154,13 +160,13 @@ public void createGUI(){
   ySliderLabel.setOpaque(true);
   // Vertical shift toggles ----------------------------------------------------
   ySliderToggle = new GToggleGroup();
-  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, Y_SLIDER_Y, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, Y_SLIDER_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   ySliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   ySliderPercent.setText("Percent");
   ySliderPercent.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   ySliderPercent.setOpaque(true);
   ySliderPercent.addEventHandler(this, "ySliderPercent_clicked");
-  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X_START + TOGGLE_WIDTH, Y_SLIDER_Y, TOGGLE_WIDTH, TOGGLE_HEIGHT);
+  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X_START, Y_SLIDER_Y + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   ySliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   ySliderPixels.setText("Pixels");
   ySliderPixels.setLocalColorScheme(GCScheme.GREEN_SCHEME);
