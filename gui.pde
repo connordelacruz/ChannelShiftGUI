@@ -37,35 +37,50 @@ GButton saveBtn;
 
 // Globals =====================================================================
 
-// TODO: re-organize and use better calculations for easier changes (e.g. grouped items use relative sizes)
 // Positioning -----------------------------------------------------------------
 // Use 10 as the left-most position to add padding to the window
 int X_START = 10;
 // Use 20 as the top-most position to add padding to the window
-int Y_START = 20; // TODO: implement
+int Y_START = 20; 
 // Margins ---------------------------------------------------------------------
 // Single margin
 int X_MARGIN = X_START;
 // Subtract from widths to get margins on either side
 int X_MARGINS = 2 * X_MARGIN;
+// Panels ----------------------------------------------------------------------
+// Panel labels are ~20, add this so children don't overlap
+int PANEL_Y_START = 20;
 // Window ----------------------------------------------------------------------
 int WINDOW_WIDTH  = 500;
 int WINDOW_HEIGHT = 400;
 // Toggles ---------------------------------------------------------------------
+// General
 int CHANNEL_TOGGLE_WIDTH = 120;
 int CHANNEL_TOGGLE_HEIGHT = 20;
+int CHANNEL_PANEL_HEIGHT = 3 * CHANNEL_TOGGLE_HEIGHT + PANEL_Y_START;
+int R_CHANNEL_Y = PANEL_Y_START;
+int G_CHANNEL_Y = PANEL_Y_START + CHANNEL_TOGGLE_HEIGHT;
+int B_CHANNEL_Y = PANEL_Y_START + 2 * CHANNEL_TOGGLE_HEIGHT;
+// Source
+int SRC_CHANNEL_X = X_START;
+int SRC_CHANNEL_Y = Y_START;
+// Target
+int TARG_CHANNEL_X = SRC_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
+int TARG_CHANNEL_Y = Y_START;
 // Sliders ---------------------------------------------------------------------
-// Slider and Toggle Widths
+// General
 int SLIDER_TOGGLE_WIDTH = 100;
-int SLIDER_WIDTH = WINDOW_WIDTH - SLIDER_TOGGLE_WIDTH - X_MARGINS;
-// Slider and Toggle Heights
 int SLIDER_HEIGHT = 50;
+int SLIDER_PANEL_WIDTH = WINDOW_WIDTH - X_MARGINS;
+int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
+int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - SLIDER_TOGGLE_WIDTH;
 int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
+// Horizontal Shift
+int X_SLIDER_X = X_START;
+int X_SLIDER_Y = 120;
 // Slider Y Positions
-int X_SLIDER_Y = 140;
-int Y_SLIDER_Y = 230;
-// Slider Toggles --------------------------------------------------------------
-int SLIDER_TOGGLE_X_START = X_START + SLIDER_WIDTH;
+int Y_SLIDER_X = X_START;
+int Y_SLIDER_Y = 210;
 // Randomize/Reset Buttons -----------------------------------------------------
 int RAND_RESET_BTN_WIDTH = 100;
 int RAND_RESET_BTN_HEIGHT = 30;
@@ -86,13 +101,12 @@ int PREVIEW_CONFIRM_HEIGHT = 2*PREVIEW_CONFIRM_BTN_HEIGHT + 20;
 
 // Initialization ==============================================================
 
-// TODO: split into groups
 public void createGUI(){
   G4P.messagesEnabled(false);
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setMouseOverEnabled(false);
   surface.setTitle("Sketch Window");
-  // Controls window -----------------------------------------------------------
+  // Controls window 
   controlsWindow = GWindow.getWindow(this, "Channel Shift", 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
   controlsWindow.noLoop();
   controlsWindow.setActionOnClose(G4P.KEEP_OPEN);
@@ -176,30 +190,28 @@ public void createChannelPanel(GPanel channelPanel, GToggleGroup channelToggle, 
   channelPanel.addControl(B);
 }
 
-// TODO: position vars
 public void createSrcChannelPanel() {
   // Initialize panel
-  srcChannelPanel = new GPanel(controlsWindow, X_START, 20, CHANNEL_TOGGLE_WIDTH, 4*CHANNEL_TOGGLE_HEIGHT, "Source Channel");
+  srcChannelPanel = new GPanel(controlsWindow, SRC_CHANNEL_X, SRC_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_PANEL_HEIGHT, "Source Channel");
   setupGeneralPanel(srcChannelPanel);
   // Initialize toggles 
   srcChannelToggle = new GToggleGroup();
-  srcR = new GOption(controlsWindow, 0, CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
-  srcG = new GOption(controlsWindow, 0, 2*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
-  srcB = new GOption(controlsWindow, 0, 3*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  srcR = new GOption(controlsWindow, 0, R_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  srcG = new GOption(controlsWindow, 0, G_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  srcB = new GOption(controlsWindow, 0, B_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   // Configure options
   createChannelPanel(srcChannelPanel, srcChannelToggle, srcR, srcG, srcB, true);
 }
 
-// TODO: position vars
 public void createTargChannelPanel() {
   // Initialize panel
-  targChannelPanel = new GPanel(controlsWindow, 150, 20, CHANNEL_TOGGLE_WIDTH, 4*CHANNEL_TOGGLE_HEIGHT, "Target Channel");
+  targChannelPanel = new GPanel(controlsWindow, TARG_CHANNEL_X, TARG_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_PANEL_HEIGHT, "Target Channel");
   setupGeneralPanel(targChannelPanel);
   // Initialize toggles 
   targChannelToggle = new GToggleGroup();
-  targR = new GOption(controlsWindow, 0, CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
-  targG = new GOption(controlsWindow, 0, 2*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
-  targB = new GOption(controlsWindow, 0, 3*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  targR = new GOption(controlsWindow, 0, R_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  targG = new GOption(controlsWindow, 0, G_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  targB = new GOption(controlsWindow, 0, B_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   // Configure options
   createChannelPanel(targChannelPanel, targChannelToggle, targR, targG, targB, false);
 }
@@ -228,6 +240,7 @@ public void createChannelShiftPanel(
   slider.setOpaque(true);
   slider.addEventHandler(this, sliderEventHandler);
   shiftPanel.addControl(slider);
+  // TODO: extract common from toggles to method
   sliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   sliderPercent.setText("Percent");
   sliderPercent.setLocalColorScheme(colorScheme);
@@ -245,23 +258,23 @@ public void createChannelShiftPanel(
   shiftPanel.addControl(sliderPixels);
 }
 
-// TODO: positioning variables
+// TODO: better abstractions for positions/sizes (y shift too)
 public void createXShiftPanel() {
-  xShiftPanel = new GPanel(controlsWindow, X_START, 120, WINDOW_WIDTH - X_MARGINS, SLIDER_HEIGHT + 20, "Horizontal Shift");
-  xSlider = new GSlider(controlsWindow, 0, 20, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  xShiftPanel = new GPanel(controlsWindow, X_SLIDER_X, X_SLIDER_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
+  xSlider = new GSlider(controlsWindow, 0, PANEL_Y_START, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
   xSliderToggle = new GToggleGroup();
-  xSliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, 20, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  xSliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, 20 + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  xSliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  xSliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
 }
 
 // TODO: positioning variables
 public void createYShiftPanel() {
-  yShiftPanel = new GPanel(controlsWindow, X_START, 210, WINDOW_WIDTH - X_MARGINS, SLIDER_HEIGHT + 20, "Vertical Shift");
-  ySlider = new GSlider(controlsWindow, 0, 20, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_X, Y_SLIDER_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
+  ySlider = new GSlider(controlsWindow, 0, PANEL_Y_START, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
   ySliderToggle = new GToggleGroup();
-  ySliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, 20, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  ySliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, 20 + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  ySliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  ySliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
 }
 
