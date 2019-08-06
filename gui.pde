@@ -21,11 +21,14 @@ GPanel yShiftPanel;
 GSlider ySlider; 
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
-// Buttons ---------------------------------------------------------------------
+// Randomize/Reset Buttons -----------------------------------------------------
+GPanel randomizeResetBtnPanel;
 GButton randomizeBtn; 
 GButton resetBtn; 
+// Preview/Confirm Buttons -----------------------------------------------------
 GButton previewBtn; 
 GButton confirmBtn; 
+// Save/Load Buttons -----------------------------------------------------------
 GButton loadBtn; 
 GButton saveBtn; 
 
@@ -36,6 +39,8 @@ GButton saveBtn;
 // Positioning -----------------------------------------------------------------
 // Use 10 as the left-most position to add padding to the window
 int X_START = 10;
+// Use 20 as the top-most position to add padding to the window
+int Y_START = 20; // TODO: implement
 // Margins ---------------------------------------------------------------------
 // Single margin
 int X_MARGIN = X_START;
@@ -59,6 +64,10 @@ int X_SLIDER_Y = 140;
 int Y_SLIDER_Y = 230;
 // Slider Toggles --------------------------------------------------------------
 int SLIDER_TOGGLE_X_START = X_START + SLIDER_WIDTH;
+// Randomize/Reset Buttons -----------------------------------------------------
+int RAND_RESET_BTN_WIDTH = 100;
+int RAND_RESET_BTN_HEIGHT = 30;
+int RAND_RESET_BTN_X = WINDOW_WIDTH - (RAND_RESET_BTN_WIDTH + X_MARGIN);
 
 
 // Initialization ==============================================================
@@ -83,17 +92,10 @@ public void createGUI(){
   createXShiftPanel();
   // Vertical shift slider -----------------------------------------------------
   createYShiftPanel();
-  // Randomize button ----------------------------------------------------------
-  randomizeBtn = new GButton(controlsWindow, 280, 20, 100, 30);
-  randomizeBtn.setText("Randomize");
-  randomizeBtn.setLocalColorScheme(GCScheme.CYAN_SCHEME);
-  randomizeBtn.addEventHandler(this, "randomizeBtn_click");
-  // Reset button --------------------------------------------------------------
-  resetBtn = new GButton(controlsWindow, 280, 70, 100, 30);
-  resetBtn.setText("Reset");
-  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
-  resetBtn.addEventHandler(this, "resetBtn_click");
+  // Randomize/reset buttons ---------------------------------------------------
+  createRandomizeResetBtnPanel();
   // Preview button ------------------------------------------------------------
+  // TODO: preview/confirm/recursive panel
   previewBtn = new GButton(controlsWindow, X_START, 310, 180, 30);
   previewBtn.setText("Preview");
   previewBtn.setLocalColorScheme(GCScheme.PURPLE_SCHEME);
@@ -103,6 +105,7 @@ public void createGUI(){
   confirmBtn.setText("Confirm Step");
   confirmBtn.addEventHandler(this, "confirmBtn_click");
   // Load button ---------------------------------------------------------------
+  // TODO: load/save panel
   loadBtn = new GButton(controlsWindow, X_START, 350, 180, 30);
   loadBtn.setText("Load Image");
   loadBtn.setTextBold();
@@ -248,7 +251,6 @@ public void createChannelShiftPanel(
   shiftPanel.addControl(sliderPixels);
 }
 
-
 // TODO: positioning variables
 public void createXShiftPanel() {
   xShiftPanel = new GPanel(controlsWindow, X_START, 120, WINDOW_WIDTH - X_MARGINS, SLIDER_HEIGHT + 20, "Horizontal Shift");
@@ -259,7 +261,6 @@ public void createXShiftPanel() {
   createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
 }
 
-
 // TODO: positioning variables
 public void createYShiftPanel() {
   yShiftPanel = new GPanel(controlsWindow, X_START, 210, WINDOW_WIDTH - X_MARGINS, SLIDER_HEIGHT + 20, "Vertical Shift");
@@ -268,5 +269,25 @@ public void createYShiftPanel() {
   ySliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, 20, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   ySliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, 20 + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
+}
+
+// Randomize/Reset Button Panel ------------------------------------------------
+
+public void createRandomizeResetBtnPanel() {
+  randomizeResetBtnPanel = new GPanel(controlsWindow, RAND_RESET_BTN_X, Y_START, RAND_RESET_BTN_WIDTH, 2*RAND_RESET_BTN_HEIGHT + 20);
+  setupGeneralPanel(randomizeResetBtnPanel);
+  randomizeResetBtnPanel.setOpaque(false);
+  // Randomize Button
+  randomizeBtn = new GButton(controlsWindow, 0, 0, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
+  randomizeBtn.setText("Randomize");
+  randomizeBtn.setLocalColorScheme(GCScheme.CYAN_SCHEME);
+  randomizeBtn.addEventHandler(this, "randomizeBtn_click");
+  randomizeResetBtnPanel.addControl(randomizeBtn);
+  // Reset Button
+  resetBtn = new GButton(controlsWindow, 0, RAND_RESET_BTN_HEIGHT + 10, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
+  resetBtn.setText("Reset");
+  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
+  resetBtn.addEventHandler(this, "resetBtn_click");
+  randomizeResetBtnPanel.addControl(resetBtn);
 }
 
