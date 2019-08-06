@@ -8,9 +8,9 @@ GPanel srcChannelPanel;
 GToggleGroup srcChannelToggle; 
 GOption srcR, srcG, srcB; 
 // Target Toggle ---------------------------------------------------------------
+GPanel targChannelPanel;
 GToggleGroup targChannelToggle; 
 GOption targR, targG, targB; 
-GLabel targChannelLabel; 
 // X Slider --------------------------------------------------------------------
 GPanel xShiftPanel;
 GSlider xSlider; 
@@ -78,33 +78,7 @@ public void createGUI(){
   // Source channel toggle -----------------------------------------------------
   createSrcChannelPanel();
   // Target channel toggle -----------------------------------------------------
-  targChannelToggle = new GToggleGroup();
-  targR = new GOption(controlsWindow, 150, 2*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
-  targR.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  targR.setText("R");
-  targR.setLocalColorScheme(GCScheme.RED_SCHEME);
-  targR.setOpaque(true);
-  targR.addEventHandler(this, "targR_clicked");
-  targG = new GOption(controlsWindow, 150, 3*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
-  targG.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  targG.setText("G");
-  targG.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  targG.setOpaque(true);
-  targG.addEventHandler(this, "targG_clicked");
-  targB = new GOption(controlsWindow, 150, 4*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
-  targB.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  targB.setText("B");
-  targB.setOpaque(true);
-  targB.addEventHandler(this, "targB_clicked");
-  targChannelToggle.addControl(targR);
-  targR.setSelected(true);
-  targChannelToggle.addControl(targG);
-  targChannelToggle.addControl(targB);
-  targChannelLabel = new GLabel(controlsWindow, 150, CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
-  targChannelLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
-  targChannelLabel.setText("Target Channel");
-  targChannelLabel.setTextBold();
-  targChannelLabel.setOpaque(false);
+  createTargChannelPanel();
   // Horizontal shift slider ---------------------------------------------------
   createXShiftPanel();
   // Vertical shift slider -----------------------------------------------------
@@ -189,6 +163,23 @@ public void setupChannelOption(GOption option, int channel, String eventHandler)
   }
 }
 
+public void createChannelPanel(GPanel channelPanel, GToggleGroup channelToggle, GOption R, GOption G, GOption B, boolean src) {
+  String handlerPrefix = src ? "src" : "targ";
+  // Configure options
+  setupChannelOption(R, 0, handlerPrefix + "R_clicked");
+  setupChannelOption(G, 1, handlerPrefix + "G_clicked");
+  setupChannelOption(B, 2, handlerPrefix + "B_clicked");
+  // Add options to toggle group and panel
+  channelToggle.addControl(R);
+  channelPanel.addControl(R);
+  R.setSelected(true);
+  channelToggle.addControl(G);
+  channelPanel.addControl(G);
+  channelToggle.addControl(B);
+  channelPanel.addControl(B);
+}
+
+// TODO: position vars
 public void createSrcChannelPanel() {
   // Initialize panel
   srcChannelPanel = new GPanel(controlsWindow, X_START, 20, CHANNEL_TOGGLE_WIDTH, 4*CHANNEL_TOGGLE_HEIGHT, "Source Channel");
@@ -199,17 +190,21 @@ public void createSrcChannelPanel() {
   srcG = new GOption(controlsWindow, 0, 2*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   srcB = new GOption(controlsWindow, 0, 3*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
   // Configure options
-  setupChannelOption(srcR, 0, "srcR_clicked");
-  setupChannelOption(srcG, 1, "srcG_clicked");
-  setupChannelOption(srcB, 2, "srcB_clicked");
-  // Add options to toggle group and panel
-  srcChannelToggle.addControl(srcR);
-  srcChannelPanel.addControl(srcR);
-  srcR.setSelected(true);
-  srcChannelToggle.addControl(srcG);
-  srcChannelPanel.addControl(srcG);
-  srcChannelToggle.addControl(srcB);
-  srcChannelPanel.addControl(srcB);
+  createChannelPanel(srcChannelPanel, srcChannelToggle, srcR, srcG, srcB, true);
+}
+
+// TODO: position vars
+public void createTargChannelPanel() {
+  // Initialize panel
+  targChannelPanel = new GPanel(controlsWindow, 150, 20, CHANNEL_TOGGLE_WIDTH, 4*CHANNEL_TOGGLE_HEIGHT, "Target Channel");
+  setupGeneralPanel(targChannelPanel);
+  // Initialize toggles 
+  targChannelToggle = new GToggleGroup();
+  targR = new GOption(controlsWindow, 0, CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  targG = new GOption(controlsWindow, 0, 2*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  targB = new GOption(controlsWindow, 0, 3*CHANNEL_TOGGLE_HEIGHT, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT);
+  // Configure options
+  createChannelPanel(targChannelPanel, targChannelToggle, targR, targG, targB, false);
 }
 
 
