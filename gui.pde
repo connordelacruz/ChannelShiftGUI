@@ -22,13 +22,15 @@ GSlider ySlider;
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
 // Randomize/Reset Buttons -----------------------------------------------------
-GPanel randomizeResetBtnPanel;
+GPanel randomizeResetPanel;
 GButton randomizeBtn; 
 GButton resetBtn; 
 // Preview/Confirm Buttons -----------------------------------------------------
+GPanel previewConfirmPanel;
 GButton previewBtn; 
 GButton confirmBtn; 
 // Save/Load Buttons -----------------------------------------------------------
+GPanel loadSavePanel;
 GButton loadBtn; 
 GButton saveBtn; 
 
@@ -68,6 +70,18 @@ int SLIDER_TOGGLE_X_START = X_START + SLIDER_WIDTH;
 int RAND_RESET_BTN_WIDTH = 100;
 int RAND_RESET_BTN_HEIGHT = 30;
 int RAND_RESET_BTN_X = WINDOW_WIDTH - (RAND_RESET_BTN_WIDTH + X_MARGIN);
+// Load/Save Buttons -----------------------------------------------------------
+int LOAD_SAVE_X = X_START;
+int LOAD_SAVE_Y = 310;
+int LOAD_SAVE_WIDTH = WINDOW_WIDTH / 2 - X_MARGINS;
+int LOAD_SAVE_BTN_HEIGHT = 30;
+int LOAD_SAVE_HEIGHT = 2*LOAD_SAVE_BTN_HEIGHT + 20;
+// Preview/Confirm Buttons -----------------------------------------------------
+int PREVIEW_CONFIRM_Y = LOAD_SAVE_Y;
+int PREVIEW_CONFIRM_X = LOAD_SAVE_X + LOAD_SAVE_WIDTH + X_MARGINS;
+int PREVIEW_CONFIRM_WIDTH = LOAD_SAVE_WIDTH;
+int PREVIEW_CONFIRM_BTN_HEIGHT = LOAD_SAVE_BTN_HEIGHT;
+int PREVIEW_CONFIRM_HEIGHT = 2*PREVIEW_CONFIRM_BTN_HEIGHT + 20;
 
 
 // Initialization ==============================================================
@@ -79,44 +93,24 @@ public void createGUI(){
   G4P.setMouseOverEnabled(false);
   surface.setTitle("Sketch Window");
   // Controls window -----------------------------------------------------------
-  // TODO: window position
   controlsWindow = GWindow.getWindow(this, "Channel Shift", 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
   controlsWindow.noLoop();
   controlsWindow.setActionOnClose(G4P.KEEP_OPEN);
   controlsWindow.addDrawHandler(this, "controlsWindow_draw");
-  // Source channel toggle -----------------------------------------------------
+  // Source channel toggle 
   createSrcChannelPanel();
-  // Target channel toggle -----------------------------------------------------
+  // Target channel toggle 
   createTargChannelPanel();
-  // Horizontal shift slider ---------------------------------------------------
+  // Horizontal shift slider 
   createXShiftPanel();
-  // Vertical shift slider -----------------------------------------------------
+  // Vertical shift slider 
   createYShiftPanel();
-  // Randomize/reset buttons ---------------------------------------------------
-  createRandomizeResetBtnPanel();
-  // Preview button ------------------------------------------------------------
-  // TODO: preview/confirm/recursive panel
-  previewBtn = new GButton(controlsWindow, X_START, 310, 180, 30);
-  previewBtn.setText("Preview");
-  previewBtn.setLocalColorScheme(GCScheme.PURPLE_SCHEME);
-  previewBtn.addEventHandler(this, "previewBtn_click");
-  // Confirm button ------------------------------------------------------------
-  confirmBtn = new GButton(controlsWindow, 210, 310, 180, 30);
-  confirmBtn.setText("Confirm Step");
-  confirmBtn.addEventHandler(this, "confirmBtn_click");
-  // Load button ---------------------------------------------------------------
-  // TODO: load/save panel
-  loadBtn = new GButton(controlsWindow, X_START, 350, 180, 30);
-  loadBtn.setText("Load Image");
-  loadBtn.setTextBold();
-  loadBtn.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
-  loadBtn.addEventHandler(this, "loadBtn_click");
-  // Save button ---------------------------------------------------------------
-  saveBtn = new GButton(controlsWindow, 210, 350, 180, 30);
-  saveBtn.setText("Save Result");
-  saveBtn.setTextBold();
-  saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  saveBtn.addEventHandler(this, "saveBtn_click");
+  // Randomize/reset buttons 
+  createRandomizeResetPanel();
+  // Load/save buttons 
+  createLoadSavePanel();
+  // Preview/Confirm buttons
+  createPreviewConfirmPanel();
 
   controlsWindow.loop();
 }
@@ -273,21 +267,62 @@ public void createYShiftPanel() {
 
 // Randomize/Reset Button Panel ------------------------------------------------
 
-public void createRandomizeResetBtnPanel() {
-  randomizeResetBtnPanel = new GPanel(controlsWindow, RAND_RESET_BTN_X, Y_START, RAND_RESET_BTN_WIDTH, 2*RAND_RESET_BTN_HEIGHT + 20);
-  setupGeneralPanel(randomizeResetBtnPanel);
-  randomizeResetBtnPanel.setOpaque(false);
+public void createRandomizeResetPanel() {
+  randomizeResetPanel = new GPanel(controlsWindow, RAND_RESET_BTN_X, Y_START, RAND_RESET_BTN_WIDTH, 2*RAND_RESET_BTN_HEIGHT + 20);
+  setupGeneralPanel(randomizeResetPanel);
+  randomizeResetPanel.setOpaque(false);
   // Randomize Button
   randomizeBtn = new GButton(controlsWindow, 0, 0, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
   randomizeBtn.setText("Randomize");
   randomizeBtn.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   randomizeBtn.addEventHandler(this, "randomizeBtn_click");
-  randomizeResetBtnPanel.addControl(randomizeBtn);
+  randomizeResetPanel.addControl(randomizeBtn);
   // Reset Button
   resetBtn = new GButton(controlsWindow, 0, RAND_RESET_BTN_HEIGHT + 10, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
   resetBtn.setText("Reset");
   resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
   resetBtn.addEventHandler(this, "resetBtn_click");
-  randomizeResetBtnPanel.addControl(resetBtn);
+  randomizeResetPanel.addControl(resetBtn);
+}
+
+// Load/Save Panel -------------------------------------------------------------
+
+public void createLoadSavePanel() {
+  loadSavePanel = new GPanel(controlsWindow, LOAD_SAVE_X, LOAD_SAVE_Y, LOAD_SAVE_WIDTH, LOAD_SAVE_HEIGHT);
+  setupGeneralPanel(loadSavePanel);
+  loadSavePanel.setOpaque(false);
+  // Load button
+  loadBtn = new GButton(controlsWindow, 0, 0, LOAD_SAVE_WIDTH, LOAD_SAVE_BTN_HEIGHT);
+  loadBtn.setText("Load Image");
+  loadBtn.setTextBold();
+  loadBtn.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
+  loadBtn.addEventHandler(this, "loadBtn_click");
+  loadSavePanel.addControl(loadBtn);
+  // Save button 
+  saveBtn = new GButton(controlsWindow, 0, LOAD_SAVE_BTN_HEIGHT + 10, LOAD_SAVE_WIDTH, LOAD_SAVE_BTN_HEIGHT);
+  saveBtn.setText("Save Result");
+  saveBtn.setTextBold();
+  saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
+  saveBtn.addEventHandler(this, "saveBtn_click");
+  loadSavePanel.addControl(saveBtn);
+}
+
+// Preview/Confirm Panel -------------------------------------------------------
+
+public void createPreviewConfirmPanel() {
+  previewConfirmPanel = new GPanel(controlsWindow, PREVIEW_CONFIRM_X, PREVIEW_CONFIRM_Y, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_HEIGHT);
+  setupGeneralPanel(previewConfirmPanel);
+  previewConfirmPanel.setOpaque(false);
+  // Preview button
+  previewBtn = new GButton(controlsWindow, 0, 0, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_BTN_HEIGHT);
+  previewBtn.setText("Preview");
+  previewBtn.setLocalColorScheme(GCScheme.PURPLE_SCHEME);
+  previewBtn.addEventHandler(this, "previewBtn_click");
+  previewConfirmPanel.addControl(previewBtn);
+  // Confirm button 
+  confirmBtn = new GButton(controlsWindow, 0, PREVIEW_CONFIRM_BTN_HEIGHT + 10, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_BTN_HEIGHT);
+  confirmBtn.setText("Confirm Step");
+  confirmBtn.addEventHandler(this, "confirmBtn_click");
+  previewConfirmPanel.addControl(confirmBtn);
 }
 
