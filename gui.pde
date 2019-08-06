@@ -55,7 +55,7 @@ int WINDOW_WIDTH  = 500;
 int WINDOW_HEIGHT = 400;
 // Toggles ---------------------------------------------------------------------
 // General
-int CHANNEL_TOGGLE_WIDTH = 120;
+int CHANNEL_TOGGLE_WIDTH = 150;
 int CHANNEL_TOGGLE_HEIGHT = 20;
 int CHANNEL_PANEL_HEIGHT = 3 * CHANNEL_TOGGLE_HEIGHT + PANEL_Y_START;
 int R_CHANNEL_Y = PANEL_Y_START;
@@ -82,7 +82,8 @@ int X_SLIDER_Y = 120;
 int Y_SLIDER_X = X_START;
 int Y_SLIDER_Y = 210;
 // Randomize/Reset Buttons -----------------------------------------------------
-int RAND_RESET_BTN_WIDTH = 100;
+// Subtract toggles + margins from window width (also subtracting margins for this element)
+int RAND_RESET_BTN_WIDTH = WINDOW_WIDTH - 2 * CHANNEL_TOGGLE_WIDTH - 3 * X_MARGINS;
 int RAND_RESET_BTN_HEIGHT = 30;
 int RAND_RESET_BTN_X = WINDOW_WIDTH - (RAND_RESET_BTN_WIDTH + X_MARGIN);
 // Load/Save Buttons -----------------------------------------------------------
