@@ -1,4 +1,5 @@
 import g4p_controls.*;
+
 // Configs =====================================================================
 
 // Input File ------------------------------------------------------------------
@@ -14,17 +15,6 @@ String imgExt = "jpg";
 // File path relative to current directory
 // TODO: remove, generate path on save
 String outputPath = imgPath + imgFile + "/";
-
-// TODO: get rid of these, all GUI (or add GUI to configure randomization bounds)
-// Sketch Settings -------------------------------------------------------------
-// Randomly swap channels
-boolean swapChannels = true;
-// Shift channels horizontally
-boolean shiftHorizontal = true;
-// Shift channels vertically
-boolean shiftVertical = shiftHorizontal; 
-// Multiplier for the shift amount. Lower numbers = less drastic shifts
-float shiftMultiplier = 1.0;
 
 // Interface -------------------------------------------------------------------
 // Preview window size (does not affect output image size)
@@ -186,8 +176,6 @@ void loadImageFile(String filename) {
  * "s{RGB}-t{RGB}-x{int}-y{int}"
  * If source and target channels are the same, a single RGB channel will be
  * listed instead of "s{RGB}-t{RGB}".
- * If shiftHorizontal or shiftVertical are set to false, the "-x{int}" or
- * "-y{int}" will be omitted, respectively.
  */
 String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, int targetChannel, boolean recursiveIteration) {
   String step = "";
@@ -196,10 +184,8 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
     step += CHANNELS[sourceChannel];
   else
     step += "s" + CHANNELS[sourceChannel] + "t" + CHANNELS[targetChannel];
-  if (shiftHorizontal)
-    step += "-x" + horizontalShift;
-  if (shiftVertical)
-    step += "-y" + verticalShift;
+  step += "-x" + horizontalShift;
+  step += "-y" + verticalShift;
   if (recursiveIteration)
     step += "-recurs";
   return step;
@@ -296,10 +282,8 @@ void keyHandler(char k) {
  * @return Shift amount based on configs. If the type of shift is disabled,
  * will always return 0
  */
-// TODO: no longer using shiftMultiplier? Maybe add a config for that for the randomize btn?
 int randomShiftAmount(boolean horizontal, PImage img) {
   int imgDimension = horizontal ? img.width : img.height;
-  /* return int(random(imgDimension * shiftMultiplier)); */
   return int(random(imgDimension));
 }
 

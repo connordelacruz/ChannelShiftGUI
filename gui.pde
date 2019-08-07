@@ -282,6 +282,8 @@ public void createYShiftPanel() {
 
 // Randomize/Reset Button Panel ------------------------------------------------
 
+// TODO: reset on top and random on bottom
+// TODO: checkboxes under randomize for src, targ, horizontal, and vertical. Only randomize checked
 public void createRandomizeResetPanel() {
   randomizeResetPanel = new GPanel(controlsWindow, RAND_RESET_BTN_X, Y_START, RAND_RESET_BTN_WIDTH, 2*RAND_RESET_BTN_HEIGHT + 20);
   setupGeneralPanel(randomizeResetPanel);
