@@ -110,6 +110,7 @@ void updatePreview() {
  * Prints "SKETCH COMPLETE" message with list of input actions. Sets
  * completeMsgShown to true after message is printed
  */
+// TODO: remove input msgs
 void printCompleteMsg() {
   println("SKETCH COMPLETE.");
   println(INDENT + "SPACEBAR: Save and run again");
@@ -239,12 +240,12 @@ void outFileSelected(File selection) {
 }
 
 // Input Handlers --------------------------------------------------------------
-// TODO: Remove?
 
 /**
  * Handle key presses
  * @param k Character for the key that was pressed
  */
+// TODO: this is no longer used, re-work so that keys are shortcuts for GUI tasks?
 void keyHandler(char k) {
   switch (k) {
     // Space - Save and re-run
@@ -621,19 +622,3 @@ void draw() {
   }
 }
 
-// Input Listeners =============================================================
-// TODO: Remove? Modify?
-
-void keyPressed() {
-  keyHandler(key);
-}
-
-// TODO: Remove? Or click to just save?
-void mouseClicked() {
-  if (sketchComplete) {
-    // Save result
-    if (!imgSaved)
-      saveResult();
-    System.exit(0);
-  }
-}
