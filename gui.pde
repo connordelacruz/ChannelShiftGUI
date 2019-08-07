@@ -29,6 +29,7 @@ GButton resetBtn;
 GPanel previewConfirmPanel;
 GButton previewBtn; 
 GButton confirmBtn; 
+GCheckbox recursiveCheckbox;
 // Save/Load Buttons -----------------------------------------------------------
 GPanel loadSavePanel;
 GButton loadBtn; 
@@ -52,7 +53,7 @@ int X_MARGINS = 2 * X_MARGIN;
 int PANEL_Y_START = 20;
 // Window ----------------------------------------------------------------------
 int WINDOW_WIDTH  = 500;
-int WINDOW_HEIGHT = 400;
+int WINDOW_HEIGHT = 450;
 // Toggles ---------------------------------------------------------------------
 // General
 int CHANNEL_TOGGLE_WIDTH = 150;
@@ -97,7 +98,8 @@ int PREVIEW_CONFIRM_Y = LOAD_SAVE_Y;
 int PREVIEW_CONFIRM_X = LOAD_SAVE_X + LOAD_SAVE_WIDTH + X_MARGINS;
 int PREVIEW_CONFIRM_WIDTH = LOAD_SAVE_WIDTH;
 int PREVIEW_CONFIRM_BTN_HEIGHT = LOAD_SAVE_BTN_HEIGHT;
-int PREVIEW_CONFIRM_HEIGHT = 2*PREVIEW_CONFIRM_BTN_HEIGHT + 20;
+int RECURSIVE_CHECKBOX_HEIGHT = 30;
+int PREVIEW_CONFIRM_HEIGHT = 2 * PREVIEW_CONFIRM_BTN_HEIGHT + RECURSIVE_CHECKBOX_HEIGHT + 20;
 
 
 // Initialization ==============================================================
@@ -338,5 +340,11 @@ public void createPreviewConfirmPanel() {
   confirmBtn.setText("Confirm Step");
   confirmBtn.addEventHandler(this, "confirmBtn_click");
   previewConfirmPanel.addControl(confirmBtn);
+  // Recursive checkbox
+  recursiveCheckbox = new GCheckbox(controlsWindow, 0, 2*PREVIEW_CONFIRM_BTN_HEIGHT + 10, PREVIEW_CONFIRM_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
+  recursiveCheckbox.setText("Recursive", GAlign.CENTER, GAlign.MIDDLE);
+  recursiveCheckbox.setOpaque(true);
+  recursiveCheckbox.addEventHandler(this, "recursiveCheckbox_click");
+  previewConfirmPanel.addControl(recursiveCheckbox);
 }
 

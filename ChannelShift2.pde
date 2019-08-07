@@ -19,8 +19,6 @@ String outputPath = imgPath + imgFile + "/";
 // Sketch Settings -------------------------------------------------------------
 // Randomly swap channels
 boolean swapChannels = true;
-// Use resulting image as the source for subsequent iterations
-boolean recursiveIterations = true;
 // Shift channels horizontally
 boolean shiftHorizontal = true;
 // Shift channels vertically
@@ -58,6 +56,9 @@ String INDENT = "   ";
 // TODO: make these 2D arrays?
 int sourceChannel, targetChannel;
 int horizontalShift, verticalShift;
+
+// Use resulting image as the source for next iteration
+boolean recursiveIteration = false;
 
 // Set when controls window is drawn so it doesn't get duplicated on subsequent
 // calls to setup()
@@ -157,7 +158,8 @@ void imageFileSelected(File selection) {
 }
 
 /**
- * Load an image file. Sets global variables and updates window size accordingly
+ * Load an image file. Sets global variables and updates window size
+ * accordingly. 
  * @param filename Path to the image file
  */
 void loadImageFile(String filename) {
@@ -167,6 +169,8 @@ void loadImageFile(String filename) {
   previewImg = sourceImg.copy();
   // Update window size
   updateWindowSize();
+  // Redraw preview
+  previewImgUpdated = true;
   // TODO: update output dir and file names to match
 }
 
@@ -185,7 +189,7 @@ void loadImageFile(String filename) {
  * If shiftHorizontal or shiftVertical are set to false, the "-x{int}" or
  * "-y{int}" will be omitted, respectively.
  */
-String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, int targetChannel) {
+String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, int targetChannel, boolean recursiveIteration) {
   String step = "";
   // Only show what channel was shifted if not swapped
   if (sourceChannel == targetChannel)
@@ -196,6 +200,8 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
     step += "-x" + horizontalShift;
   if (shiftVertical)
     step += "-y" + verticalShift;
+  if (recursiveIteration)
+    step += "-recurs";
   return step;
 }
 
@@ -203,7 +209,7 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
  * Update sketchSteps using globals
  */
 void updateSteps() {
-  sketchSteps += "_" + stringifyStep(horizontalShift, verticalShift, sourceChannel, targetChannel);
+  sketchSteps += "_" + stringifyStep(horizontalShift, verticalShift, sourceChannel, targetChannel, recursiveIteration);
 }
 
 /**
@@ -359,16 +365,13 @@ void restartSketch() {
 
 // GUI =========================================================================
 
-// TODO: implement, re-work existing setup, cleanup generated code
-// TODO: figure out how recursive will work
-
 // Controls Window -------------------------------------------------------------
 
 // Sets controlsWindowCreated to true
-synchronized public void controlsWindow_draw(PApplet appc, GWinData data) { //_CODE_:controlsWindow:848299:
+synchronized public void controlsWindow_draw(PApplet appc, GWinData data) { 
   appc.background(230);
   controlsWindowCreated = true;
-} //_CODE_:controlsWindow:848299:
+} 
 
 // Source/Target Channel -------------------------------------------------------
 
@@ -395,29 +398,29 @@ void setChannelToggle(boolean source, int channel) {
   toggles[channel].setSelected(true);
 }
 
-public void srcR_clicked(GOption source, GEvent event) { //_CODE_:srcR:723362:
+public void srcR_clicked(GOption source, GEvent event) { 
   selectChannel(true, 0);
-} //_CODE_:srcR:723362:
+} 
 
-public void srcG_clicked(GOption source, GEvent event) { //_CODE_:srcG:663851:
+public void srcG_clicked(GOption source, GEvent event) { 
   selectChannel(true, 1);
-} //_CODE_:srcG:663851:
+} 
 
-public void srcB_clicked(GOption source, GEvent event) { //_CODE_:srcB:834511:
+public void srcB_clicked(GOption source, GEvent event) { 
   selectChannel(true, 2);
-} //_CODE_:srcB:834511:
+} 
 
-public void targR_clicked(GOption source, GEvent event) { //_CODE_:targR:594833:
+public void targR_clicked(GOption source, GEvent event) { 
   selectChannel(false, 0);
-} //_CODE_:targR:594833:
+} 
 
-public void targG_clicked(GOption source, GEvent event) { //_CODE_:targG:802122:
+public void targG_clicked(GOption source, GEvent event) { 
   selectChannel(false, 1);
-} //_CODE_:targG:802122:
+} 
 
-public void targB_clicked(GOption source, GEvent event) { //_CODE_:targB:979900:
+public void targB_clicked(GOption source, GEvent event) { 
   selectChannel(false, 2);
-} //_CODE_:targB:979900:
+} 
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
@@ -546,9 +549,9 @@ void resetShift() {
 }
 
 // TODO: should this also revert the image to its original state?
-public void resetBtn_click(GButton source, GEvent event) { //_CODE_:resetBtn:841959:
+public void resetBtn_click(GButton source, GEvent event) { 
   resetShift();
-} //_CODE_:resetBtn:841959:
+} 
 
 // Preview Button --------------------------------------------------------------
 
@@ -563,23 +566,31 @@ void showPreview() {
   previewImg.updatePixels();
 }
 
-public void previewBtn_click(GButton source, GEvent event) { //_CODE_:previewBtn:835641:
+public void previewBtn_click(GButton source, GEvent event) { 
   showPreview();
-} //_CODE_:previewBtn:835641:
+} 
 
 // Confirm Button --------------------------------------------------------------
 
-public void confirmBtn_click(GButton source, GEvent event) { //_CODE_:confirmBtn:409845:
+public void confirmBtn_click(GButton source, GEvent event) { 
   // Display preview
   showPreview();
   // Update sketch steps
   updateSteps();
   // Update targetImg to match preview
   targetImg = previewImg.copy();
+  // If recursive, sourceImg.pixels = targetImg.pixels
+  if (recursiveIteration)
+    sourceImg.pixels = targetImg.pixels;
   // Reset shift values and UI
   resetShift();
-  // TODO: recursive checkbox?
-} //_CODE_:confirmBtn:409845:
+} 
+
+// Recursive Checkbox ----------------------------------------------------------
+
+public void recursiveCheckbox_click(GCheckbox source, GEvent event) {
+  recursiveIteration = source.isSelected();
+}
 
 // Load Button -----------------------------------------------------------------
 
@@ -615,8 +626,6 @@ void setup() {
   size(1,1);
   surface.setResizable(true);
   updateWindowSize();
-  // Load image
-  image(sourceImg, 0, 0, windowWidth, windowHeight);
   // Display controls window
   if (!controlsWindowCreated)
     createGUI();
