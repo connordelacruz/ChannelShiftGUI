@@ -548,7 +548,6 @@ void resetShift() {
   setShift(false, 0);
 }
 
-// TODO: should this also revert the image to its original state?
 public void resetBtn_click(GButton source, GEvent event) { 
   resetShift();
 } 
@@ -594,14 +593,12 @@ public void recursiveCheckbox_click(GCheckbox source, GEvent event) {
 
 // Load Button -----------------------------------------------------------------
 
-// TODO: implement
 public void loadBtn_click(GButton source, GEvent event) {
   selectFile();
 }
 
 // Save Button -----------------------------------------------------------------
 
-// TODO: implement: Save currently displayed unless file exists; Allow for custom filename?
 public void saveBtn_click(GButton source, GEvent event) {
   // TODO: set targetImg to previewImg before saving so you get what you see
   saveResult();
@@ -644,7 +641,6 @@ void draw() {
 // TODO: Remove? Modify?
 
 void keyPressed() {
-  // TODO: check if sketch complete first? Input seems to be buffered so might not matter
   keyHandler(key);
 }
 

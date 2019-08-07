@@ -1,6 +1,5 @@
 // G4P Variable Declarations ===================================================
 
-// TODO: move declarations to corresponding helper sections?
 // Window ----------------------------------------------------------------------
 GWindow controlsWindow;
 // Source Toggle ---------------------------------------------------------------
