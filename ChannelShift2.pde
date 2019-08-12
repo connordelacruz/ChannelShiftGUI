@@ -3,8 +3,8 @@ import g4p_controls.*;
 // Configs =====================================================================
 
 // Input File ------------------------------------------------------------------
+// TODO: only need imgFile, get rid of path and ext and just make a variable for default image path
 // File path relative to current directory
-// TODO: Figure out what to do with these and how to handle loading new images
 String imgPath = "source/";
 // File name
 String imgFile = "test";
@@ -34,9 +34,10 @@ String sketchSteps;
 // String to use for indent in output msgs
 String INDENT = "   ";
 
-// TODO: doc and organize
-// TODO: make these 2D arrays?
+// TODO: make these 2D arrays? Could simplify conditional assignment for reused code
+// Currently selected source and target channels
 int sourceChannel, targetChannel;
+// Current horizontal and vertical shift amounts
 int horizontalShift, verticalShift;
 
 // Use resulting image as the source for next iteration
@@ -132,9 +133,9 @@ void loadImageFile(String filename) {
   previewImg = sourceImg.copy();
   // Update window size
   updateWindowSize();
+  // TODO: update imgFile (for default output name)
   // Redraw preview
   previewImgUpdated = true;
-  // TODO: update output dir and file names to match
 }
 
 // Saving ----------------------------------------------------------------------
@@ -177,19 +178,17 @@ void updateSteps() {
  * Relative path is passed to sketchPath(), so default output will be within
  * the current directory
  */
-// TODO: update docs, rename to defaultOutputFilename()?
-String outputFilename() {
+String defaultOutputFilename() {
   // TODO: don't use sketchPath() and let OS handle output dir?
   return sketchPath(imgFile + sketchSteps + ".png");
 }
 
-// TODO: update docstring, rename saveResultAs() for clarity?
 /**
- * Save the resulting image. Path is based on output configs and generated
- * using outputFilename()
+ * Pull up save dialog for current result. Default path is generated using
+ * defaultOutputFilename()
  */
-void saveResult() {
-  String outputFile = outputFilename();
+void saveResultAs() {
+  String outputFile = defaultOutputFilename();
   File defaultOutFile = new File(outputFile);
   selectOutput("Save as:", "outFileSelected", defaultOutFile);
 }
@@ -227,7 +226,7 @@ int randomShiftAmount(boolean horizontal, PImage img) {
   return int(random(imgDimension));
 }
 
-// TODO: doc and implement
+// TODO: doc 
 int randomShiftPercent() {
   // Leaving 100 as upper bound since a 100% shift is identical
   return int(random(100));
@@ -300,7 +299,7 @@ void selectChannel(boolean source, int channel) {
     targetChannel = channel;
 }
 
-// TODO: doc and implement
+// TODO: doc 
 // TODO: just have this automatically update to match globals?
 void setChannelToggle(boolean source, int channel) {
   GOption[] toggles;
@@ -458,7 +457,9 @@ public void randomizeBtn_click(GButton source, GEvent event) {
 
 // Reset Button ----------------------------------------------------------------
 
-// TODO: doc
+/**
+ * Reset selected source/target channels and horizontal/vertical shift values
+ */
 void resetShift() {
   // TODO: method that updates toggles based on globals, use in randomize
   srcR.setSelected(true);
@@ -524,14 +525,13 @@ public void loadBtn_click(GButton source, GEvent event) {
 
 public void saveBtn_click(GButton source, GEvent event) {
   // TODO: set targetImg to previewImg before saving so you get what you see
-  saveResult();
+  saveResultAs();
 } 
 
 
 // Processing ==================================================================
 
 void setup() {
-  // TODO: selectFile() on setup if imgFile is not set
   // Load image (initializes global PImage objects)
   loadImageFile(imgPath + imgFile + "." + imgExt);
   // Reset steps string
