@@ -27,9 +27,6 @@ int maxWindowSize = 600;
 PImage sourceImg, targetImg, previewImg;
 // Window dimensions
 int windowWidth, windowHeight;
-// Used to check sketch progress
-// TODO: are these necessary anymore?
-boolean sketchComplete, imgSaved, completeMsgShown;
 
 // Maps index 0-2 to corresponding color channel. Used as a shorthand when
 // making operations more human readable
@@ -100,26 +97,6 @@ void updateWindowSize() {
 void updatePreview() {
   image(previewImg, 0, 0, windowWidth, windowHeight);
   previewImgUpdated = false;
-}
-
-// Output ----------------------------------------------------------------------
-
-// TODO: add output panel to GUI
-
-/**
- * Prints "SKETCH COMPLETE" message with list of input actions. Sets
- * completeMsgShown to true after message is printed
- */
-// TODO: remove input msgs
-void printCompleteMsg() {
-  println("SKETCH COMPLETE.");
-  println(INDENT + "SPACEBAR: Save and run again");
-  println(INDENT + "X: Discard and run again");
-  println(INDENT + "ENTER: Save and quit");
-  println(INDENT + "ESC: Discard and quit");
-  println("");
-  // Update state
-  completeMsgShown = true;
 }
 
 // Loading ---------------------------------------------------------------------
@@ -213,7 +190,7 @@ String outputFilename() {
 // TODO: update docstring, rename saveResultAs() for clarity?
 /**
  * Save the resulting image. Path is based on output configs and generated
- * using outputFilename(). Sets imgSaved to true once file is written
+ * using outputFilename()
  */
 void saveResult() {
   String outputFile = outputFilename();
@@ -231,42 +208,10 @@ void outFileSelected(File selection) {
     println("Saving...");
     String outputFile = selection.getAbsolutePath();
     targetImg.save(outputFile);
-    // Update state and print output
-    imgSaved = true;
+    // Print output
     println("Result saved:");
     println(INDENT + outputFile);
     println("");
-  }
-}
-
-// Input Handlers --------------------------------------------------------------
-
-/**
- * Handle key presses
- * @param k Character for the key that was pressed
- */
-// TODO: this is no longer used, re-work so that keys are shortcuts for GUI tasks?
-void keyHandler(char k) {
-  switch (k) {
-    // Space - Save and re-run
-    case ' ':
-      if (!imgSaved)
-        saveResult();
-    // X - Discard and re-run
-    case 'x':
-    case 'X':
-      restartSketch();
-      break;
-    // ENTER - Save and exit
-    case ENTER:
-      if (!imgSaved)
-        saveResult();
-    // ESC - Discard and exit
-    case ESC:
-      System.exit(0);
-      break;
-    default:
-      break;
   }
 }
 
@@ -335,17 +280,6 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
       targetPixels[targetIndex] = color(targetRGB[0], targetRGB[1], targetRGB[2]);
     }
   }
-}
-
-// Sketch ----------------------------------------------------------------------
-
-/**
- * Run setup() and draw()
- */
-void restartSketch() {
-  println("Running sketch...");
-  setup();
-  draw();
 }
 
 // GUI =========================================================================
@@ -587,11 +521,7 @@ public void loadBtn_click(GButton source, GEvent event) {
 public void saveBtn_click(GButton source, GEvent event) {
   // TODO: set targetImg to previewImg before saving so you get what you see
   saveResult();
-  // TODO: Have imgSaved set to false after a change is made
-  // For now just ignore it
-  imgSaved = false;
 } 
-
 
 
 // Processing ==================================================================
@@ -600,8 +530,6 @@ void setup() {
   // TODO: selectFile() on setup if imgFile is not set
   // Load image (initializes global PImage objects)
   loadImageFile(imgPath + imgFile + "." + imgExt);
-  // Set initial state
-  sketchComplete = imgSaved = completeMsgShown = false;
   // Reset steps string
   sketchSteps = "";
   // Window
@@ -617,8 +545,6 @@ void setup() {
 void draw() {
   if (previewImgUpdated) {
     updatePreview();
-  } else if (!completeMsgShown) {
-    printCompleteMsg();
-  }
+  } 
 }
 
