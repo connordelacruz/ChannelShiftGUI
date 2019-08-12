@@ -11,11 +11,6 @@ String imgFile = "test";
 // File extension
 String imgExt = "jpg";
 
-// Output File -----------------------------------------------------------------
-// File path relative to current directory
-// TODO: remove, generate path on save
-String outputPath = imgPath + imgFile + "/";
-
 // Interface -------------------------------------------------------------------
 // Preview window size (does not affect output image size)
 int maxWindowSize = 600;
@@ -184,7 +179,8 @@ void updateSteps() {
  */
 // TODO: update docs, rename to defaultOutputFilename()?
 String outputFilename() {
-  return sketchPath(outputPath + imgFile + sketchSteps + ".png");
+  // TODO: don't use sketchPath() and let OS handle output dir?
+  return sketchPath(imgFile + sketchSteps + ".png");
 }
 
 // TODO: update docstring, rename saveResultAs() for clarity?
@@ -194,8 +190,6 @@ String outputFilename() {
  */
 void saveResult() {
   String outputFile = outputFilename();
-  // TODO: create outputPath if !exist
-  // TODO: can't tell if setting the filepath is actually opening it in the sketch directory?
   File defaultOutFile = new File(outputFile);
   selectOutput("Save as:", "outFileSelected", defaultOutFile);
 }
@@ -343,6 +337,9 @@ public void targB_clicked(GOption source, GEvent event) {
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
+// TODO: update preview once mouse is released
+//        https://forum.processing.org/two/discussion/11491/g4p-how-to-receive-slider-changes-only-on-mouse-release
+
 /**
  * Convert shift percent to number of pixels
  * @param horizontal If true, calculate horizontal shift, else vertical shift
@@ -438,7 +435,8 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 
 // Randomize Button ------------------------------------------------------------
 
-public void randomizeBtn_click(GButton source, GEvent event) {
+// TODO: doc, conditionally randomize based on checkboxes
+void randomizeValues() {
   // Channels
   sourceChannel = int(random(3));
   setChannelToggle(true, sourceChannel);
@@ -451,6 +449,11 @@ public void randomizeBtn_click(GButton source, GEvent event) {
   int yShift = sliderPercentValue[1] ? randomShiftPercent() : randomShiftAmount(false, targetImg);
   setShift(false, yShift);
   ySlider.setValue(yShift);
+}
+
+public void randomizeBtn_click(GButton source, GEvent event) {
+  randomizeValues();
+  showPreview();
 } 
 
 // Reset Button ----------------------------------------------------------------
@@ -469,6 +472,7 @@ void resetShift() {
 
 public void resetBtn_click(GButton source, GEvent event) { 
   resetShift();
+  showPreview();
 } 
 
 // Preview Button --------------------------------------------------------------
