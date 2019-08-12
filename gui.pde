@@ -43,8 +43,10 @@ int X_START = 10;
 // Use 20 as the top-most position to add padding to the window
 int Y_START = 20; 
 // Margins ---------------------------------------------------------------------
+// TODO: more specific about what margins are used for and make sure usage is consistent, implement Y
 // Single margin
 int X_MARGIN = X_START;
+int Y_MARGIN = Y_START;
 // Subtract from widths to get margins on either side
 int X_MARGINS = 2 * X_MARGIN;
 // Panels ----------------------------------------------------------------------
@@ -56,7 +58,7 @@ int WINDOW_HEIGHT = 450;
 // Toggles ---------------------------------------------------------------------
 // General
 int CHANNEL_TOGGLE_WIDTH = 150;
-int CHANNEL_TOGGLE_HEIGHT = 20;
+int CHANNEL_TOGGLE_HEIGHT = 30;
 int CHANNEL_PANEL_HEIGHT = 3 * CHANNEL_TOGGLE_HEIGHT + PANEL_Y_START;
 int R_CHANNEL_Y = PANEL_Y_START;
 int G_CHANNEL_Y = PANEL_Y_START + CHANNEL_TOGGLE_HEIGHT;
@@ -77,10 +79,10 @@ int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - SLIDER_TOGGLE_WIDTH;
 int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
 // Horizontal Shift
 int X_SLIDER_X = X_START;
-int X_SLIDER_Y = 120;
+int X_SLIDER_Y = SRC_CHANNEL_Y + CHANNEL_PANEL_HEIGHT + Y_MARGIN;
 // Slider Y Positions
 int Y_SLIDER_X = X_START;
-int Y_SLIDER_Y = 210;
+int Y_SLIDER_Y = X_SLIDER_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 // Randomize/Reset Buttons -----------------------------------------------------
 // Subtract toggles + margins from window width (also subtracting margins for this element)
 int RAND_RESET_BTN_WIDTH = WINDOW_WIDTH - 2 * CHANNEL_TOGGLE_WIDTH - 3 * X_MARGINS;
@@ -88,7 +90,7 @@ int RAND_RESET_BTN_HEIGHT = 30;
 int RAND_RESET_BTN_X = WINDOW_WIDTH - (RAND_RESET_BTN_WIDTH + X_MARGIN);
 // Load/Save Buttons -----------------------------------------------------------
 int LOAD_SAVE_X = X_START;
-int LOAD_SAVE_Y = 310;
+int LOAD_SAVE_Y = Y_SLIDER_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 int LOAD_SAVE_WIDTH = WINDOW_WIDTH / 2 - X_MARGINS;
 int LOAD_SAVE_BTN_HEIGHT = 30;
 int LOAD_SAVE_HEIGHT = 2*LOAD_SAVE_BTN_HEIGHT + 20;
