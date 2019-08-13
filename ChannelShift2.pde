@@ -40,6 +40,11 @@ int sourceChannel, targetChannel;
 // Current horizontal and vertical shift amounts
 int horizontalShift, verticalShift;
 
+// If true, randomize button will affect the corresponding settings
+boolean randomizeSrc = true; 
+boolean randomizeTarg = true; 
+boolean randomizeXShift = true; 
+boolean randomizeYShift = true; 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = false;
 
@@ -434,44 +439,49 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 
 // Randomize Button ------------------------------------------------------------
 
-// TODO: doc, conditionally randomize based on checkboxes
-void randomizeValues() {
+// TODO: doc, clean up reusable?
+void randomizeValues(boolean source, boolean target, boolean horizontal, boolean vertical) {
   // Channels
-  sourceChannel = int(random(3));
-  setChannelToggle(true, sourceChannel);
-  targetChannel = int(random(3));
-  setChannelToggle(false, targetChannel);
+  if (source) {
+    sourceChannel = int(random(3));
+    setChannelToggle(true, sourceChannel);
+  }
+  // TODO: if source && !target, set target to match?
+  if (target) {
+    targetChannel = int(random(3));
+    setChannelToggle(false, targetChannel);
+  }
   // Shift
-  int xShift = sliderPercentValue[0] ? randomShiftPercent() : randomShiftAmount(true, targetImg);
-  xSlider.setValue(xShift);
-  setShift(true, xShift);
-  int yShift = sliderPercentValue[1] ? randomShiftPercent() : randomShiftAmount(false, targetImg);
-  setShift(false, yShift);
-  ySlider.setValue(yShift);
+  if (horizontal) {
+    int xShift = sliderPercentValue[0] ? randomShiftPercent() : randomShiftAmount(true, targetImg);
+    xSlider.setValue(xShift);
+    setShift(true, xShift);
+  }
+  if (vertical) {
+    int yShift = sliderPercentValue[1] ? randomShiftPercent() : randomShiftAmount(false, targetImg);
+    setShift(false, yShift);
+    ySlider.setValue(yShift);
+  }
 }
 
-// TODO: DEBUG, add checkbox handlers
-
-public void tmpCheckboxHandler(GCheckbox source, GEvent event) {println(source.getText() + ": " + event.getDesc());}
-
 public void randSrcCheckbox_click(GCheckbox source, GEvent event) {
-  tmpCheckboxHandler(source, event);
+  randomizeSrc = source.isSelected();
 }
 
 public void randTargCheckbox_click(GCheckbox source, GEvent event) {
-  tmpCheckboxHandler(source, event);
+  randomizeTarg = source.isSelected();
 }
 
 public void randXShiftCheckbox_click(GCheckbox source, GEvent event) {
-  tmpCheckboxHandler(source, event);
+  randomizeXShift = source.isSelected();
 }
 
 public void randYShiftCheckbox_click(GCheckbox source, GEvent event) {
-  tmpCheckboxHandler(source, event);
+  randomizeYShift = source.isSelected();
 }
 
 public void randomizeBtn_click(GButton source, GEvent event) {
-  randomizeValues();
+  randomizeValues(randomizeSrc, randomizeTarg, randomizeXShift, randomizeYShift);
   showPreview();
 } 
 
