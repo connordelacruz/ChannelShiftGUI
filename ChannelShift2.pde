@@ -450,6 +450,26 @@ void randomizeValues() {
   ySlider.setValue(yShift);
 }
 
+// TODO: DEBUG, add checkbox handlers
+
+public void tmpCheckboxHandler(GCheckbox source, GEvent event) {println(source.getText() + ": " + event.getDesc());}
+
+public void randSrcCheckbox_click(GCheckbox source, GEvent event) {
+  tmpCheckboxHandler(source, event);
+}
+
+public void randTargCheckbox_click(GCheckbox source, GEvent event) {
+  tmpCheckboxHandler(source, event);
+}
+
+public void randXShiftCheckbox_click(GCheckbox source, GEvent event) {
+  tmpCheckboxHandler(source, event);
+}
+
+public void randYShiftCheckbox_click(GCheckbox source, GEvent event) {
+  tmpCheckboxHandler(source, event);
+}
+
 public void randomizeBtn_click(GButton source, GEvent event) {
   randomizeValues();
   showPreview();

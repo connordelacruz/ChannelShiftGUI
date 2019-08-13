@@ -21,9 +21,10 @@ GSlider ySlider;
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
 // Randomize/Reset Buttons -----------------------------------------------------
-GPanel randomizeResetPanel;
-GButton randomizeBtn; 
-GButton resetBtn; 
+GPanel randomizeResetPanel, randomizeCheckboxPanel;
+GButton resetBtn, randomizeBtn; 
+GCheckbox randSrcCheckbox, randTargCheckbox, 
+          randXShiftCheckbox, randYShiftCheckbox;
 // Preview/Confirm Buttons -----------------------------------------------------
 GPanel previewConfirmPanel;
 GButton previewBtn; 
@@ -53,7 +54,7 @@ int X_MARGINS = 2 * X_MARGIN;
 // Panel labels are ~20, add this so children don't overlap
 int PANEL_Y_START = 20;
 // Window ----------------------------------------------------------------------
-int WINDOW_WIDTH  = 500;
+int WINDOW_WIDTH  = 600;
 int WINDOW_HEIGHT = 450;
 // Toggles ---------------------------------------------------------------------
 // General
@@ -85,9 +86,21 @@ int Y_SLIDER_X = X_START;
 int Y_SLIDER_Y = X_SLIDER_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 // Randomize/Reset Buttons -----------------------------------------------------
 // Subtract toggles + margins from window width (also subtracting margins for this element)
-int RAND_RESET_BTN_WIDTH = WINDOW_WIDTH - 2 * CHANNEL_TOGGLE_WIDTH - 3 * X_MARGINS;
+int RAND_RESET_WIDTH = WINDOW_WIDTH - 2 * CHANNEL_TOGGLE_WIDTH - 3 * X_MARGINS;
+// Half of panel + margin
+int RAND_RESET_BTN_WIDTH = RAND_RESET_WIDTH / 2 - X_MARGIN;
 int RAND_RESET_BTN_HEIGHT = 30;
-int RAND_RESET_BTN_X = WINDOW_WIDTH - (RAND_RESET_BTN_WIDTH + X_MARGIN);
+// TODO: account for checkboxes panel, replace + 20 w/ PANEL_START or whatever
+int RAND_RESET_HEIGHT = 2 * RAND_RESET_BTN_HEIGHT + Y_MARGIN;
+int RAND_RESET_BTN_X = WINDOW_WIDTH - (RAND_RESET_WIDTH + X_MARGIN);
+// Randomize Button and Panel
+int RAND_BTN_X = RAND_RESET_BTN_WIDTH + X_MARGIN;
+int RAND_PANEL_X = RAND_BTN_X;
+int RAND_PANEL_Y = RAND_RESET_BTN_HEIGHT;
+int RAND_PANEL_WIDTH = RAND_RESET_BTN_WIDTH;
+int RAND_CHECKBOX_WIDTH = RAND_PANEL_WIDTH;
+int RAND_CHECKBOX_HEIGHT = 20;
+int RAND_PANEL_HEIGHT = 4 * RAND_CHECKBOX_HEIGHT + PANEL_Y_START; // TODO: use as basis for parent panel
 // Load/Save Buttons -----------------------------------------------------------
 int LOAD_SAVE_X = X_START;
 int LOAD_SAVE_Y = Y_SLIDER_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
@@ -287,21 +300,37 @@ public void createYShiftPanel() {
 // TODO: reset on top and random on bottom
 // TODO: checkboxes under randomize for src, targ, horizontal, and vertical. Only randomize checked
 public void createRandomizeResetPanel() {
-  randomizeResetPanel = new GPanel(controlsWindow, RAND_RESET_BTN_X, Y_START, RAND_RESET_BTN_WIDTH, 2*RAND_RESET_BTN_HEIGHT + 20);
+  randomizeResetPanel = new GPanel(controlsWindow, RAND_RESET_BTN_X, Y_START, RAND_RESET_WIDTH, RAND_RESET_HEIGHT);
   setupGeneralPanel(randomizeResetPanel);
   randomizeResetPanel.setOpaque(false);
-  // Randomize Button
-  randomizeBtn = new GButton(controlsWindow, 0, 0, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
-  randomizeBtn.setText("Randomize");
-  randomizeBtn.setLocalColorScheme(GCScheme.CYAN_SCHEME);
-  randomizeBtn.addEventHandler(this, "randomizeBtn_click");
-  randomizeResetPanel.addControl(randomizeBtn);
   // Reset Button
-  resetBtn = new GButton(controlsWindow, 0, RAND_RESET_BTN_HEIGHT + 10, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
+  resetBtn = new GButton(controlsWindow, 0, 0, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
   resetBtn.setText("Reset");
   resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
   resetBtn.addEventHandler(this, "resetBtn_click");
   randomizeResetPanel.addControl(resetBtn);
+  // Randomize Button
+  randomizeBtn = new GButton(controlsWindow, RAND_BTN_X, 0, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
+  randomizeBtn.setText("Randomize");
+  randomizeBtn.setLocalColorScheme(GCScheme.CYAN_SCHEME);
+  randomizeBtn.addEventHandler(this, "randomizeBtn_click");
+  randomizeResetPanel.addControl(randomizeBtn);
+  // TODO: Randomize Panel/Checkboxes
+  randomizeCheckboxPanel = new GPanel(controlsWindow, RAND_PANEL_X, RAND_PANEL_Y, RAND_PANEL_WIDTH, RAND_PANEL_HEIGHT, "Randomize Options");
+  setupGeneralPanel(randomizeCheckboxPanel, GCScheme.CYAN_SCHEME);
+  randSrcCheckbox = new GCheckbox(controlsWindow, 0, PANEL_Y_START, RAND_CHECKBOX_WIDTH, RAND_CHECKBOX_HEIGHT, "Source Channel");
+  randSrcCheckbox.addEventHandler(this, "randSrcCheckbox_click");
+  randomizeCheckboxPanel.addControl(randSrcCheckbox);
+  randTargCheckbox = new GCheckbox(controlsWindow, 0, PANEL_Y_START + RAND_CHECKBOX_HEIGHT, RAND_CHECKBOX_WIDTH, RAND_CHECKBOX_HEIGHT, "Target Channel");
+  randTargCheckbox.addEventHandler(this, "randTargCheckbox_click");
+  randomizeCheckboxPanel.addControl(randTargCheckbox);
+  randXShiftCheckbox = new GCheckbox(controlsWindow, 0, PANEL_Y_START + 2 * RAND_CHECKBOX_HEIGHT, RAND_CHECKBOX_WIDTH, RAND_CHECKBOX_HEIGHT, "Horizontal Shift");
+  randXShiftCheckbox.addEventHandler(this, "randXShiftCheckbox_click");
+  randomizeCheckboxPanel.addControl(randXShiftCheckbox);
+  randYShiftCheckbox = new GCheckbox(controlsWindow, 0, PANEL_Y_START + 3 * RAND_CHECKBOX_HEIGHT, RAND_CHECKBOX_WIDTH, RAND_CHECKBOX_HEIGHT, "Vertical Shift");
+  randYShiftCheckbox.addEventHandler(this, "randYShiftCheckbox_click");
+  randomizeCheckboxPanel.addControl(randYShiftCheckbox);
+  randomizeResetPanel.addControl(randomizeCheckboxPanel);
 }
 
 // Load/Save Panel -------------------------------------------------------------
