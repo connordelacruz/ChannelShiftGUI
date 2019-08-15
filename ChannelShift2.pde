@@ -437,9 +437,16 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 // TODO: doc, clean up reusable?
 void randomizeValues(boolean source, boolean target, boolean horizontal, boolean vertical) {
   // Channels
+  // TODO: random(3) seems to favor 0 when converted to an int, maybe use a higher value and divide or something when casting?
   if (source) {
     sourceChannel = int(random(3));
     setChannelToggle(true, sourceChannel);
+    // Set target to match source if unchecked
+    // TODO: Explain this behavior somewhere or add a toggle to lock target to match channel (i.e. enable/disable swap)
+    if (!target) {
+      targetChannel = sourceChannel;
+      setChannelToggle(false, targetChannel);
+    }
   }
   // TODO: if source && !target, set target to match?
   if (target) {
