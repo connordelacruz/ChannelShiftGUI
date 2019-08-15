@@ -130,6 +130,7 @@ public void createGUI(){
   controlsWindow.noLoop();
   controlsWindow.setActionOnClose(G4P.KEEP_OPEN);
   controlsWindow.addDrawHandler(this, "controlsWindow_draw");
+  controlsWindow.addMouseHandler(this, "controlsWindow_mouse");
   // Source channel toggle 
   createSrcChannelPanel();
   // Target channel toggle 

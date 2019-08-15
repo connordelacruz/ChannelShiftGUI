@@ -50,10 +50,15 @@ boolean recursiveIteration = false;
 
 // Set when controls window is drawn so it doesn't get duplicated on subsequent
 // calls to setup()
+// TODO: may no longer be necessary
 boolean controlsWindowCreated = false;
 // Set to true if the preview image has been modified since the last time it
 // was rendered, telling the draw() method that it needs to be re-drawn
 boolean previewImgUpdated = true;
+// Set to true if a silder was changed. Window mouse event listener checks this
+// when the mouse is released and updates the preview image. This is to avoid
+// re-drawing the preview every time the slider value changes
+boolean sliderChanged = false;
 // Whether the sliders are using percentages of dimensions or exact pixel
 // values. Default is percentages. [0] is x slider and [1] is y slider
 boolean[] sliderPercentValue = new boolean[]{true, true};
@@ -285,6 +290,21 @@ synchronized public void controlsWindow_draw(PApplet appc, GWinData data) {
   controlsWindowCreated = true;
 } 
 
+// Listens for mouse events and updates preview if a slider was changed
+public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) {
+  switch(event.getAction()) {
+    case MouseEvent.RELEASE:
+      // Update preview if a slider value was changed
+      if (sliderChanged) {
+        sliderChanged = false;
+        showPreview();
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 // Source/Target Channel -------------------------------------------------------
 
 /**
@@ -335,9 +355,6 @@ public void targB_clicked(GOption source, GEvent event) {
 } 
 
 // Horizontal/Vertical Shift ---------------------------------------------------
-
-// TODO: update preview once mouse is released
-//        https://forum.processing.org/two/discussion/11491/g4p-how-to-receive-slider-changes-only-on-mouse-release
 
 /**
  * Convert shift percent to number of pixels
@@ -408,10 +425,12 @@ void setShift(boolean horizontal, int shiftAmount) {
 
 public void xSlider_change(GSlider source, GEvent event) { 
   setShift(true, source.getValueI());
+  sliderChanged = true;
 } 
 
 public void ySlider_change(GSlider source, GEvent event) { 
   setShift(false, source.getValueI());
+  sliderChanged = true;
 } 
 
 // Slider Toggles --------------------------------------------------------------
@@ -448,7 +467,6 @@ void randomizeValues(boolean source, boolean target, boolean horizontal, boolean
       setChannelToggle(false, targetChannel);
     }
   }
-  // TODO: if source && !target, set target to match?
   if (target) {
     targetChannel = int(random(3));
     setChannelToggle(false, targetChannel);
@@ -509,6 +527,8 @@ public void resetBtn_click(GButton source, GEvent event) {
 } 
 
 // Preview Button --------------------------------------------------------------
+
+// TODO: Remove preview btn after ensuring all inputs update the preview on change
 
 /**
  * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
