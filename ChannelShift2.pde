@@ -307,6 +307,7 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
 
 // Source/Target Channel -------------------------------------------------------
 
+// TODO: update preview if src != targ and/or x/y shift > 0
 /**
  * Set the current source/target channel
  * @param source If true, set sourceChannel, else set targetChannel
