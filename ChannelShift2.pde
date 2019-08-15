@@ -106,12 +106,7 @@ void updatePreview() {
  * Show file select dialog and attempt to load image on callback
  */
 void selectFile() {
-  // NOTE: doing this so that the file select dialog starts in the sketch
-  // directory. selectInput() is kinda limited, so passing it the sketch file
-  // as a starting point as a hack-y workaround
-  // TODO: Should this just start in the last selected directory?
-  File defaultInFile = new File(sketchPath(getClass().getName() + ".pde"));
-  selectInput("Load image:", "imageFileSelected", defaultInFile);
+  selectInput("Load image:", "imageFileSelected");
 }
 
 /**
@@ -151,8 +146,9 @@ void loadImageFile(String filename) {
  * @param verticalShift Amount channel was shifted vertically
  * @param sourceChannel Channel from the source image (Index into CHANNELS)
  * @param targetChannel Channel from the target image (Index into CHANNELS)
+ * @param recursiveIteration Whether this was a recursive iteration or not
  * @return String representation of the sketch step. The general format is:
- * "s{RGB}-t{RGB}-x{int}-y{int}"
+ * "s{RGB}-t{RGB}-x{int}-y{int}{-rec}"
  * If source and target channels are the same, a single RGB channel will be
  * listed instead of "s{RGB}-t{RGB}".
  */
@@ -166,7 +162,7 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
   step += "-x" + horizontalShift;
   step += "-y" + verticalShift;
   if (recursiveIteration)
-    step += "-recurs";
+    step += "-rec";
   return step;
 }
 
@@ -179,13 +175,12 @@ void updateSteps() {
 
 /**
  * Returns an output file path based on source image name and sketch steps.
- * @return A full file name and path with the image file and sketch steps.
- * Relative path is passed to sketchPath(), so default output will be within
- * the current directory
+ * @return File name with the image file and sketch steps. Parent directory is
+ * not specified, so selectOutput() should default to last opened directory
+ * (depending on OS)
  */
 String defaultOutputFilename() {
-  // TODO: don't use sketchPath() and let OS handle output dir?
-  return sketchPath(imgFile + sketchSteps + ".png");
+  return imgFile + sketchSteps + ".png";
 }
 
 /**
