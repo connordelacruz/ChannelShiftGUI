@@ -409,6 +409,9 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   // Update globals
   sliderPercentValue[configIndex] = setPercentValue;
   setShift(horizontal, updatedValue);
+  // Update preview since percentage and pixels might not convert to exact values
+  // TODO: only update preview if exact pixel amount is not the same?
+  showPreview();
 }
 
 /**
@@ -443,7 +446,7 @@ public void ySlider_change(GSlider source, GEvent event) {
 
 // Slider Toggles --------------------------------------------------------------
 
-// TODO: udpate preview since percentage may not be exactly the same as exact pixel
+// TODO: rename related items to indicate that this sets the units of the sliders?
 
 public void xSliderPercent_clicked(GOption source, GEvent event) {
   setSliderValueType(true, true);
