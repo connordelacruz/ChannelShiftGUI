@@ -307,7 +307,6 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
 
 // Source/Target Channel -------------------------------------------------------
 
-// TODO: update preview if src != targ and/or x/y shift > 0
 /**
  * Set the current source/target channel
  * @param source If true, set sourceChannel, else set targetChannel
@@ -331,28 +330,36 @@ void setChannelToggle(boolean source, int channel) {
   toggles[channel].setSelected(true);
 }
 
+// TODO: just 2 listeners, find a way to bind data for RGB index?
+
 public void srcR_clicked(GOption source, GEvent event) { 
   selectChannel(true, 0);
+  showPreview();
 } 
 
 public void srcG_clicked(GOption source, GEvent event) { 
   selectChannel(true, 1);
+  showPreview();
 } 
 
 public void srcB_clicked(GOption source, GEvent event) { 
   selectChannel(true, 2);
+  showPreview();
 } 
 
 public void targR_clicked(GOption source, GEvent event) { 
   selectChannel(false, 0);
+  showPreview();
 } 
 
 public void targG_clicked(GOption source, GEvent event) { 
   selectChannel(false, 1);
+  showPreview();
 } 
 
 public void targB_clicked(GOption source, GEvent event) { 
   selectChannel(false, 2);
+  showPreview();
 } 
 
 // Horizontal/Vertical Shift ---------------------------------------------------
@@ -435,6 +442,8 @@ public void ySlider_change(GSlider source, GEvent event) {
 } 
 
 // Slider Toggles --------------------------------------------------------------
+
+// TODO: udpate preview since percentage may not be exactly the same as exact pixel
 
 public void xSliderPercent_clicked(GOption source, GEvent event) {
   setSliderValueType(true, true);
@@ -530,6 +539,7 @@ public void resetBtn_click(GButton source, GEvent event) {
 // Preview Button --------------------------------------------------------------
 
 // TODO: Remove preview btn after ensuring all inputs update the preview on change
+// TODO: Replace preview button with reset above confirm step, stretch randomize to fill
 
 /**
  * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
