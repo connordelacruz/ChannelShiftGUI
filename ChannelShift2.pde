@@ -139,6 +139,7 @@ void loadImageFile(String filename) {
   // Update window size
   updateWindowSize();
   // TODO: update imgFile (for default output name)
+  // TODO: Reset sketch steps
   // Redraw preview
   previewImgUpdated = true;
 }
@@ -562,6 +563,8 @@ public void previewBtn_click(GButton source, GEvent event) {
 
 // Confirm Button --------------------------------------------------------------
 
+// TODO: Undo button (keep track of steps)
+
 public void confirmBtn_click(GButton source, GEvent event) { 
   // Display preview
   showPreview();
@@ -590,6 +593,7 @@ public void loadBtn_click(GButton source, GEvent event) {
 
 // Save Button -----------------------------------------------------------------
 
+// TODO: it seems preview is reverted to previous step on save click?
 public void saveBtn_click(GButton source, GEvent event) {
   // TODO: set targetImg to previewImg before saving so you get what you see
   saveResultAs();
