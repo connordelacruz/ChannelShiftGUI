@@ -474,7 +474,7 @@ void randomizeValues(boolean source, boolean target, boolean horizontal, boolean
     sourceChannel = int(random(3));
     setChannelToggle(true, sourceChannel);
     // Set target to match source if unchecked
-    // TODO: Explain this behavior somewhere or add a toggle to lock target to match channel (i.e. enable/disable swap)
+    // TODO: Explain this behavior somewhere; add a toggle to lock target to match channel (i.e. enable/disable swap)
     if (!target) {
       targetChannel = sourceChannel;
       setChannelToggle(false, targetChannel);
@@ -485,6 +485,7 @@ void randomizeValues(boolean source, boolean target, boolean horizontal, boolean
     setChannelToggle(false, targetChannel);
   }
   // Shift
+  // TODO: inputs for max percent random shift for each dimension
   if (horizontal) {
     int xShift = sliderPercentValue[0] ? randomShiftPercent() : randomShiftAmount(true, targetImg);
     xSlider.setValue(xShift);
