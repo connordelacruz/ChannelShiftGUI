@@ -3,13 +3,9 @@ import g4p_controls.*;
 // Configs =====================================================================
 
 // Input File ------------------------------------------------------------------
-// TODO: only need imgFile, get rid of path and ext and just make a variable for default image path
-// File path relative to current directory
-String imgPath = "source/";
-// File name
-String imgFile = "test";
-// File extension
-String imgExt = "jpg";
+// Default image to load on start
+String defaultImgName = "test";
+String defaultImgPath = "source/" + defaultImgName + ".jpg";
 
 // Interface -------------------------------------------------------------------
 // Preview window size (does not affect output image size)
@@ -18,6 +14,7 @@ int maxWindowSize = 600;
 
 // Globals =====================================================================
 
+// TODO: clearly define what each of these are, make consistent
 // Original image and working image
 PImage sourceImg, targetImg, previewImg;
 // Window dimensions
@@ -27,8 +24,11 @@ int windowWidth, windowHeight;
 // making operations more human readable
 String[] CHANNELS = new String[]{"R","G","B"};
 
+// Base image file name, used for default save name in conjunction with
+// sketchSteps
+String imgFile;
 // Store shift values and which channels were shifted/swapped. Will be appended
-// to default filename 
+// to default save filename 
 String sketchSteps;
 
 // String to use for indent in output msgs
@@ -48,10 +48,6 @@ boolean randomizeYShift = true;
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = false;
 
-// Set when controls window is drawn so it doesn't get duplicated on subsequent
-// calls to setup()
-// TODO: may no longer be necessary
-boolean controlsWindowCreated = false;
 // Set to true if the preview image has been modified since the last time it
 // was rendered, telling the draw() method that it needs to be re-drawn
 boolean previewImgUpdated = true;
@@ -107,6 +103,13 @@ void updatePreview() {
 
 // Loading ---------------------------------------------------------------------
 
+// TODO: doc; Move this elsewhere?
+String getBaseFileName(File f) {
+  String name = f.getName();
+  // Return name stripping last . followed by 1 or more chars
+  return name.replaceFirst("[.][^.]+$", "");
+}
+
 /**
  * Show file select dialog and attempt to load image on callback
  */
@@ -120,7 +123,7 @@ void selectFile() {
 void imageFileSelected(File selection) {
   if (selection != null) {
     println("Loading...");
-    loadImageFile(selection.getAbsolutePath());
+    loadImageFile(selection.getAbsolutePath(), getBaseFileName(selection));
     println("Image loaded.");
     println("");
   }
@@ -129,17 +132,21 @@ void imageFileSelected(File selection) {
 /**
  * Load an image file. Sets global variables and updates window size
  * accordingly. 
- * @param filename Path to the image file
+ * @param path Full path to the image file
+ * @param name Name of file without extension. Used for default filename when
+ * saving
  */
-void loadImageFile(String filename) {
+void loadImageFile(String path, String name) {
   // Set globals
-  sourceImg = loadImage(filename);
+  sourceImg = loadImage(path);
   targetImg = sourceImg.copy();
   previewImg = sourceImg.copy();
   // Update window size
   updateWindowSize();
-  // TODO: update imgFile (for default output name)
-  // TODO: Reset sketch steps
+  // Update imgFile (for default output name)
+  imgFile = name;
+  // Reset steps string
+  sketchSteps = "";
   // Redraw preview
   previewImgUpdated = true;
 }
@@ -285,10 +292,8 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
 
 // Controls Window -------------------------------------------------------------
 
-// Sets controlsWindowCreated to true
 synchronized public void controlsWindow_draw(PApplet appc, GWinData data) { 
   appc.background(230);
-  controlsWindowCreated = true;
 } 
 
 // Listens for mouse events and updates preview if a slider was changed
@@ -564,6 +569,7 @@ public void previewBtn_click(GButton source, GEvent event) {
 // Confirm Button --------------------------------------------------------------
 
 // TODO: Undo button (keep track of steps)
+// TODO: Disable confirm button if no changes are made
 
 public void confirmBtn_click(GButton source, GEvent event) { 
   // Display preview
@@ -604,16 +610,13 @@ public void saveBtn_click(GButton source, GEvent event) {
 
 void setup() {
   // Load image (initializes global PImage objects)
-  loadImageFile(imgPath + imgFile + "." + imgExt);
-  // Reset steps string
-  sketchSteps = "";
+  loadImageFile(defaultImgPath, defaultImgName);
   // Window
   size(1,1);
   surface.setResizable(true);
   updateWindowSize();
   // Display controls window
-  if (!controlsWindowCreated)
-    createGUI();
+  createGUI();
 }
 
 
