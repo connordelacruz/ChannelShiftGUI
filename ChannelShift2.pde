@@ -23,6 +23,8 @@ int windowWidth, windowHeight;
 // Maps index 0-2 to corresponding color channel. Used as a shorthand when
 // making operations more human readable
 String[] CHANNELS = new String[]{"R","G","B"};
+// String to use for indent in output msgs
+String INDENT = "   ";
 
 // Base image file name, used for default save name in conjunction with
 // sketchSteps
@@ -30,9 +32,6 @@ String imgFile;
 // Store shift values and which channels were shifted/swapped. Will be appended
 // to default save filename 
 String sketchSteps;
-
-// String to use for indent in output msgs
-String INDENT = "   ";
 
 // TODO: make these 2D arrays? Could simplify conditional assignment for reused code
 // Currently selected source and target channels
@@ -103,7 +102,9 @@ void updatePreview() {
 
 // Loading ---------------------------------------------------------------------
 
-// TODO: doc; Move this elsewhere?
+/**
+ * Returns the name of a file with the extension removed
+ */
 String getBaseFileName(File f) {
   String name = f.getName();
   // Return name stripping last . followed by 1 or more chars
@@ -223,23 +224,23 @@ void outFileSelected(File selection) {
 
 // Channel Shift ---------------------------------------------------------------
 
-// TODO: clean up and re-organize for new setup, update docs to remove old info
-
 /**
- * Calculates shift amount based on sketch configs.
+ * Returns a random shift amount in pixels based on image dimensions.
  * @param horizontal If true, calculate horizontal shift, else calculate
  * vertical shift
  * @param img PImage object that will be channel shifted. Used to determine
  * shift amount based on dimensions
- * @return Shift amount based on configs. If the type of shift is disabled,
- * will always return 0
+ * @return Shift amount in pixels
  */
 int randomShiftAmount(boolean horizontal, PImage img) {
   int imgDimension = horizontal ? img.width : img.height;
   return int(random(imgDimension));
 }
 
-// TODO: doc 
+/**
+ * Returns a random shift percentage
+ * @return Shift amount percentage (int between 0 and 99)
+ */
 int randomShiftPercent() {
   // Leaving 100 as upper bound since a 100% shift is identical
   return int(random(100));
@@ -325,15 +326,39 @@ void selectChannel(boolean source, int channel) {
     targetChannel = channel;
 }
 
-// TODO: doc 
-// TODO: just have this automatically update to match globals?
+/**
+ * Select a source/target channel toggle
+ * @param source If true, set sourceChannel, else set targetChannel
+ * @param channel Channel to set (Index into CHANNELS)
+ */
 void setChannelToggle(boolean source, int channel) {
   GOption[] toggles;
+  // TODO: move arrays to global so they don't need to be allocated each time
   if (source)
     toggles = new GOption[]{ srcR, srcG, srcB };
   else
     toggles = new GOption[]{ targR, targG, targB };
   toggles[channel].setSelected(true);
+}
+
+/**
+ * Update the selected source/target channel toggle to match the corresponding
+ * global variable
+ * @param source If true, set sourceChannel, else set targetChannel
+ */
+void updateChannelToggle(boolean source) {
+  int channel = source ? sourceChannel : targetChannel;
+  setChannelToggle(source, channel);
+}
+
+/**
+ * Update the selected source and target channel toggles to match global
+ * variables. Wrapper that calls updateChannelToggle() for both source and
+ * target
+ */
+void updateChannelToggles() {
+  updateChannelToggle(true);
+  updateChannelToggle(false);
 }
 
 // TODO: just 2 listeners, find a way to bind data for RGB index?
@@ -423,8 +448,8 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
 /**
  * Set horizontal or vertical shift
  * @param horizontal If true, set horizontal shift, else set vertical shift
- * @param shiftAmount Percent/number of pixels to shift by. If the specified
- * slider is set to use percent values, it will be converted
+ * @param shiftAmount Number of pixels to shift by. If the specified slider is
+ * set to use percent values, it will be converted
  */
 void setShift(boolean horizontal, int shiftAmount) {
   // Calculate amount of pixels to shift
@@ -438,6 +463,26 @@ void setShift(boolean horizontal, int shiftAmount) {
     horizontalShift = shiftAmount;
   else
     verticalShift = shiftAmount;
+}
+
+// TODO: doc and implement all below
+
+void setShiftSliderValue(boolean horizontal, int shiftAmount) {
+  GSlider slider = horizontal ? xSlider : ySlider;
+  // TODO: There's too much back and forth conversion, figure out how to reduce percentage conversions
+  if (sliderPercentValue[horizontal ? 0 : 1])
+    shiftAmount = shiftPixelsToPercent(horizontal, shiftAmount);
+  slider.setValue(shiftAmount);
+}
+
+void updateShiftSlider(boolean horizontal) {
+  int shiftAmount = horizontal ? horizontalShift : verticalShift;
+  setShiftSliderValue(horizontal, shiftAmount);
+}
+
+void updateShiftSliders() {
+  updateShiftSlider(true);
+  updateShiftSlider(false);
 }
 
 public void xSlider_change(GSlider source, GEvent event) { 
@@ -478,29 +523,30 @@ void randomizeValues(boolean source, boolean target, boolean horizontal, boolean
   // TODO: random(3) seems to favor 0 when converted to an int, maybe use a higher value and divide or something when casting?
   if (source) {
     sourceChannel = int(random(3));
-    setChannelToggle(true, sourceChannel);
+    updateChannelToggle(true);
     // Set target to match source if unchecked
     // TODO: Explain this behavior somewhere; add a toggle to lock target to match channel (i.e. enable/disable swap)
     if (!target) {
       targetChannel = sourceChannel;
-      setChannelToggle(false, targetChannel);
+      updateChannelToggle(false);
     }
   }
   if (target) {
     targetChannel = int(random(3));
-    setChannelToggle(false, targetChannel);
+    updateChannelToggle(false);
   }
   // Shift
   // TODO: inputs for max percent random shift for each dimension
+  // TODO: REDUCE REDUNDANT PERCENT CONVERSIONS
   if (horizontal) {
     int xShift = sliderPercentValue[0] ? randomShiftPercent() : randomShiftAmount(true, targetImg);
-    xSlider.setValue(xShift);
     setShift(true, xShift);
+    updateShiftSlider(true);
   }
   if (vertical) {
     int yShift = sliderPercentValue[1] ? randomShiftPercent() : randomShiftAmount(false, targetImg);
     setShift(false, yShift);
-    ySlider.setValue(yShift);
+    updateShiftSlider(false);
   }
 }
 
@@ -531,14 +577,11 @@ public void randomizeBtn_click(GButton source, GEvent event) {
  * Reset selected source/target channels and horizontal/vertical shift values
  */
 void resetShift() {
-  // TODO: method that updates toggles based on globals, use in randomize
-  srcR.setSelected(true);
-  targR.setSelected(true);
   sourceChannel = targetChannel = 0;
-  xSlider.setValue(0.0);
-  ySlider.setValue(0.0);
+  updateChannelToggles();
   setShift(true, 0);
   setShift(false, 0);
+  updateShiftSliders();
 }
 
 public void resetBtn_click(GButton source, GEvent event) { 
