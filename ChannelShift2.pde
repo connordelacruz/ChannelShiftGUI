@@ -37,6 +37,7 @@ String sketchSteps;
 // Currently selected source and target channels
 int sourceChannel, targetChannel;
 // Current horizontal and vertical shift amounts
+// TODO: store pixels AND percentage
 int horizontalShift, verticalShift;
 
 // If true, randomize button will affect the corresponding settings
@@ -194,6 +195,8 @@ void updateSteps() {
  * (depending on OS)
  */
 String defaultOutputFilename() {
+  // TODO: if we're saving previewImg, stringify current sketch step
+  // TODO: max filename of 255 characters
   return imgFile + sketchSteps + ".png";
 }
 
@@ -214,6 +217,7 @@ void outFileSelected(File selection) {
   if (selection != null) {
     println("Saving...");
     String outputFile = selection.getAbsolutePath();
+    // TODO: Save previewImg instead
     targetImg.save(outputFile);
     // Print output
     println("Result saved:");
