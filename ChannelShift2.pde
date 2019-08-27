@@ -301,7 +301,7 @@ synchronized public void controlsWindow_draw(PApplet appc, GWinData data) {
   appc.background(230);
 } 
 
-// TODO: makes slight changes if you click anything after randomizing?
+// TODO: makes slight changes if you click anything after randomizing w/ percentages
 // Listens for mouse events and updates preview if a slider was changed
 public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) {
   switch(event.getAction()) {
@@ -538,7 +538,6 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 // TODO: doc, clean up reusable?
 void randomizeValues(boolean source, boolean target, boolean horizontal, boolean vertical) {
   // Channels
-  // TODO: random(3) seems to favor 0 when converted to an int, maybe use a higher value and divide or something when casting?
   if (source) {
     sourceChannel = int(random(3));
     updateChannelToggle(true);
@@ -640,7 +639,7 @@ public void loadBtn_click(GButton source, GEvent event) {
 
 // Save Button -----------------------------------------------------------------
 
-// TODO: it seems preview is reverted to previous step on save click?
+// TODO: (sometimes?) preview is reverted to previous step on save click?
 public void saveBtn_click(GButton source, GEvent event) {
   // TODO: set targetImg to previewImg before saving so you get what you see
   saveResultAs();
