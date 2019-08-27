@@ -609,9 +609,10 @@ void showPreview() {
   previewImg.updatePixels();
 }
 
-public void previewBtn_click(GButton source, GEvent event) { 
-  showPreview();
-} 
+// TODO: REMOVE
+/* public void previewBtn_click(GButton source, GEvent event) { */ 
+/*   showPreview(); */
+/* } */ 
 
 // Confirm Button --------------------------------------------------------------
 

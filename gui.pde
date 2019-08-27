@@ -27,7 +27,8 @@ GCheckbox randSrcCheckbox, randTargCheckbox,
           randXShiftCheckbox, randYShiftCheckbox;
 // Preview/Confirm Buttons -----------------------------------------------------
 GPanel previewConfirmPanel;
-GButton previewBtn; 
+// TODO: remove
+/* GButton previewBtn; */ 
 GButton confirmBtn; 
 GCheckbox recursiveCheckbox;
 // Save/Load Buttons -----------------------------------------------------------
@@ -368,11 +369,12 @@ public void createPreviewConfirmPanel() {
   setupGeneralPanel(previewConfirmPanel);
   previewConfirmPanel.setOpaque(false);
   // Preview button
-  previewBtn = new GButton(controlsWindow, 0, 0, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_BTN_HEIGHT);
-  previewBtn.setText("Preview");
-  previewBtn.setLocalColorScheme(GCScheme.PURPLE_SCHEME);
-  previewBtn.addEventHandler(this, "previewBtn_click");
-  previewConfirmPanel.addControl(previewBtn);
+  // TODO: replace with reset button, rename panel
+  /* previewBtn = new GButton(controlsWindow, 0, 0, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_BTN_HEIGHT); */
+  /* previewBtn.setText("Preview"); */
+  /* previewBtn.setLocalColorScheme(GCScheme.PURPLE_SCHEME); */
+  /* previewBtn.addEventHandler(this, "previewBtn_click"); */
+  /* previewConfirmPanel.addControl(previewBtn); */
   // Confirm button 
   confirmBtn = new GButton(controlsWindow, 0, PREVIEW_CONFIRM_BTN_HEIGHT + 10, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_BTN_HEIGHT);
   confirmBtn.setText("Confirm Step");
