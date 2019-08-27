@@ -301,7 +301,7 @@ synchronized public void controlsWindow_draw(PApplet appc, GWinData data) {
   appc.background(230);
 } 
 
-// TODO: makes slight changes if you click anything after randomizing??
+// TODO: makes slight changes if you click anything after randomizing?
 // Listens for mouse events and updates preview if a slider was changed
 public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) {
   switch(event.getAction()) {
@@ -315,6 +315,19 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
     default:
       break;
   }
+}
+
+// Preview Window --------------------------------------------------------------
+
+/**
+ * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
+ * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
+ */
+void showPreview() {
+  previewImg = targetImg.copy();
+  shiftChannel(sourceImg, previewImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
+  previewImgUpdated = true;
+  previewImg.updatePixels();
 }
 
 // Source/Target Channel -------------------------------------------------------
@@ -593,21 +606,6 @@ public void resetBtn_click(GButton source, GEvent event) {
   resetShift();
   showPreview();
 } 
-
-// Preview Button --------------------------------------------------------------
-
-// TODO: Remove preview btn after ensuring all inputs update the preview on change, move showPreview()
-
-/**
- * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
- * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
- */
-void showPreview() {
-  previewImg = targetImg.copy();
-  shiftChannel(sourceImg, previewImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
-  previewImgUpdated = true;
-  previewImg.updatePixels();
-}
 
 // Confirm Button --------------------------------------------------------------
 
