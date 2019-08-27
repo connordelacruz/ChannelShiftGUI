@@ -20,16 +20,14 @@ GPanel yShiftPanel;
 GSlider ySlider; 
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
-// Randomize/Reset Buttons -----------------------------------------------------
-GPanel randomizeResetPanel, randomizeCheckboxPanel;
-GButton resetBtn, randomizeBtn; 
+// Randomize Button/Toggles ----------------------------------------------------
+GPanel randomizePanel, randomizeCheckboxPanel;
+GButton randomizeBtn; 
 GCheckbox randSrcCheckbox, randTargCheckbox, 
           randXShiftCheckbox, randYShiftCheckbox;
-// Preview/Confirm Buttons -----------------------------------------------------
-GPanel previewConfirmPanel;
-// TODO: remove
-/* GButton previewBtn; */ 
-GButton confirmBtn; 
+// Reset/Confirm Buttons -------------------------------------------------------
+GPanel resetConfirmPanel;
+GButton resetBtn, confirmBtn; 
 GCheckbox recursiveCheckbox;
 // Save/Load Buttons -----------------------------------------------------------
 GPanel loadSavePanel;
@@ -72,6 +70,7 @@ int SRC_CHANNEL_Y = Y_START;
 int TARG_CHANNEL_X = SRC_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
 int TARG_CHANNEL_Y = Y_START;
 // Randomize/Reset Buttons -----------------------------------------------------
+// TODO: remove RESET refs, take up full width
 // Subtract toggles + margins from window width (also subtracting margins for this element)
 int RAND_RESET_WIDTH = WINDOW_WIDTH - 2 * CHANNEL_TOGGLE_WIDTH - 3 * X_MARGINS;
 // Half of panel + margin
@@ -111,6 +110,7 @@ int LOAD_SAVE_WIDTH = WINDOW_WIDTH / 2 - X_MARGINS;
 int LOAD_SAVE_BTN_HEIGHT = 30;
 int LOAD_SAVE_HEIGHT = 2*LOAD_SAVE_BTN_HEIGHT + 20;
 // Preview/Confirm Buttons -----------------------------------------------------
+// TODO: rename PREVIEW -> RESET
 int PREVIEW_CONFIRM_Y = LOAD_SAVE_Y;
 int PREVIEW_CONFIRM_X = LOAD_SAVE_X + LOAD_SAVE_WIDTH + X_MARGINS;
 int PREVIEW_CONFIRM_WIDTH = LOAD_SAVE_WIDTH;
@@ -141,11 +141,11 @@ public void createGUI(){
   // Vertical shift slider 
   createYShiftPanel();
   // Randomize/reset buttons 
-  createRandomizeResetPanel();
+  createRandomizePanel();
   // Load/save buttons 
   createLoadSavePanel();
   // Preview/Confirm buttons
-  createPreviewConfirmPanel();
+  createResetConfirmPanel();
 
   controlsWindow.loop();
 }
@@ -302,22 +302,16 @@ public void createYShiftPanel() {
 // Randomize/Reset Button Panel ------------------------------------------------
 
 // TODO: Adjust layout
-public void createRandomizeResetPanel() {
-  randomizeResetPanel = new GPanel(controlsWindow, RAND_RESET_X, RAND_RESET_Y, RAND_RESET_WIDTH, RAND_RESET_HEIGHT);
-  setupGeneralPanel(randomizeResetPanel);
-  randomizeResetPanel.setOpaque(false);
-  // Reset Button
-  resetBtn = new GButton(controlsWindow, 0, 0, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
-  resetBtn.setText("Reset");
-  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
-  resetBtn.addEventHandler(this, "resetBtn_click");
-  randomizeResetPanel.addControl(resetBtn);
+public void createRandomizePanel() {
+  randomizePanel = new GPanel(controlsWindow, RAND_RESET_X, RAND_RESET_Y, RAND_RESET_WIDTH, RAND_RESET_HEIGHT);
+  setupGeneralPanel(randomizePanel);
+  randomizePanel.setOpaque(false);
   // Randomize Button
   randomizeBtn = new GButton(controlsWindow, RAND_BTN_X, 0, RAND_RESET_BTN_WIDTH, RAND_RESET_BTN_HEIGHT);
   randomizeBtn.setText("Randomize");
   randomizeBtn.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   randomizeBtn.addEventHandler(this, "randomizeBtn_click");
-  randomizeResetPanel.addControl(randomizeBtn);
+  randomizePanel.addControl(randomizeBtn);
   // Randomize Checkboxes
   randomizeCheckboxPanel = new GPanel(controlsWindow, RAND_PANEL_X, RAND_PANEL_Y, RAND_PANEL_WIDTH, RAND_PANEL_HEIGHT, "Randomize Options");
   setupGeneralPanel(randomizeCheckboxPanel, GCScheme.CYAN_SCHEME);
@@ -337,7 +331,7 @@ public void createRandomizeResetPanel() {
   randYShiftCheckbox.setSelected(true);
   randYShiftCheckbox.addEventHandler(this, "randYShiftCheckbox_click");
   randomizeCheckboxPanel.addControl(randYShiftCheckbox);
-  randomizeResetPanel.addControl(randomizeCheckboxPanel);
+  randomizePanel.addControl(randomizeCheckboxPanel);
 }
 
 // Load/Save Panel -------------------------------------------------------------
@@ -364,27 +358,27 @@ public void createLoadSavePanel() {
 
 // Preview/Confirm Panel -------------------------------------------------------
 
-public void createPreviewConfirmPanel() {
-  previewConfirmPanel = new GPanel(controlsWindow, PREVIEW_CONFIRM_X, PREVIEW_CONFIRM_Y, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_HEIGHT);
-  setupGeneralPanel(previewConfirmPanel);
-  previewConfirmPanel.setOpaque(false);
-  // Preview button
-  // TODO: replace with reset button, rename panel
-  /* previewBtn = new GButton(controlsWindow, 0, 0, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_BTN_HEIGHT); */
-  /* previewBtn.setText("Preview"); */
-  /* previewBtn.setLocalColorScheme(GCScheme.PURPLE_SCHEME); */
-  /* previewBtn.addEventHandler(this, "previewBtn_click"); */
-  /* previewConfirmPanel.addControl(previewBtn); */
-  // Confirm button 
+public void createResetConfirmPanel() {
+  resetConfirmPanel = new GPanel(controlsWindow, PREVIEW_CONFIRM_X, PREVIEW_CONFIRM_Y, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_HEIGHT);
+  setupGeneralPanel(resetConfirmPanel);
+  resetConfirmPanel.setOpaque(false);
+  // Reset Button
+  resetBtn = new GButton(controlsWindow, 0, 0, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_BTN_HEIGHT);
+  resetBtn.setText("Reset");
+  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
+  resetBtn.addEventHandler(this, "resetBtn_click");
+  resetConfirmPanel.addControl(resetBtn);
+  // Confirm Button 
+  // TODO: disable when SRC == TARG && sliders are 0
   confirmBtn = new GButton(controlsWindow, 0, PREVIEW_CONFIRM_BTN_HEIGHT + 10, PREVIEW_CONFIRM_WIDTH, PREVIEW_CONFIRM_BTN_HEIGHT);
   confirmBtn.setText("Confirm Step");
   confirmBtn.addEventHandler(this, "confirmBtn_click");
-  previewConfirmPanel.addControl(confirmBtn);
+  resetConfirmPanel.addControl(confirmBtn);
   // Recursive checkbox
   recursiveCheckbox = new GCheckbox(controlsWindow, 0, 2*PREVIEW_CONFIRM_BTN_HEIGHT + 10, PREVIEW_CONFIRM_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
   recursiveCheckbox.setText("Recursive", GAlign.CENTER, GAlign.MIDDLE);
   recursiveCheckbox.setOpaque(true);
   recursiveCheckbox.addEventHandler(this, "recursiveCheckbox_click");
-  previewConfirmPanel.addControl(recursiveCheckbox);
+  resetConfirmPanel.addControl(recursiveCheckbox);
 }
 

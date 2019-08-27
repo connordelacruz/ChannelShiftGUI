@@ -595,8 +595,7 @@ public void resetBtn_click(GButton source, GEvent event) {
 
 // Preview Button --------------------------------------------------------------
 
-// TODO: Remove preview btn after ensuring all inputs update the preview on change
-// TODO: Replace preview button with reset above confirm step, stretch randomize to fill
+// TODO: Remove preview btn after ensuring all inputs update the preview on change, move showPreview()
 
 /**
  * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
@@ -608,11 +607,6 @@ void showPreview() {
   previewImgUpdated = true;
   previewImg.updatePixels();
 }
-
-// TODO: REMOVE
-/* public void previewBtn_click(GButton source, GEvent event) { */ 
-/*   showPreview(); */
-/* } */ 
 
 // Confirm Button --------------------------------------------------------------
 
