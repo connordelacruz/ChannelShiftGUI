@@ -301,6 +301,7 @@ synchronized public void controlsWindow_draw(PApplet appc, GWinData data) {
   appc.background(230);
 } 
 
+// TODO: makes slight changes if you click anything after randomizing??
 // Listens for mouse events and updates preview if a slider was changed
 public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) {
   switch(event.getAction()) {
