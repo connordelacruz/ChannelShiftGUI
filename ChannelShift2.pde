@@ -33,14 +33,9 @@ String imgFile;
 // to default save filename 
 String sketchSteps;
 
-// TODO: make these 2D arrays? Could simplify conditional assignment for reused code
 // Currently selected source and target channels
 int sourceChannel, targetChannel;
-// Current horizontal and vertical shift amounts
-// TODO: store pixels AND percentage
-int horizontalShift, verticalShift;
-
-// TODO: replace horizontal and vertical shift vars
+// TODO: doc
 ShiftManager xShiftManager, yShiftManager;
 
 // If true, randomize button will affect the corresponding settings
@@ -131,6 +126,8 @@ void imageFileSelected(File selection) {
     loadImageFile(selection.getAbsolutePath(), getBaseFileName(selection));
     println("Image loaded.");
     println("");
+    // Reset UI and configs
+    resetShift();
   }
 }
 
@@ -152,7 +149,9 @@ void loadImageFile(String path, String name) {
   imgFile = name;
   // Reset steps string
   sketchSteps = "";
-  // TODO: Update managers, reset UI/configs
+  // Update managers
+  xShiftManager = new ShiftManager(sourceImg.width);
+  yShiftManager = new ShiftManager(sourceImg.height);
   // Redraw preview
   previewImgUpdated = true;
 }
@@ -189,7 +188,7 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
  * Update sketchSteps using globals
  */
 void updateSteps() {
-  sketchSteps += "_" + stringifyStep(horizontalShift, verticalShift, sourceChannel, targetChannel, recursiveIteration);
+  sketchSteps += "_" + stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), sourceChannel, targetChannel, recursiveIteration);
 }
 
 /**
@@ -329,7 +328,7 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
  */
 void showPreview() {
   previewImg = targetImg.copy();
-  shiftChannel(sourceImg, previewImg, horizontalShift, verticalShift, sourceChannel, targetChannel);
+  shiftChannel(sourceImg, previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), sourceChannel, targetChannel);
   previewImgUpdated = true;
   previewImg.updatePixels();
 }
@@ -417,28 +416,6 @@ public void targB_clicked(GOption source, GEvent event) {
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
-// TODO: move some of this to manager?
-
-/**
- * Convert shift percent to number of pixels
- * @param horizontal If true, calculate horizontal shift, else vertical shift
- * @param shiftPercent Percent of image dimension to convert to pixels
- */
-int shiftPercentToPixels(boolean horizontal, int shiftPercent) {
-  int imgDimension = horizontal ? targetImg.width : targetImg.height;
-  return (int)(imgDimension * shiftPercent / 100);
-}
-
-/**
- * Convert shift pixel amount to a percent of the image size
- * @param horizontal If true, calculate horizontal shift, else vertical shift
- * @param shiftAmount Amount of pixels to convert to a percentage
- */
-int shiftPixelsToPercent(boolean horizontal, int shiftAmount) {
-  int imgDimension = horizontal ? targetImg.width : targetImg.height;
-  return (int)(100 * shiftAmount / imgDimension);
-}
-
 /**
  * Set whether a shift slider is using a percentage or exact pixel values.
  * Converts the existing value of the slider accordingly
@@ -447,26 +424,24 @@ int shiftPixelsToPercent(boolean horizontal, int shiftAmount) {
  * exact pixel values
  */
 void setSliderValueType(boolean horizontal, boolean setPercentValue) {
-  // Determine which slider to update
   int configIndex = horizontal ? 0 : 1;
+  // Don't update if nothing changed
+  if (sliderPercentValue[configIndex] == setPercentValue)
+    return;
+  ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
   GSlider target = horizontal ? xSlider : ySlider;
-  int imgDimension = horizontal ? targetImg.width : targetImg.height;
-  int upperBound = setPercentValue ? 100 : imgDimension;
-  // Convert existing value to new value type
-  int currentValue = target.getValueI();
-  int updatedValue = currentValue;
-  if (setPercentValue && !sliderPercentValue[configIndex])
-    updatedValue = shiftPixelsToPercent(horizontal, currentValue);
-  else if (!setPercentValue && sliderPercentValue[configIndex])
-    updatedValue = shiftPercentToPixels(horizontal, currentValue);
+  int updatedValue, upperBound;
+  if (setPercentValue) {
+    updatedValue = manager.getShiftPercent();
+    upperBound = 100;
+  } else {
+    updatedValue = manager.getShiftAmount();
+    upperBound = manager.getImgDimension();
+  }
   // Set bounds and current value
   target.setLimits(updatedValue, 0, upperBound);
   // Update globals
   sliderPercentValue[configIndex] = setPercentValue;
-  setShift(horizontal, updatedValue);
-  // Update preview since percentage and pixels might not convert to exact values
-  // TODO: only update preview if exact pixel amount is not the same?
-  showPreview();
 }
 
 /**
@@ -476,32 +451,25 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
  * set to use percent values, it will be converted
  */
 void setShift(boolean horizontal, int shiftAmount) {
-  // Calculate amount of pixels to shift
-  // TODO: should this function be aware of the GUI implementation? or should percentage calc happen before call?
+  ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
   boolean percentValue = sliderPercentValue[horizontal ? 0 : 1];
-  // If slider is using a percent value, convert it, otherwise it's already an
-  // exact pixel value
   if (percentValue)
-    shiftAmount = shiftPercentToPixels(horizontal, shiftAmount);
-  if (horizontal)
-    horizontalShift = shiftAmount;
+    manager.setShiftPercent(shiftAmount);
   else
-    verticalShift = shiftAmount;
+    manager.setShiftAmount(shiftAmount);
 }
 
 // TODO: doc and implement all below
 
-void setShiftSliderValue(boolean horizontal, int shiftAmount) {
+void setShiftSliderValue(boolean horizontal) {
   GSlider slider = horizontal ? xSlider : ySlider;
-  // TODO: There's too much back and forth conversion, figure out how to reduce percentage conversions
-  if (sliderPercentValue[horizontal ? 0 : 1])
-    shiftAmount = shiftPixelsToPercent(horizontal, shiftAmount);
-  slider.setValue(shiftAmount);
+  ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
+  int val = sliderPercentValue[horizontal ? 0 : 1] ? manager.getShiftPercent() : manager.getShiftAmount();
+  slider.setValue(val);
 }
 
 void updateShiftSlider(boolean horizontal) {
-  int shiftAmount = horizontal ? horizontalShift : verticalShift;
-  setShiftSliderValue(horizontal, shiftAmount);
+  setShiftSliderValue(horizontal);
 }
 
 void updateShiftSliders() {
@@ -560,7 +528,6 @@ void randomizeValues(boolean source, boolean target, boolean horizontal, boolean
   }
   // Shift
   // TODO: inputs for max percent random shift for each dimension
-  // TODO: REDUCE REDUNDANT PERCENT CONVERSIONS
   if (horizontal) {
     int xShift = sliderPercentValue[0] ? randomShiftPercent() : randomShiftAmount(true, targetImg);
     setShift(true, xShift);
@@ -663,9 +630,6 @@ void setup() {
   updateWindowSize();
   // Display controls window
   createGUI();
-  // Initialize managers TODO: move to loadImageFile()
-  xShiftManager = new ShiftManager(sourceImg.width);
-  yShiftManager = new ShiftManager(sourceImg.height);
 }
 
 
