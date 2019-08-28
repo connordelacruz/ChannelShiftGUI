@@ -40,6 +40,9 @@ int sourceChannel, targetChannel;
 // TODO: store pixels AND percentage
 int horizontalShift, verticalShift;
 
+// TODO: replace horizontal and vertical shift vars
+ShiftManager xShiftManager, yShiftManager;
+
 // If true, randomize button will affect the corresponding settings
 boolean randomizeSrc = true; 
 boolean randomizeTarg = true; 
@@ -149,6 +152,7 @@ void loadImageFile(String path, String name) {
   imgFile = name;
   // Reset steps string
   sketchSteps = "";
+  // TODO: Update managers, reset UI/configs
   // Redraw preview
   previewImgUpdated = true;
 }
@@ -413,6 +417,8 @@ public void targB_clicked(GOption source, GEvent event) {
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
+// TODO: move some of this to manager?
+
 /**
  * Convert shift percent to number of pixels
  * @param horizontal If true, calculate horizontal shift, else vertical shift
@@ -657,6 +663,9 @@ void setup() {
   updateWindowSize();
   // Display controls window
   createGUI();
+  // Initialize managers TODO: move to loadImageFile()
+  xShiftManager = new ShiftManager(sourceImg.width);
+  yShiftManager = new ShiftManager(sourceImg.height);
 }
 
 
