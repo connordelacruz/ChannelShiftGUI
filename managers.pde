@@ -1,7 +1,17 @@
+// =============================================================================
+// Classes to manage the internal state of the sketch
+// =============================================================================
 
-// TODO: doc and organize
+// Source/Target Channels ======================================================
 
-// TODO: doc methods 
+// TODO
+
+
+// Channel Shift ===============================================================
+
+/**
+ * Manage the state of channel shift values
+ */
 public class ShiftManager {
   // Shift amounts (pixels and percentage)
   int shiftAmount;
@@ -41,7 +51,7 @@ public class ShiftManager {
 
   public int getShiftPercent() { return this.shiftPercent; }
 
-  // TODO: just reset shift values?
+  // TODO: just reset shift values? Then use this instead of creating new ShiftManagers each time
   public void setImgDimension(int imgDimension) {
     // Skip if dimension is unchanged
     if (imgDimension == this.imgDimension)
@@ -53,4 +63,5 @@ public class ShiftManager {
 
   public int getImgDimension() { return this.imgDimension; }
 }
+
 
