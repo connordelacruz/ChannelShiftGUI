@@ -61,14 +61,16 @@ public class ChannelManager {
  */
 public class ShiftManager {
   // Shift amounts (pixels and percentage)
-  int shiftAmount;
-  int shiftPercent;
+  int shiftAmount, shiftPercent;
   // Corresponding image dimension (used for percent and max calculations)
   int imgDimension;
 
+  public ShiftManager() {
+    this.shiftAmount = this.shiftPercent = this.imgDimension = 0;
+  }
+
   public ShiftManager(int imgDimension) {
-    this.shiftAmount = 0;
-    this.shiftPercent = 0;
+    this();
     this.imgDimension = imgDimension;
   }
 
@@ -98,7 +100,7 @@ public class ShiftManager {
 
   public int getShiftPercent() { return this.shiftPercent; }
 
-  // TODO: resetShift()
+  public void resetShift() { this.shiftAmount = this.shiftPercent = 0; }
 
   // TODO: just reset shift values? Then use this instead of creating new ShiftManagers each time
   public void setImgDimension(int imgDimension) {

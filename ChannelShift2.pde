@@ -126,6 +126,7 @@ void imageFileSelected(File selection) {
     println("Image loaded.");
     println("");
     // Reset UI and configs
+    // TODO: if pixel shift, update upper bound of sliders
     resetShift();
   }
 }
@@ -149,8 +150,8 @@ void loadImageFile(String path, String name) {
   // Reset steps string
   sketchSteps = "";
   // Update managers
-  xShiftManager = new ShiftManager(sourceImg.width);
-  yShiftManager = new ShiftManager(sourceImg.height);
+  xShiftManager.setImgDimension(sourceImg.width);
+  yShiftManager.setImgDimension(sourceImg.height);
   // Redraw preview
   previewImgUpdated = true;
 }
@@ -568,8 +569,8 @@ public void randomizeBtn_click(GButton source, GEvent event) {
 void resetShift() {
   channelManager.resetChannels();
   updateChannelToggles();
-  setShift(true, 0);
-  setShift(false, 0);
+  xShiftManager.resetShift();
+  yShiftManager.resetShift();
   updateShiftSliders();
 }
 
@@ -621,6 +622,10 @@ public void saveBtn_click(GButton source, GEvent event) {
 // Processing ==================================================================
 
 void setup() {
+  // Initialize managers
+  channelManager = new ChannelManager();
+  xShiftManager = new ShiftManager();
+  yShiftManager = new ShiftManager();
   // Load image (initializes global PImage objects)
   loadImageFile(defaultImgPath, defaultImgName);
   // Window
@@ -629,9 +634,6 @@ void setup() {
   updateWindowSize();
   // Display controls window
   createGUI();
-  // Initialize managers
-  // TODO: initialize all once here
-  channelManager = new ChannelManager();
 }
 
 
