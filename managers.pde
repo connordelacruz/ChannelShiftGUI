@@ -48,6 +48,9 @@ public class ChannelManager {
   // Set target to match source (i.e. don't swap)
   public void linkTargetToSource() { this.targetChannel = this.sourceChannel; }
 
+  // Return true if channels match
+  public boolean channelsMatch() { return this.sourceChannel == this.targetChannel; }
+
   // Reset channels to default
   public void resetChannels() { this.sourceChannel = this.targetChannel = 0; }
 
@@ -101,6 +104,9 @@ public class ShiftManager {
   public int getShiftPercent() { return this.shiftPercent; }
 
   public void resetShift() { this.shiftAmount = this.shiftPercent = 0; }
+
+  // Return true if shift is 0
+  public boolean shiftIsZero() { return this.shiftAmount == 0; }
 
   // TODO: just reset shift values? Then use this instead of creating new ShiftManagers each time
   public void setImgDimension(int imgDimension) {

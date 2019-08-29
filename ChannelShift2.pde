@@ -184,11 +184,16 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
   return step;
 }
 
+// TODO: doc
+String stringifyCurrentStep() {
+  return stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel(), recursiveIteration);
+}
+
 /**
  * Update sketchSteps using globals
  */
 void updateSteps() {
-  sketchSteps += "_" + stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel(), recursiveIteration);
+  sketchSteps += "_" + stringifyCurrentStep();
 }
 
 /**
@@ -198,9 +203,12 @@ void updateSteps() {
  * (depending on OS)
  */
 String defaultOutputFilename() {
-  // TODO: if we're saving previewImg, stringify current sketch step
   // TODO: max filename of 255 characters
-  return imgFile + sketchSteps + ".png";
+  String filename = imgFile + sketchSteps;
+  // Append current step (unless nothing's changed)
+  if (!(channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero()))
+    filename += "_" + stringifyCurrentStep();
+  return filename + ".png";
 }
 
 /**
@@ -220,8 +228,8 @@ void outFileSelected(File selection) {
   if (selection != null) {
     println("Saving...");
     String outputFile = selection.getAbsolutePath();
-    // TODO: Save previewImg instead
-    targetImg.save(outputFile);
+    // Save previewImg so preview matches output file
+    previewImg.save(outputFile);
     // Print output
     println("Result saved:");
     println(INDENT + outputFile);
@@ -304,7 +312,6 @@ synchronized public void controlsWindow_draw(PApplet appc, GWinData data) {
   appc.background(230);
 } 
 
-// TODO: makes slight changes if you click anything after randomizing w/ percentages
 // Listens for mouse events and updates preview if a slider was changed
 public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) {
   switch(event.getAction()) {
@@ -614,7 +621,6 @@ public void loadBtn_click(GButton source, GEvent event) {
 
 // TODO: (sometimes?) preview is reverted to previous step on save click?
 public void saveBtn_click(GButton source, GEvent event) {
-  // TODO: set targetImg to previewImg before saving so you get what you see
   saveResultAs();
 } 
 
