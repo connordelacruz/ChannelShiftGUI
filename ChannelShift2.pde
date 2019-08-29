@@ -11,10 +11,9 @@ String defaultImgPath = "source/" + defaultImgName + ".jpg";
 // Preview window size (does not affect output image size)
 int maxWindowSize = 600;
 
-
 // Globals =====================================================================
 
-// TODO: clearly define what each of these are, make consistent
+// TODO: clearly define what each of these are, make consistent; Rename targetImg to previousImg or something?
 // Original image and working image
 PImage sourceImg, targetImg, previewImg;
 // Window dimensions
@@ -126,7 +125,6 @@ void imageFileSelected(File selection) {
     println("Image loaded.");
     println("");
     // Reset UI and configs
-    // TODO: if pixel shift, update upper bound of sliders
     resetShift();
   }
 }
@@ -206,7 +204,7 @@ String defaultOutputFilename() {
   // TODO: max filename of 255 characters
   String filename = imgFile + sketchSteps;
   // Append current step (unless nothing's changed)
-  if (!(channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero()))
+  if (!noChangesInCurrentStep())
     filename += "_" + stringifyCurrentStep();
   return filename + ".png";
 }
@@ -302,6 +300,14 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
       targetPixels[targetIndex] = color(targetRGB[0], targetRGB[1], targetRGB[2]);
     }
   }
+}
+
+// Sketch State ----------------------------------------------------------------
+
+// TODO: use each time a GUI change is made to enable/disable confirm
+// TODO: doc, rename
+boolean noChangesInCurrentStep() {
+  return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero();
 }
 
 // GUI =========================================================================
@@ -471,8 +477,10 @@ void setShift(boolean horizontal, int shiftAmount) {
 void setShiftSliderValue(boolean horizontal) {
   GSlider slider = horizontal ? xSlider : ySlider;
   ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
-  int val = sliderPercentValue[horizontal ? 0 : 1] ? manager.getShiftPercent() : manager.getShiftAmount();
-  slider.setValue(val);
+  boolean percentValue = sliderPercentValue[horizontal ? 0 : 1];
+  int val = percentValue ? manager.getShiftPercent() : manager.getShiftAmount();
+  int upperBound = percentValue ? 100 : manager.getImgDimension();
+  slider.setLimits(val, 0, upperBound);
 }
 
 void updateShiftSlider(boolean horizontal) {
