@@ -33,9 +33,8 @@ String imgFile;
 // to default save filename 
 String sketchSteps;
 
-// Currently selected source and target channels
-int sourceChannel, targetChannel;
 // TODO: doc
+ChannelManager channelManager;
 ShiftManager xShiftManager, yShiftManager;
 
 // If true, randomize button will affect the corresponding settings
@@ -188,7 +187,7 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
  * Update sketchSteps using globals
  */
 void updateSteps() {
-  sketchSteps += "_" + stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), sourceChannel, targetChannel, recursiveIteration);
+  sketchSteps += "_" + stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel(), recursiveIteration);
 }
 
 /**
@@ -328,7 +327,7 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
  */
 void showPreview() {
   previewImg = targetImg.copy();
-  shiftChannel(sourceImg, previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), sourceChannel, targetChannel);
+  shiftChannel(sourceImg, previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel());
   previewImgUpdated = true;
   previewImg.updatePixels();
 }
@@ -342,9 +341,9 @@ void showPreview() {
  */
 void selectChannel(boolean source, int channel) {
   if (source)
-    sourceChannel = channel;
+    channelManager.setSourceChannel(channel);
   else
-    targetChannel = channel;
+    channelManager.setTargetChannel(channel);
 }
 
 /**
@@ -368,8 +367,7 @@ void setChannelToggle(boolean source, int channel) {
  * @param source If true, set sourceChannel, else set targetChannel
  */
 void updateChannelToggle(boolean source) {
-  int channel = source ? sourceChannel : targetChannel;
-  setChannelToggle(source, channel);
+  setChannelToggle(source, channelManager.getChannel(source));
 }
 
 /**
@@ -444,6 +442,7 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   sliderPercentValue[configIndex] = setPercentValue;
 }
 
+// TODO: move logic of this to ShiftManager and update usages
 /**
  * Set horizontal or vertical shift
  * @param horizontal If true, set horizontal shift, else set vertical shift
@@ -513,17 +512,17 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 void randomizeValues(boolean source, boolean target, boolean horizontal, boolean vertical) {
   // Channels
   if (source) {
-    sourceChannel = int(random(3));
+    channelManager.setSourceChannel(int(random(3)));
     updateChannelToggle(true);
     // Set target to match source if unchecked
     // TODO: Explain this behavior somewhere; add a toggle to lock target to match channel (i.e. enable/disable swap)
     if (!target) {
-      targetChannel = sourceChannel;
+      channelManager.linkTargetToSource();
       updateChannelToggle(false);
     }
   }
   if (target) {
-    targetChannel = int(random(3));
+    channelManager.setTargetChannel(int(random(3)));
     updateChannelToggle(false);
   }
   // Shift
@@ -567,7 +566,7 @@ public void randomizeBtn_click(GButton source, GEvent event) {
  * Reset selected source/target channels and horizontal/vertical shift values
  */
 void resetShift() {
-  sourceChannel = targetChannel = 0;
+  channelManager.resetChannels();
   updateChannelToggles();
   setShift(true, 0);
   setShift(false, 0);
@@ -630,6 +629,9 @@ void setup() {
   updateWindowSize();
   // Display controls window
   createGUI();
+  // Initialize managers
+  // TODO: initialize all once here
+  channelManager = new ChannelManager();
 }
 
 

@@ -4,7 +4,54 @@
 
 // Source/Target Channels ======================================================
 
-// TODO
+/**
+ * Manage the state of selected color channels
+ */
+public class ChannelManager {
+  // Source and target channels
+  int sourceChannel, targetChannel;
+  // TODO: boolean swapChannels?
+
+  public ChannelManager() {
+    this.sourceChannel = this.targetChannel = 0;
+  }
+
+  // Getter/Setter Methods
+
+  public void setSourceChannel(int channel) {
+    this.sourceChannel = channel;
+  }
+
+  public int getSourceChannel() { return this.sourceChannel; }
+
+  public void setTargetChannel(int channel) {
+    this.targetChannel = channel;
+  }
+
+  public int getTargetChannel() { return this.targetChannel; }
+
+  // TODO: setChannel(boolean source, int channel)
+
+  public int getChannel(boolean source) {
+    return source ? this.sourceChannel : this.targetChannel;
+  }
+
+  public void setChannels(int source, int target) {
+    this.sourceChannel = source;
+    this.targetChannel = target;
+  }
+
+  public int[] getChannels() { 
+    return new int[]{ this.sourceChannel, this.targetChannel }; 
+  }
+
+  // Set target to match source (i.e. don't swap)
+  public void linkTargetToSource() { this.targetChannel = this.sourceChannel; }
+
+  // Reset channels to default
+  public void resetChannels() { this.sourceChannel = this.targetChannel = 0; }
+
+}
 
 
 // Channel Shift ===============================================================
@@ -50,6 +97,8 @@ public class ShiftManager {
   }
 
   public int getShiftPercent() { return this.shiftPercent; }
+
+  // TODO: resetShift()
 
   // TODO: just reset shift values? Then use this instead of creating new ShiftManagers each time
   public void setImgDimension(int imgDimension) {
