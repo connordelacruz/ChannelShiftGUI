@@ -382,6 +382,7 @@ public void createResetConfirmPanel() {
   resetConfirmPanel.addControl(confirmBtn);
   // Recursive checkbox
   recursiveCheckbox = new GCheckbox(controlsWindow, 0, 2*RESET_CONFIRM_BTN_HEIGHT + 10, RESET_CONFIRM_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
+  recursiveCheckbox.setSelected(true);
   recursiveCheckbox.setText("Recursive", GAlign.CENTER, GAlign.MIDDLE);
   recursiveCheckbox.setOpaque(true);
   recursiveCheckbox.addEventHandler(this, "recursiveCheckbox_click");

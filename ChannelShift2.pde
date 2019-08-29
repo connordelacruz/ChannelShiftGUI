@@ -43,7 +43,7 @@ boolean randomizeTarg = true;
 boolean randomizeXShift = true; 
 boolean randomizeYShift = true; 
 // Use resulting image as the source for next iteration
-boolean recursiveIteration = false;
+boolean recursiveIteration = true;
 
 // Set to true if the preview image has been modified since the last time it
 // was rendered, telling the draw() method that it needs to be re-drawn
