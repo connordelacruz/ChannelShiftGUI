@@ -35,12 +35,8 @@ String sketchSteps;
 // TODO: doc
 ChannelManager channelManager;
 ShiftManager xShiftManager, yShiftManager;
+RandomizeManager randomizeManager;
 
-// If true, randomize button will affect the corresponding settings
-boolean randomizeSrc = true; 
-boolean randomizeTarg = true; 
-boolean randomizeXShift = true; 
-boolean randomizeYShift = true; 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
 
@@ -182,7 +178,9 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
   return step;
 }
 
-// TODO: doc
+/**
+ * Returns a string representation of the current sketch step
+ */
 String stringifyCurrentStep() {
   return stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel(), recursiveIteration);
 }
@@ -237,6 +235,7 @@ void outFileSelected(File selection) {
 
 // Channel Shift ---------------------------------------------------------------
 
+// TODO: REMOVE RANDOM METHODS
 /**
  * Returns a random shift amount in pixels based on image dimensions.
  * @param horizontal If true, calculate horizontal shift, else calculate
@@ -456,7 +455,7 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   sliderPercentValue[configIndex] = setPercentValue;
 }
 
-// TODO: move logic of this to ShiftManager and update usages
+// TODO: better integrate w/ managers?
 /**
  * Set horizontal or vertical shift
  * @param horizontal If true, set horizontal shift, else set vertical shift
@@ -524,55 +523,42 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 
 // Randomize Button ------------------------------------------------------------
 
-// TODO: doc, clean up reusable?
-void randomizeValues(boolean source, boolean target, boolean horizontal, boolean vertical) {
+// TODO: doc
+void randomizeValues() {
   // Channels
-  if (source) {
-    channelManager.setSourceChannel(int(random(3)));
-    updateChannelToggle(true);
-    // Set target to match source if unchecked
-    // TODO: Explain this behavior somewhere; add a toggle to lock target to match channel (i.e. enable/disable swap)
-    if (!target) {
-      channelManager.linkTargetToSource();
-      updateChannelToggle(false);
-    }
-  }
-  if (target) {
-    channelManager.setTargetChannel(int(random(3)));
-    updateChannelToggle(false);
+  if (randomizeManager.randomizeChannel()) {
+    channelManager.randomize(randomizeManager.randomizeSource(), randomizeManager.randomizeTarget());
+    updateChannelToggles();
   }
   // Shift
-  // TODO: inputs for max percent random shift for each dimension
-  if (horizontal) {
-    int xShift = sliderPercentValue[0] ? randomShiftPercent() : randomShiftAmount(true, targetImg);
-    setShift(true, xShift);
+  if (randomizeManager.randomizeXShift()) {
+    xShiftManager.randomize();
     updateShiftSlider(true);
   }
-  if (vertical) {
-    int yShift = sliderPercentValue[1] ? randomShiftPercent() : randomShiftAmount(false, targetImg);
-    setShift(false, yShift);
+  if (randomizeManager.randomizeYShift()) {
+    yShiftManager.randomize();
     updateShiftSlider(false);
   }
 }
 
 public void randSrcCheckbox_click(GCheckbox source, GEvent event) {
-  randomizeSrc = source.isSelected();
+  randomizeManager.toggleSource(source.isSelected());
 }
 
 public void randTargCheckbox_click(GCheckbox source, GEvent event) {
-  randomizeTarg = source.isSelected();
+  randomizeManager.toggleTarget(source.isSelected());
 }
 
 public void randXShiftCheckbox_click(GCheckbox source, GEvent event) {
-  randomizeXShift = source.isSelected();
+  randomizeManager.toggleXShift(source.isSelected());
 }
 
 public void randYShiftCheckbox_click(GCheckbox source, GEvent event) {
-  randomizeYShift = source.isSelected();
+  randomizeManager.toggleYShift(source.isSelected());
 }
 
 public void randomizeBtn_click(GButton source, GEvent event) {
-  randomizeValues(randomizeSrc, randomizeTarg, randomizeXShift, randomizeYShift);
+  randomizeValues();
   showPreview();
 } 
 
@@ -640,6 +626,7 @@ void setup() {
   channelManager = new ChannelManager();
   xShiftManager = new ShiftManager();
   yShiftManager = new ShiftManager();
+  randomizeManager = new RandomizeManager();
   // Load image (initializes global PImage objects)
   loadImageFile(defaultImgPath, defaultImgName);
   // Window

@@ -54,6 +54,21 @@ public class ChannelManager {
   // Reset channels to default
   public void resetChannels() { this.sourceChannel = this.targetChannel = 0; }
 
+  // Randomize channels
+  public void randomize(boolean source, boolean target) {
+    if (source) {
+      this.sourceChannel = int(random(3));
+      // Set target to match source if we're not randomizing it
+      // TODO: document this behavior somewhere or only do this if !this.swapChannels?
+      if (!target) {
+        this.targetChannel = this.sourceChannel;
+      }
+    }
+    if (target) {
+      this.targetChannel = int(random(3));
+    }
+  }
+
 }
 
 
@@ -105,6 +120,12 @@ public class ShiftManager {
 
   public void resetShift() { this.shiftAmount = this.shiftPercent = 0; }
 
+  // TODO: upper limit based on param
+  // Randomize shift value
+  public void randomize() {
+    this.setShiftAmount(int(random(this.imgDimension)));
+  }
+
   // Return true if shift is 0
   public boolean shiftIsZero() { return this.shiftAmount == 0; }
 
@@ -121,4 +142,36 @@ public class ShiftManager {
   public int getImgDimension() { return this.imgDimension; }
 }
 
+// Randomize Config ============================================================
+
+public class RandomizeManager {
+  // If true, randomize the corresponding settings
+  boolean src, targ, xShift, yShift; 
+
+  public RandomizeManager() {
+    this.src = this.targ = this.xShift = this.yShift = true; 
+  }
+
+  // Getter/Setter Methods
+
+  // Source channel
+  public void toggleSource(boolean val) { this.src = val; }
+  public boolean randomizeSource() { return this.src; }
+
+  // Target channel
+  public void toggleTarget(boolean val) { this.targ = val; }
+  public boolean randomizeTarget() { return this.targ; }
+
+  // Either channel (let ChannelManager determine which one(s))
+  public boolean randomizeChannel() { return this.src || this.targ; }
+
+  // Horizontal shift
+  public void toggleXShift(boolean val) { this.xShift = val; }
+  public boolean randomizeXShift() { return this.xShift; }
+
+  // Vertical shift
+  public void toggleYShift(boolean val) { this.yShift = val; }
+  public boolean randomizeYShift() { return this.yShift; }
+
+}
 
