@@ -235,29 +235,6 @@ void outFileSelected(File selection) {
 
 // Channel Shift ---------------------------------------------------------------
 
-// TODO: REMOVE RANDOM METHODS
-/**
- * Returns a random shift amount in pixels based on image dimensions.
- * @param horizontal If true, calculate horizontal shift, else calculate
- * vertical shift
- * @param img PImage object that will be channel shifted. Used to determine
- * shift amount based on dimensions
- * @return Shift amount in pixels
- */
-int randomShiftAmount(boolean horizontal, PImage img) {
-  int imgDimension = horizontal ? img.width : img.height;
-  return int(random(imgDimension));
-}
-
-/**
- * Returns a random shift percentage
- * @return Shift amount percentage (int between 0 and 99)
- */
-int randomShiftPercent() {
-  // Leaving 100 as upper bound since a 100% shift is identical
-  return int(random(100));
-}
-
 /**
  * Shift and swap color channels
  * @param sourceImg The base PImage object to be channel shifted
