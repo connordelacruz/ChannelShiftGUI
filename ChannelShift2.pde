@@ -370,37 +370,10 @@ void updateChannelToggles() {
   updateChannelToggle(false);
 }
 
-// TODO: just 2 listeners, find a way to bind data for RGB index?
-
-public void srcR_clicked(GOption source, GEvent event) { 
-  selectChannel(true, 0);
+public void channelOption_clicked(ChannelOption source, GEvent event) {
+  selectChannel(source.isSource(), source.getChannel());
   showPreview();
-} 
-
-public void srcG_clicked(GOption source, GEvent event) { 
-  selectChannel(true, 1);
-  showPreview();
-} 
-
-public void srcB_clicked(GOption source, GEvent event) { 
-  selectChannel(true, 2);
-  showPreview();
-} 
-
-public void targR_clicked(GOption source, GEvent event) { 
-  selectChannel(false, 0);
-  showPreview();
-} 
-
-public void targG_clicked(GOption source, GEvent event) { 
-  selectChannel(false, 1);
-  showPreview();
-} 
-
-public void targB_clicked(GOption source, GEvent event) { 
-  selectChannel(false, 2);
-  showPreview();
-} 
+}
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
