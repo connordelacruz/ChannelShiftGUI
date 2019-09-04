@@ -15,11 +15,13 @@ GPanel xShiftPanel;
 GSlider xSlider; 
 GToggleGroup xSliderToggle; 
 GOption xSliderPercent, xSliderPixels; 
+GTextField xSliderInput;
 // Y Slider --------------------------------------------------------------------
 GPanel yShiftPanel;
 GSlider ySlider; 
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
+GTextField ySliderInput;
 // Randomize Button/Toggles ----------------------------------------------------
 GPanel randomizePanel, randomizeCheckboxPanel;
 GButton randomizeBtn; 
@@ -97,21 +99,24 @@ int RAND_BTN_Y = RAND_CHECKBOX_PANEL_Y + RAND_CHECKBOX_PANEL_HEIGHT;
 int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
 // Sliders ---------------------------------------------------------------------
 // General
-int SLIDER_TOGGLE_WIDTH = 100;
+int SLIDER_TOGGLE_WIDTH = 75;
 int SLIDER_HEIGHT = 50;
 int SLIDER_PANEL_WIDTH = WINDOW_WIDTH - X_MARGINS;
 int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
+// TODO: also - SLIDER_INPUT_WIDTH:
 int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - SLIDER_TOGGLE_WIDTH;
 int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
 // Horizontal Shift
-int X_SLIDER_X = X_START;
-int X_SLIDER_Y = SRC_CHANNEL_Y + CHANNEL_PANEL_HEIGHT + Y_MARGIN; 
-// Slider Y Positions
-int Y_SLIDER_X = X_START;
-int Y_SLIDER_Y = X_SLIDER_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
+// TODO: X_SLIDER_X & _Y
+int X_SLIDER_PANEL_X = X_START; // TODO: start from end of input
+int X_SLIDER_PANEL_Y = SRC_CHANNEL_Y + CHANNEL_PANEL_HEIGHT + Y_MARGIN; 
+// Vertical Shift
+// TODO: Y_SLIDER_X & _Y
+int Y_SLIDER_PANEL_X = X_START; // TODO: start from end of input
+int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 // Load/Save Buttons -----------------------------------------------------------
 int LOAD_SAVE_X = X_START;
-int LOAD_SAVE_Y = Y_SLIDER_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
+int LOAD_SAVE_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 int LOAD_SAVE_WIDTH = WINDOW_WIDTH / 2 - X_MARGINS;
 int LOAD_SAVE_BTN_HEIGHT = 30;
 int LOAD_SAVE_HEIGHT = 2*LOAD_SAVE_BTN_HEIGHT + 20;
@@ -261,8 +266,9 @@ public void createChannelShiftPanel(
 
 // TODO: better abstractions for positions/sizes (y shift too)
 public void createXShiftPanel() {
-  xShiftPanel = new GPanel(controlsWindow, X_SLIDER_X, X_SLIDER_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
+  xShiftPanel = new GPanel(controlsWindow, X_SLIDER_PANEL_X, X_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
   xSlider = new GSlider(controlsWindow, 0, PANEL_Y_START, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  // TODO: xSliderInput
   xSliderToggle = new GToggleGroup();
   xSliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   xSliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
@@ -271,8 +277,9 @@ public void createXShiftPanel() {
 
 // TODO: positioning variables
 public void createYShiftPanel() {
-  yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_X, Y_SLIDER_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
+  yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_PANEL_X, Y_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
   ySlider = new GSlider(controlsWindow, 0, PANEL_Y_START, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  // TODO: ySliderInput
   ySliderToggle = new GToggleGroup();
   ySliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
   ySliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
