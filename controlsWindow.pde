@@ -100,19 +100,25 @@ int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_S
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
+int SLIDER_INPUT_WIDTH = 75;
+int SLIDER_INPUT_HEIGHT = 20;
 int SLIDER_HEIGHT = 50;
 int SLIDER_PANEL_WIDTH = WINDOW_WIDTH - X_MARGINS;
 int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
-// TODO: also - SLIDER_INPUT_WIDTH:
-int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - SLIDER_TOGGLE_WIDTH;
+int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - (SLIDER_INPUT_WIDTH + SLIDER_TOGGLE_WIDTH);
 int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
+int SLIDER_INPUT_X = 0;
+int SLIDER_INPUT_Y = PANEL_Y_START + (SLIDER_HEIGHT / 2) - (SLIDER_INPUT_HEIGHT / 2);
+int SLIDER_X = SLIDER_INPUT_X + SLIDER_INPUT_WIDTH;
+int SLIDER_Y = PANEL_Y_START;
+int SLIDER_TOGGLE_X = SLIDER_X + SLIDER_WIDTH;
+int SLIDER_PERCENT_TOGGLE_Y = PANEL_Y_START;
+int SLIDER_PIXELS_TOGGLE_Y = SLIDER_PERCENT_TOGGLE_Y + SLIDER_TOGGLE_HEIGHT;
 // Horizontal Shift
-// TODO: X_SLIDER_X & _Y
-int X_SLIDER_PANEL_X = X_START; // TODO: start from end of input
+int X_SLIDER_PANEL_X = X_START; 
 int X_SLIDER_PANEL_Y = SRC_CHANNEL_Y + CHANNEL_PANEL_HEIGHT + Y_MARGIN; 
 // Vertical Shift
-// TODO: Y_SLIDER_X & _Y
-int Y_SLIDER_PANEL_X = X_START; // TODO: start from end of input
+int Y_SLIDER_PANEL_X = X_START; 
 int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 // Load/Save Buttons -----------------------------------------------------------
 int LOAD_SAVE_X = X_START;
@@ -232,11 +238,13 @@ public void createTargChannelPanel() {
 public void createChannelShiftPanel(
     GPanel shiftPanel, int colorScheme, 
     GSlider slider, String sliderEventHandler, 
+    GTextField sliderInput, String sliderInputEventHandler,
     GToggleGroup sliderToggle, 
     GOption sliderPercent, String percentEventHandler, 
     GOption sliderPixels, String pixelsEventHandler
     ) {
   setupGeneralPanel(shiftPanel, colorScheme);
+  // Slider
   slider.setShowValue(true);
   slider.setShowLimits(true);
   slider.setLimits(0, 0, 100);
@@ -246,6 +254,13 @@ public void createChannelShiftPanel(
   slider.setOpaque(true);
   slider.addEventHandler(this, sliderEventHandler);
   shiftPanel.addControl(slider);
+  // Text Input
+  sliderInput.setLocalColorScheme(colorScheme);
+  sliderInput.setOpaque(true);
+  sliderInput.setText("100");
+  sliderInput.addEventHandler(this, sliderInputEventHandler);
+  shiftPanel.addControl(sliderInput);
+  // Percent/Pixel toggles
   // TODO: extract common from toggles to method
   sliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   sliderPercent.setText("Percent");
@@ -267,23 +282,23 @@ public void createChannelShiftPanel(
 // TODO: better abstractions for positions/sizes (y shift too)
 public void createXShiftPanel() {
   xShiftPanel = new GPanel(controlsWindow, X_SLIDER_PANEL_X, X_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
-  xSlider = new GSlider(controlsWindow, 0, PANEL_Y_START, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
-  // TODO: xSliderInput
+  xSlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  xSliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
   xSliderToggle = new GToggleGroup();
-  xSliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  xSliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
+  xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  xSliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderInput, "xSliderInput_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
 }
 
 // TODO: positioning variables
 public void createYShiftPanel() {
   yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_PANEL_X, Y_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
-  ySlider = new GSlider(controlsWindow, 0, PANEL_Y_START, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
-  // TODO: ySliderInput
+  ySlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  ySliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
   ySliderToggle = new GToggleGroup();
-  ySliderPercent = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  ySliderPixels = new GOption(controlsWindow, SLIDER_WIDTH, PANEL_Y_START + SLIDER_TOGGLE_HEIGHT, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
+  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderInput, "ySliderInput_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
 }
 
 // Randomize/Reset Button Panel ------------------------------------------------

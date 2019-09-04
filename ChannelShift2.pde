@@ -463,6 +463,18 @@ public void ySlider_change(GSlider source, GEvent event) {
   sliderChanged = true;
 } 
 
+// Slider Text Inputs ----------------------------------------------------------
+
+// TODO: implement
+
+public void xSliderInput_change(GTextField source, GEvent event) {
+  println("xSliderInput " + event);
+}
+
+public void ySliderInput_change(GTextField source, GEvent event) {
+  println("ySliderInput " + event);
+}
+
 // Slider Toggles --------------------------------------------------------------
 
 // TODO: rename related items to indicate that this sets the units of the sliders?
