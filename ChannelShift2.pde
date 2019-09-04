@@ -431,10 +431,8 @@ void setShift(boolean horizontal, int shiftAmount) {
     manager.setShiftAmount(shiftAmount);
 }
 
-// TODO: doc and implement all below
-
 /**
- * Update the shift slider toggle to match the corresponding global variable
+ * Update the shift slider value to match the corresponding global variable
  * @param horizontal If true, set horizontal shift, else set vertical shift
  */
 void updateShiftSlider(boolean horizontal) {
@@ -446,6 +444,10 @@ void updateShiftSlider(boolean horizontal) {
   slider.setLimits(val, 0, upperBound);
 }
 
+/**
+ * Update the x/y shift slider values to match global variables. Wrapper that
+ * calls updateShiftSlider() for both horizontal and vertical 
+ */
 void updateShiftSliders() {
   updateShiftSlider(true);
   updateShiftSlider(false);
