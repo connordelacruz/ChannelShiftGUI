@@ -105,6 +105,9 @@ public class ShiftManager {
   // Getter/Setter Methods
 
   public void setShiftAmount(int shiftAmount) {
+    // Upper bound
+    if (shiftAmount > this.imgDimension)
+      shiftAmount = this.imgDimension;
     this.shiftAmount = shiftAmount;
     this.shiftPercent = this.shiftPixelsToPercent(shiftAmount);
   }
@@ -112,6 +115,9 @@ public class ShiftManager {
   public int getShiftAmount() { return this.shiftAmount; }
 
   public void setShiftPercent(int shiftPercent) {
+    // Upper bound
+    if (shiftPercent > 100)
+      shiftPercent = 100;
     this.shiftPercent = shiftPercent;
     this.shiftAmount = this.shiftPercentToPixels(shiftPercent);
   }

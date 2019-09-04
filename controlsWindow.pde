@@ -257,7 +257,7 @@ public void createChannelShiftPanel(
   // Text Input
   sliderInput.setLocalColorScheme(colorScheme);
   sliderInput.setOpaque(true);
-  sliderInput.setText("100");
+  sliderInput.setText("0");
   sliderInput.addEventHandler(this, sliderInputEventHandler);
   shiftPanel.addControl(sliderInput);
   // Percent/Pixel toggles

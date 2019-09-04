@@ -387,6 +387,11 @@ public void channelOption_clicked(ChannelOption source, GEvent event) {
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
+// TODO: doc and implement
+boolean sliderPercentValue(boolean horizontal) {
+  return sliderPercentValue[horizontal ? 0 : 1];
+}
+
 /**
  * Set whether a shift slider is using a percentage or exact pixel values.
  * Converts the existing value of the slider accordingly
@@ -397,7 +402,7 @@ public void channelOption_clicked(ChannelOption source, GEvent event) {
 void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   int configIndex = horizontal ? 0 : 1;
   // Don't update if nothing changed
-  if (sliderPercentValue[configIndex] == setPercentValue)
+  if (sliderPercentValue(horizontal) == setPercentValue)
     return;
   ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
   GSlider target = horizontal ? xSlider : ySlider;
@@ -411,6 +416,8 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   }
   // Set bounds and current value
   target.setLimits(updatedValue, 0, upperBound);
+  // Update text input
+  updateShiftSliderInput(horizontal);
   // Update globals
   sliderPercentValue[configIndex] = setPercentValue;
 }
@@ -424,8 +431,7 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
  */
 void setShift(boolean horizontal, int shiftAmount) {
   ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
-  boolean percentValue = sliderPercentValue[horizontal ? 0 : 1];
-  if (percentValue)
+  if (sliderPercentValue(horizontal))
     manager.setShiftPercent(shiftAmount);
   else
     manager.setShiftAmount(shiftAmount);
@@ -437,11 +443,15 @@ void setShift(boolean horizontal, int shiftAmount) {
  */
 void updateShiftSlider(boolean horizontal) {
   GSlider slider = horizontal ? xSlider : ySlider;
+  GTextField sliderInput = horizontal ? xSliderInput : ySliderInput;
   ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
-  boolean percentValue = sliderPercentValue[horizontal ? 0 : 1];
+  boolean percentValue = sliderPercentValue(horizontal);
   int val = percentValue ? manager.getShiftPercent() : manager.getShiftAmount();
+  // TODO: extract upperBound calc to method and update usages?
   int upperBound = percentValue ? 100 : manager.getImgDimension();
   slider.setLimits(val, 0, upperBound);
+  // Update text input
+  updateShiftSliderInput(horizontal);
 }
 
 /**
@@ -455,24 +465,65 @@ void updateShiftSliders() {
 
 public void xSlider_change(GSlider source, GEvent event) { 
   setShift(true, source.getValueI());
+  xSliderInput.setText("" + source.getValueI());
   sliderChanged = true;
 } 
 
 public void ySlider_change(GSlider source, GEvent event) { 
   setShift(false, source.getValueI());
+  ySliderInput.setText("" + source.getValueI());
   sliderChanged = true;
 } 
 
 // Slider Text Inputs ----------------------------------------------------------
 
-// TODO: implement
+// TODO: doc and implement all
+// TODO: walk thru what's getting updated and pulling values and reduce any redundancy
+
+int sanitizeSliderInputValue(GTextField input, boolean horizontal) {
+  String sanitized = input.getText().replaceAll("\\D", "");
+  // Return -1 if empty string
+  if (sanitized == "")
+    return -1;
+  int parsed = Integer.parseInt(sanitized);
+  return parsed;
+}
+
+void sliderInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
+  switch(event) {
+    // TODO: select all on focus
+    case CHANGED:
+      // TODO: sanitize on change?
+      break;
+    case ENTERED:
+      // Unfocus on enter
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update slider
+      int val = sanitizeSliderInputValue(source, horizontal);
+      if (val > -1) {
+        setShift(horizontal, val);
+        updateShiftSlider(horizontal);
+        showPreview();
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+void updateShiftSliderInput(boolean horizontal) {
+  GTextField input = horizontal ? xSliderInput : ySliderInput;
+  GSlider slider = horizontal ? xSlider : ySlider;
+  input.setText("" + slider.getValueI());
+}
 
 public void xSliderInput_change(GTextField source, GEvent event) {
-  println("xSliderInput " + event);
+  sliderInputEventHandler(source, event, true);
 }
 
 public void ySliderInput_change(GTextField source, GEvent event) {
-  println("ySliderInput " + event);
+  sliderInputEventHandler(source, event, false);
 }
 
 // Slider Toggles --------------------------------------------------------------
