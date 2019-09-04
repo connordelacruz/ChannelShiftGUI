@@ -7,6 +7,10 @@ import g4p_controls.*;
 String defaultImgName = "test";
 String defaultImgPath = "source/" + defaultImgName + ".jpg";
 
+// Output File -----------------------------------------------------------------
+// File extension of the output image
+String outputImgExt = ".png";
+
 // Interface -------------------------------------------------------------------
 // Preview window size (does not affect output image size)
 int maxWindowSize = 600;
@@ -16,9 +20,12 @@ int maxWindowSize = 600;
 // TODO: clearly define what each of these are, make consistent; Rename targetImg to previousImg or something?
 // Original image and working image
 PImage sourceImg, targetImg, previewImg;
+
+// TODO: manager class?
 // Window dimensions
 int windowWidth, windowHeight;
 
+// TODO: "Constants" section
 // Maps index 0-2 to corresponding color channel. Used as a shorthand when
 // making operations more human readable
 String[] CHANNELS = new String[]{"R","G","B"};
@@ -32,7 +39,7 @@ String imgFile;
 // to default save filename 
 String sketchSteps;
 
-// TODO: doc
+// Objects that keep track of sketch state
 ChannelManager channelManager;
 ShiftManager xShiftManager, yShiftManager;
 RandomizeManager randomizeManager;
@@ -204,7 +211,7 @@ String defaultOutputFilename() {
   // Append current step (unless nothing's changed)
   if (!noChangesInCurrentStep())
     filename += "_" + stringifyCurrentStep();
-  return filename + ".png";
+  return filename + outputImgExt;
 }
 
 /**
@@ -281,7 +288,10 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
 // Sketch State ----------------------------------------------------------------
 
 // TODO: use each time a GUI change is made to enable/disable confirm
-// TODO: doc, rename
+
+/**
+ * Returns true if source and target channels match and x/y shift are both 0
+ */
 boolean noChangesInCurrentStep() {
   return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero();
 }
@@ -423,17 +433,17 @@ void setShift(boolean horizontal, int shiftAmount) {
 
 // TODO: doc and implement all below
 
-void setShiftSliderValue(boolean horizontal) {
+/**
+ * Update the shift slider toggle to match the corresponding global variable
+ * @param horizontal If true, set horizontal shift, else set vertical shift
+ */
+void updateShiftSlider(boolean horizontal) {
   GSlider slider = horizontal ? xSlider : ySlider;
   ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
   boolean percentValue = sliderPercentValue[horizontal ? 0 : 1];
   int val = percentValue ? manager.getShiftPercent() : manager.getShiftAmount();
   int upperBound = percentValue ? 100 : manager.getImgDimension();
   slider.setLimits(val, 0, upperBound);
-}
-
-void updateShiftSlider(boolean horizontal) {
-  setShiftSliderValue(horizontal);
 }
 
 void updateShiftSliders() {

@@ -129,7 +129,6 @@ public class ShiftManager {
   // Return true if shift is 0
   public boolean shiftIsZero() { return this.shiftAmount == 0; }
 
-  // TODO: just reset shift values? Then use this instead of creating new ShiftManagers each time
   public void setImgDimension(int imgDimension) {
     // Skip if dimension is unchanged
     if (imgDimension == this.imgDimension)
