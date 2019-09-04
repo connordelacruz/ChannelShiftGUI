@@ -4,7 +4,11 @@
 
 // Channel Toggles =============================================================
 
-// TODO: doc
+/**
+ * Extended GOption class that stores the corresponding color channel and
+ * whether this is a source or target channel toggle. Toggle text and color are
+ * set based on the color channel
+ */
 public class ChannelOption extends GOption {
   // Color channel associated w/ this option
   int channel;
