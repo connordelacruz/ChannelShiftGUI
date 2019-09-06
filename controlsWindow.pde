@@ -27,6 +27,8 @@ GPanel randomizePanel, randomizeCheckboxPanel;
 GButton randomizeBtn; 
 GCheckbox randSrcCheckbox, randTargCheckbox, 
           randXShiftCheckbox, randYShiftCheckbox;
+GTextField randXMaxInput, randYMaxInput;
+GLabel randXMaxLabel, randYMaxLabel;
 // Reset/Confirm Buttons -------------------------------------------------------
 GPanel resetConfirmPanel;
 GButton resetBtn, confirmBtn; 
@@ -56,7 +58,7 @@ int X_MARGINS = 2 * X_MARGIN;
 int PANEL_Y_START = 20;
 // Window ----------------------------------------------------------------------
 int WINDOW_WIDTH  = 650;
-int WINDOW_HEIGHT = 475;
+int WINDOW_HEIGHT = 500;
 // Toggles ---------------------------------------------------------------------
 // General
 int CHANNEL_TOGGLE_WIDTH = 150;
@@ -91,12 +93,23 @@ int RAND_CHECKBOX_RIGHT_X = RAND_CHECKBOX_WIDTH;
 int RAND_CHECKBOX_TOP_Y = 0;
 int RAND_CHECKBOX_BOTTOM_Y = RAND_CHECKBOX_HEIGHT;
 int RAND_CHECKBOX_PANEL_HEIGHT = 2 * RAND_CHECKBOX_HEIGHT; 
+// Max Shift Inputs
+// TODO: BETTER MARGINS/POSITIONING
+int RAND_MAX_LABEL_WIDTH = RAND_CHECKBOX_WIDTH - X_MARGIN;
+int RAND_MAX_LABEL_HEIGHT = 20;
+int RAND_MAX_INPUT_WIDTH = RAND_CHECKBOX_WIDTH - X_MARGIN;
+int RAND_MAX_INPUT_HEIGHT = 20;
+int RAND_MAX_TOTAL_HEIGHT = RAND_MAX_LABEL_HEIGHT + RAND_MAX_INPUT_HEIGHT;
+int RAND_MAX_LABEL_Y = RAND_CHECKBOX_PANEL_Y + RAND_CHECKBOX_PANEL_HEIGHT;
+int RAND_MAX_INPUT_Y = RAND_MAX_LABEL_Y + RAND_MAX_LABEL_HEIGHT;
+int RAND_MAX_LEFT_X = 0;
+int RAND_MAX_RIGHT_X = RAND_MAX_INPUT_WIDTH + X_MARGINS;
 // Randomize Button
 int RAND_BTN_WIDTH = RAND_PANEL_WIDTH;
 int RAND_BTN_HEIGHT = 30;
 int RAND_BTN_X = 0;
-int RAND_BTN_Y = RAND_CHECKBOX_PANEL_Y + RAND_CHECKBOX_PANEL_HEIGHT;
-int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
+int RAND_BTN_Y = RAND_MAX_LABEL_Y + RAND_MAX_TOTAL_HEIGHT;
+int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -117,7 +130,7 @@ int SLIDER_PERCENT_TOGGLE_Y = PANEL_Y_START;
 int SLIDER_PIXELS_TOGGLE_Y = SLIDER_PERCENT_TOGGLE_Y + SLIDER_TOGGLE_HEIGHT;
 // Horizontal Shift
 int X_SLIDER_PANEL_X = X_START; 
-int X_SLIDER_PANEL_Y = SRC_CHANNEL_Y + CHANNEL_PANEL_HEIGHT + Y_MARGIN; 
+int X_SLIDER_PANEL_Y = RAND_PANEL_Y + RAND_PANEL_HEIGHT + Y_MARGIN; 
 // Vertical Shift
 int Y_SLIDER_PANEL_X = X_START; 
 int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
@@ -334,6 +347,22 @@ public void createRandomizePanel() {
   randYShiftCheckbox.addEventHandler(this, "randYShiftCheckbox_click");
   randomizeCheckboxPanel.addControl(randYShiftCheckbox);
   randomizePanel.addControl(randomizeCheckboxPanel);
+  // Max Shift Inputs and Labels
+  randXMaxLabel = new GLabel(controlsWindow, RAND_MAX_LEFT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Horizontal Shift %");
+  randXMaxLabel.setTextBold();
+  randomizePanel.addControl(randXMaxLabel);
+  randXMaxInput = new GTextField(controlsWindow, RAND_MAX_LEFT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
+  randXMaxInput.setText("100");
+  // TODO: randXMaxInput.addEventHandler(this, "randXMaxInput_change");
+  randomizePanel.addControl(randXMaxInput);
+  // TODO: Y shift; Extract common for both inputs
+  randYMaxLabel = new GLabel(controlsWindow, RAND_MAX_RIGHT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Vertical Shift %");
+  randYMaxLabel.setTextBold();
+  randomizePanel.addControl(randYMaxLabel);
+  randYMaxInput = new GTextField(controlsWindow, RAND_MAX_RIGHT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
+  randYMaxInput.setText("100");
+  // TODO: randYMaxInput.addEventHandler(this, "randYMaxInput_change");
+  randomizePanel.addControl(randYMaxInput);
 }
 
 // Load/Save Panel -------------------------------------------------------------

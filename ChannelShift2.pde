@@ -583,14 +583,21 @@ void randomizeValues() {
   }
   // Shift
   if (randomizeManager.randomizeXShift()) {
-    xShiftManager.randomize();
+    xShiftManager.randomize(randomizeManager.xShiftMaxPercent());
     updateShiftSlider(true);
   }
   if (randomizeManager.randomizeYShift()) {
-    yShiftManager.randomize();
+    yShiftManager.randomize(randomizeManager.yShiftMaxPercent());
     updateShiftSlider(false);
   }
 }
+
+public void randomizeBtn_click(GButton source, GEvent event) {
+  randomizeValues();
+  showPreview();
+} 
+
+// Randomize Checkboxes
 
 public void randSrcCheckbox_click(GCheckbox source, GEvent event) {
   randomizeManager.toggleSource(source.isSelected());
@@ -600,18 +607,18 @@ public void randTargCheckbox_click(GCheckbox source, GEvent event) {
   randomizeManager.toggleTarget(source.isSelected());
 }
 
+// TODO: enable/disable corresponding input
 public void randXShiftCheckbox_click(GCheckbox source, GEvent event) {
   randomizeManager.toggleXShift(source.isSelected());
 }
 
+// TODO: enable/disable corresponding input
 public void randYShiftCheckbox_click(GCheckbox source, GEvent event) {
   randomizeManager.toggleYShift(source.isSelected());
 }
 
-public void randomizeBtn_click(GButton source, GEvent event) {
-  randomizeValues();
-  showPreview();
-} 
+// TODO: Max Shift Percent Inputs
+// TODO: sanitize same way as shift inputs, update randomizeManager
 
 // Reset Button ----------------------------------------------------------------
 
