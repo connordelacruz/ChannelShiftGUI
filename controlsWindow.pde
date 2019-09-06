@@ -102,7 +102,8 @@ int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_S
 int SLIDER_TOGGLE_WIDTH = 75;
 int SLIDER_INPUT_WIDTH = 75;
 int SLIDER_INPUT_HEIGHT = 20;
-int SLIDER_HEIGHT = 50;
+float SLIDER_TRACK_WIDTH = 12.0;
+int SLIDER_HEIGHT = 60;
 int SLIDER_PANEL_WIDTH = WINDOW_WIDTH - X_MARGINS;
 int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
 int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - (SLIDER_INPUT_WIDTH + SLIDER_TOGGLE_WIDTH);
@@ -279,10 +280,9 @@ public void createChannelShiftPanel(
   shiftPanel.addControl(sliderPixels);
 }
 
-// TODO: better abstractions for positions/sizes (y shift too)
 public void createXShiftPanel() {
   xShiftPanel = new GPanel(controlsWindow, X_SLIDER_PANEL_X, X_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
-  xSlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  xSlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
   xSliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
   xSliderToggle = new GToggleGroup();
   xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
@@ -290,10 +290,9 @@ public void createXShiftPanel() {
   createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderInput, "xSliderInput_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
 }
 
-// TODO: positioning variables
 public void createYShiftPanel() {
   yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_PANEL_X, Y_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
-  ySlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, 10.0);
+  ySlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
   ySliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
   ySliderToggle = new GToggleGroup();
   ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);

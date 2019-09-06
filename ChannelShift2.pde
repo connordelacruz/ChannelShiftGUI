@@ -387,7 +387,9 @@ public void channelOption_clicked(ChannelOption source, GEvent event) {
 
 // Horizontal/Vertical Shift ---------------------------------------------------
 
-// TODO: doc and implement
+/**
+ * Shorthand function for checking whether a slider is set to use percent value
+ */
 boolean sliderPercentValue(boolean horizontal) {
   return sliderPercentValue[horizontal ? 0 : 1];
 }
@@ -477,34 +479,53 @@ public void ySlider_change(GSlider source, GEvent event) {
 
 // Slider Text Inputs ----------------------------------------------------------
 
-// TODO: doc and implement all
 // TODO: walk thru what's getting updated and pulling values and reduce any redundancy
 
-int sanitizeSliderInputValue(GTextField input, boolean horizontal) {
-  String sanitized = input.getText().replaceAll("\\D", "");
+/**
+ * Clear non-numeric values from slider input and return the int representation
+ * @param input The GTextField object
+ * @return int representation of sanitized text (or -1 if empty string after
+ * sanitizing)
+ */
+int sanitizeSliderInputValue(GTextField input) {
+  String sanitized = input.getText().trim().replaceAll("\\D", "");
   // Return -1 if empty string
-  if (sanitized == "")
+  if (sanitized.equals(""))
     return -1;
   int parsed = Integer.parseInt(sanitized);
   return parsed;
 }
 
+/**
+ * Event handler for slider inputs
+ * @param source The GTextField object
+ * @param event The GEvent fired
+ * @param horizontal true if horizontal shift input, false if vertical shift
+ * input
+ */
 void sliderInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
   switch(event) {
-    // TODO: select all on focus
+    // TODO: select all on focus (will need to extend class)
     case CHANGED:
-      // TODO: sanitize on change?
       break;
     case ENTERED:
-      // Unfocus on enter
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
       source.setFocus(false);
     case LOST_FOCUS:
       // Sanitize and update slider
-      int val = sanitizeSliderInputValue(source, horizontal);
+      // NOTE: setShift() wraps manager methods that will handle val > upper
+      // bound of slider. updateShiftSlider() will call
+      // updateShiftSliderInput() after setting the slider to match the
+      // ShiftManager, so we don't have to worry about going over the bounds at
+      // this time
+      int val = sanitizeSliderInputValue(source);
       if (val > -1) {
         setShift(horizontal, val);
         updateShiftSlider(horizontal);
         showPreview();
+      } else {
+        // Set to match slider if empty
+        updateShiftSliderInput(horizontal);
       }
       break;
     default:
@@ -512,6 +533,11 @@ void sliderInputEventHandler(GTextField source, GEvent event, boolean horizontal
   }
 }
 
+/**
+ * Update slider input text to match slider value
+ * @param horizontal true if horizontal shift input, false if vertical shift
+ * input
+ */
 void updateShiftSliderInput(boolean horizontal) {
   GTextField input = horizontal ? xSliderInput : ySliderInput;
   GSlider slider = horizontal ? xSlider : ySlider;
@@ -638,7 +664,6 @@ public void loadBtn_click(GButton source, GEvent event) {
 
 // Save Button -----------------------------------------------------------------
 
-// TODO: (sometimes?) preview is reverted to previous step on save click?
 public void saveBtn_click(GButton source, GEvent event) {
   saveResultAs();
 } 
