@@ -353,7 +353,7 @@ public void createRandomizePanel() {
   randomizePanel.addControl(randXMaxLabel);
   randXMaxInput = new GTextField(controlsWindow, RAND_MAX_LEFT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
   randXMaxInput.setText("100");
-  // TODO: randXMaxInput.addEventHandler(this, "randXMaxInput_change");
+  randXMaxInput.addEventHandler(this, "randXMaxInput_change");
   randomizePanel.addControl(randXMaxInput);
   // TODO: Y shift; Extract common for both inputs
   randYMaxLabel = new GLabel(controlsWindow, RAND_MAX_RIGHT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Vertical Shift %");
@@ -361,7 +361,7 @@ public void createRandomizePanel() {
   randomizePanel.addControl(randYMaxLabel);
   randYMaxInput = new GTextField(controlsWindow, RAND_MAX_RIGHT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
   randYMaxInput.setText("100");
-  // TODO: randYMaxInput.addEventHandler(this, "randYMaxInput_change");
+  randYMaxInput.addEventHandler(this, "randYMaxInput_change");
   randomizePanel.addControl(randYMaxInput);
 }
 

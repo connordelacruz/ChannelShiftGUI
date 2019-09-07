@@ -128,7 +128,7 @@ public class ShiftManager {
 
   // Randomize shift value
   public void randomize(int maxPercent) {
-    this.setShiftAmount(int(random((maxPercent / 100) * this.imgDimension)));
+    this.setShiftAmount(int(random(this.imgDimension * maxPercent / 100)));
   }
   public void randomize() { this.randomize(100); }
 
@@ -161,7 +161,6 @@ public class RandomizeManager {
   }
 
   // Getter/Setter Methods
-  // TODO: ShiftMax 
 
   // Source channel
   public void toggleSource(boolean val) { this.src = val; }
@@ -191,6 +190,17 @@ public class RandomizeManager {
     this.yShiftMax = this.getPercentWithinBounds(percent);
   }
   public int yShiftMaxPercent() { return this.yShiftMax; }
+
+  // Conditional max shift getter/setters
+  public void setShiftMaxPercent(int percent, boolean horizontal) {
+    if (horizontal)
+      this.setXShiftMaxPercent(percent);
+    else
+      this.setYShiftMaxPercent(percent);
+  }
+  public int shiftMaxPercent(boolean horizontal) {
+    return horizontal ? this.xShiftMax : this.yShiftMax;
+  }
 
   // Helpers
 

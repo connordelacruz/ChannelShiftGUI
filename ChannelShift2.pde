@@ -481,20 +481,6 @@ public void ySlider_change(GSlider source, GEvent event) {
 
 // TODO: walk thru what's getting updated and pulling values and reduce any redundancy
 
-/**
- * Clear non-numeric values from slider input and return the int representation
- * @param input The GTextField object
- * @return int representation of sanitized text (or -1 if empty string after
- * sanitizing)
- */
-int sanitizeSliderInputValue(GTextField input) {
-  String sanitized = input.getText().trim().replaceAll("\\D", "");
-  // Return -1 if empty string
-  if (sanitized.equals(""))
-    return -1;
-  int parsed = Integer.parseInt(sanitized);
-  return parsed;
-}
 
 /**
  * Event handler for slider inputs
@@ -506,8 +492,6 @@ int sanitizeSliderInputValue(GTextField input) {
 void sliderInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
   switch(event) {
     // TODO: select all on focus (will need to extend class)
-    case CHANGED:
-      break;
     case ENTERED:
       // Unfocus on enter, then do same actions as LOST_FOCUS case
       source.setFocus(false);
@@ -518,7 +502,7 @@ void sliderInputEventHandler(GTextField source, GEvent event, boolean horizontal
       // updateShiftSliderInput() after setting the slider to match the
       // ShiftManager, so we don't have to worry about going over the bounds at
       // this time
-      int val = sanitizeSliderInputValue(source);
+      int val = sanitizeNumericInputValue(source);
       if (val > -1) {
         setShift(horizontal, val);
         updateShiftSlider(horizontal);
@@ -617,8 +601,41 @@ public void randYShiftCheckbox_click(GCheckbox source, GEvent event) {
   randomizeManager.toggleYShift(source.isSelected());
 }
 
-// TODO: Max Shift Percent Inputs
-// TODO: sanitize same way as shift inputs, update randomizeManager
+// Max Shift Percent Inputs
+
+// TODO: doc, merge common w/ slider inputs
+void randMaxInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
+  switch(event) {
+    // TODO: select all on focus (will need to extend class)
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      // NOTE: RandomizeManager percent setter methods ensure the value is
+      // between 0 and 100
+      int val = sanitizeNumericInputValue(source);
+      if (val > -1) {
+        randomizeManager.setShiftMaxPercent(val, horizontal);
+      } 
+      // Update input text to match sanitized input (after RandomizeManager
+      // ensures it's a valid percentage)
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + randomizeManager.shiftMaxPercent(horizontal));
+      break;
+    default:
+      break;
+  }
+}
+
+public void randXMaxInput_change(GTextField source, GEvent event) {
+  randMaxInputEventHandler(source, event, true);
+}
+
+public void randYMaxInput_change(GTextField source, GEvent event) {
+  randMaxInputEventHandler(source, event, false);
+}
 
 // Reset Button ----------------------------------------------------------------
 
