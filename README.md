@@ -1,8 +1,17 @@
 # Channel Shift
 
+## TODO
+
+- GUI screenshot
+- Example images
+- Overview 
+
+
 ## Installation
 
-**TODO:** Processing version, clone and run
+**TODO:** Processing version (3, tested on 3.5), G4P library (included), clone
+and run
+
 
 ## Controls
 
@@ -10,26 +19,28 @@
 
 #### Source Channel
 
-**TODO**
+Selects the color channel from the source image to be shifted.
 
 #### Target Channel
 
-**TODO**
+Selects the color channel from the result image to swap the source channel with.
+If you don't want to swap channels, set this to the same option as the source
+channel.
 
 
 ### Horizontal/Vertical Shift
 
-**TODO**
+**TODO:** Slider, unit toggles, input
 
 
 ### Randomization
 
-**TODO**
+**TODO:** Button, checkboxes, max inputs
 
 
 ### Reset/Confirm Step
 
-**TODO**
+**TODO:** Buttons, recursive checkbox
 
 
 ### Save/Load
