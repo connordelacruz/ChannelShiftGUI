@@ -1,17 +1,38 @@
+# Channel Shift
 
-## TODO
+## Installation
 
-### GUI
+**TODO:** Processing version, clone and run
 
-- File select if variable is blank
-    - [selectInput()](https://processing.org/reference/selectInput_.html)
-- Console output GUI
-- Close button action
+## Controls
+
+### Color Channels
+
+#### Source Channel
+
+**TODO**
+
+#### Target Channel
+
+**TODO**
 
 
-### Docs
+### Horizontal/Vertical Shift
 
-- Add installation and usage instructions
-- Explain each config
+**TODO**
 
+
+### Randomization
+
+**TODO**
+
+
+### Reset/Confirm Step
+
+**TODO**
+
+
+### Save/Load
+
+**TODO**
 
