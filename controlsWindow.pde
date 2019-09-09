@@ -74,7 +74,6 @@ int SRC_CHANNEL_Y = Y_START;
 int TARG_CHANNEL_X = SRC_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
 int TARG_CHANNEL_Y = Y_START;
 // Randomize Button/Toggles ----------------------------------------------------
-// TODO: Cleanup, simplify calculations?
 // End of target channel panel + margins
 int RAND_PANEL_X = TARG_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
 int RAND_PANEL_Y = Y_START;
@@ -94,17 +93,23 @@ int RAND_CHECKBOX_TOP_Y = 0;
 int RAND_CHECKBOX_BOTTOM_Y = RAND_CHECKBOX_HEIGHT;
 int RAND_CHECKBOX_PANEL_HEIGHT = 2 * RAND_CHECKBOX_HEIGHT; 
 // Max Shift Inputs
-// TODO: BETTER MARGINS/POSITIONING
-int RAND_MAX_LABEL_WIDTH = RAND_CHECKBOX_WIDTH - X_MARGIN;
+// Labels are full width for text alignment
+int RAND_MAX_LABEL_WIDTH = RAND_CHECKBOX_WIDTH;
 int RAND_MAX_LABEL_HEIGHT = 20;
-int RAND_MAX_INPUT_WIDTH = RAND_CHECKBOX_WIDTH - X_MARGIN;
+// Inputs have margins (so they don't overlap)
+int RAND_MAX_INPUT_WIDTH = RAND_CHECKBOX_WIDTH - X_MARGINS;
 int RAND_MAX_INPUT_HEIGHT = 20;
-int RAND_MAX_TOTAL_HEIGHT = RAND_MAX_LABEL_HEIGHT + RAND_MAX_INPUT_HEIGHT;
+// TODO: move 10 to margin variable
+int RAND_MAX_TOTAL_HEIGHT = RAND_MAX_LABEL_HEIGHT + RAND_MAX_INPUT_HEIGHT + 10;
 int RAND_MAX_LABEL_Y = RAND_CHECKBOX_PANEL_Y + RAND_CHECKBOX_PANEL_HEIGHT;
 int RAND_MAX_INPUT_Y = RAND_MAX_LABEL_Y + RAND_MAX_LABEL_HEIGHT;
-int RAND_MAX_LEFT_X = 0;
-int RAND_MAX_RIGHT_X = RAND_MAX_INPUT_WIDTH + X_MARGINS;
+// Add margins to input but not label
+int RAND_MAX_LABEL_LEFT_X = 0;
+int RAND_MAX_INPUT_LEFT_X = X_MARGIN;
+int RAND_MAX_LABEL_RIGHT_X = RAND_MAX_LABEL_WIDTH;
+int RAND_MAX_INPUT_RIGHT_X = RAND_MAX_INPUT_LEFT_X + RAND_MAX_INPUT_WIDTH + X_MARGINS;
 // Randomize Button
+// TODO: add padding after max inputs and increase panel size accordingly
 int RAND_BTN_WIDTH = RAND_PANEL_WIDTH;
 int RAND_BTN_HEIGHT = 30;
 int RAND_BTN_X = 0;
@@ -315,6 +320,7 @@ public void createYShiftPanel() {
 
 // Randomize/Reset Button Panel ------------------------------------------------
 
+// TODO: extract common?
 public void createRandomizePanel() {
   randomizePanel = new GPanel(controlsWindow, RAND_PANEL_X, RAND_PANEL_Y, RAND_PANEL_WIDTH, RAND_PANEL_HEIGHT, "Randomize Options");
   setupGeneralPanel(randomizePanel, GCScheme.CYAN_SCHEME);
@@ -348,18 +354,20 @@ public void createRandomizePanel() {
   randomizeCheckboxPanel.addControl(randYShiftCheckbox);
   randomizePanel.addControl(randomizeCheckboxPanel);
   // Max Shift Inputs and Labels
-  randXMaxLabel = new GLabel(controlsWindow, RAND_MAX_LEFT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Horizontal Shift %");
+  randXMaxLabel = new GLabel(controlsWindow, RAND_MAX_LABEL_LEFT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Horizontal Shift %");
+  randXMaxLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   randXMaxLabel.setTextBold();
   randomizePanel.addControl(randXMaxLabel);
-  randXMaxInput = new GTextField(controlsWindow, RAND_MAX_LEFT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
+  randXMaxInput = new GTextField(controlsWindow, RAND_MAX_INPUT_LEFT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
   randXMaxInput.setText("100");
   randXMaxInput.addEventHandler(this, "randXMaxInput_change");
   randomizePanel.addControl(randXMaxInput);
-  // TODO: Y shift; Extract common for both inputs
-  randYMaxLabel = new GLabel(controlsWindow, RAND_MAX_RIGHT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Vertical Shift %");
+  // TODO: Extract common for both inputs
+  randYMaxLabel = new GLabel(controlsWindow, RAND_MAX_LABEL_RIGHT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Vertical Shift %");
+  randYMaxLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   randYMaxLabel.setTextBold();
   randomizePanel.addControl(randYMaxLabel);
-  randYMaxInput = new GTextField(controlsWindow, RAND_MAX_RIGHT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
+  randYMaxInput = new GTextField(controlsWindow, RAND_MAX_INPUT_RIGHT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
   randYMaxInput.setText("100");
   randYMaxInput.addEventHandler(this, "randYMaxInput_change");
   randomizePanel.addControl(randYMaxInput);
