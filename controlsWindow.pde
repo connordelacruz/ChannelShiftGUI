@@ -42,12 +42,10 @@ GButton saveBtn;
 // Globals =====================================================================
 
 // Positioning -----------------------------------------------------------------
-// Use 10 as the left-most position to add padding to the window
+// Start positioning at 10px to add some padding
 int X_START = 10;
-// Use 20 as the top-most position to add padding to the window
-int Y_START = 20; 
+int Y_START = 10; 
 // Margins ---------------------------------------------------------------------
-// TODO: more specific about what margins are used for and make sure usage is consistent, implement Y
 // Single margin
 int X_MARGIN = X_START;
 int Y_MARGIN = Y_START;
@@ -58,7 +56,7 @@ int X_MARGINS = 2 * X_MARGIN;
 int PANEL_Y_START = 20;
 // Window ----------------------------------------------------------------------
 int WINDOW_WIDTH  = 650;
-int WINDOW_HEIGHT = 500;
+int WINDOW_HEIGHT = 475;
 // Toggles ---------------------------------------------------------------------
 // General
 int CHANNEL_TOGGLE_WIDTH = 150;
@@ -99,8 +97,7 @@ int RAND_MAX_LABEL_HEIGHT = 20;
 // Inputs have margins (so they don't overlap)
 int RAND_MAX_INPUT_WIDTH = RAND_CHECKBOX_WIDTH - X_MARGINS;
 int RAND_MAX_INPUT_HEIGHT = 20;
-// TODO: move 10 to margin variable
-int RAND_MAX_TOTAL_HEIGHT = RAND_MAX_LABEL_HEIGHT + RAND_MAX_INPUT_HEIGHT + 10;
+int RAND_MAX_TOTAL_HEIGHT = RAND_MAX_LABEL_HEIGHT + RAND_MAX_INPUT_HEIGHT + Y_MARGIN;
 int RAND_MAX_LABEL_Y = RAND_CHECKBOX_PANEL_Y + RAND_CHECKBOX_PANEL_HEIGHT;
 int RAND_MAX_INPUT_Y = RAND_MAX_LABEL_Y + RAND_MAX_LABEL_HEIGHT;
 // Add margins to input but not label
@@ -109,7 +106,6 @@ int RAND_MAX_INPUT_LEFT_X = X_MARGIN;
 int RAND_MAX_LABEL_RIGHT_X = RAND_MAX_LABEL_WIDTH;
 int RAND_MAX_INPUT_RIGHT_X = RAND_MAX_INPUT_LEFT_X + RAND_MAX_INPUT_WIDTH + X_MARGINS;
 // Randomize Button
-// TODO: add padding after max inputs and increase panel size accordingly
 int RAND_BTN_WIDTH = RAND_PANEL_WIDTH;
 int RAND_BTN_HEIGHT = 30;
 int RAND_BTN_X = 0;
@@ -144,6 +140,7 @@ int LOAD_SAVE_X = X_START;
 int LOAD_SAVE_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 int LOAD_SAVE_WIDTH = WINDOW_WIDTH / 2 - X_MARGINS;
 int LOAD_SAVE_BTN_HEIGHT = 30;
+// TODO MARGIN VARS
 int LOAD_SAVE_HEIGHT = 2*LOAD_SAVE_BTN_HEIGHT + 20;
 // Reset/Confirm Buttons -------------------------------------------------------
 int RESET_CONFIRM_Y = LOAD_SAVE_Y;
@@ -151,6 +148,7 @@ int RESET_CONFIRM_X = LOAD_SAVE_X + LOAD_SAVE_WIDTH + X_MARGINS;
 int RESET_CONFIRM_WIDTH = LOAD_SAVE_WIDTH;
 int RESET_CONFIRM_BTN_HEIGHT = LOAD_SAVE_BTN_HEIGHT;
 int RECURSIVE_CHECKBOX_HEIGHT = 30;
+// TODO MARGIN VARS
 int RESET_CONFIRM_HEIGHT = 2 * RESET_CONFIRM_BTN_HEIGHT + RECURSIVE_CHECKBOX_HEIGHT + 20;
 
 
@@ -403,7 +401,7 @@ public void createResetConfirmPanel() {
   resetConfirmPanel.setOpaque(false);
   // Reset Button
   resetBtn = new GButton(controlsWindow, 0, 0, RESET_CONFIRM_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
-  resetBtn.setText("Reset");
+  resetBtn.setText("Reset Step");
   resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
   resetBtn.addEventHandler(this, "resetBtn_click");
   resetConfirmPanel.addControl(resetBtn);
