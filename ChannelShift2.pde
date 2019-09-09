@@ -558,7 +558,10 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 
 // Randomize Button ------------------------------------------------------------
 
-// TODO: doc
+/** 
+ * Calls the randomize() methods of managers based on the configuration of
+ * randomizeManager. Updates GUI on change
+ */
 void randomizeValues() {
   // Channels
   if (randomizeManager.randomizeChannel()) {
