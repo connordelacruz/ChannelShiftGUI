@@ -214,3 +214,54 @@ public class RandomizeManager {
 
 }
 
+// Preview Window ==============================================================
+
+/**
+ * Manages the preview window dimensions
+ */
+public class WindowManager {
+  // Window dimensions
+  int windowWidth, windowHeight;
+  // Preview window size (does not affect output image size)
+  int maxWindowSize;
+
+  public WindowManager() {
+    windowWidth = windowHeight = 0;
+    maxWindowSize = 600;
+  }
+
+  // Getter/Setter Methods
+
+  public void updateWindowDimensions(PImage img) {
+    int[] dimensions = this.calculateWindowDimensions(img);
+    windowWidth = dimensions[0];
+    windowHeight = dimensions[1];
+  }
+
+  public int getWidth() { return windowWidth; }
+  public int getHeight() { return windowHeight; }
+
+  // TODO: get/set maxWindowSize?
+
+  // Helpers
+
+  /**
+   * Calculate window dimensions based on image size and maxWindowSize config
+   * @param img The PImage object that will be displayed in the window
+   * @return A 2D array where [0] = width and [1] = height 
+   */
+  int[] calculateWindowDimensions(PImage img) {
+    int[] dimensions;
+    float ratio = (float) img.width/img.height;
+    // Set longer side to maxWindowSize, then multiply ratio by the shorter side to
+    // maintain aspect ratio
+    if (ratio < 1.0) {
+      dimensions = new int[]{(int)(maxWindowSize * ratio), maxWindowSize};
+    } else {
+      dimensions = new int[]{maxWindowSize, (int)(maxWindowSize / ratio)};
+    }
+    return dimensions;
+  }
+}
+
+

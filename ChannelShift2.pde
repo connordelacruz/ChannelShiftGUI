@@ -11,19 +11,11 @@ String defaultImgPath = "source/" + defaultImgName + ".jpg";
 // File extension of the output image
 String outputImgExt = ".png";
 
-// Interface -------------------------------------------------------------------
-// Preview window size (does not affect output image size)
-int maxWindowSize = 600;
-
 // Globals =====================================================================
 
 // TODO: clearly define what each of these are, make consistent; Rename targetImg to previousImg or something?
 // Original image and working image
 PImage sourceImg, targetImg, previewImg;
-
-// TODO: manager class?
-// Window dimensions
-int windowWidth, windowHeight;
 
 // TODO: "Constants" section
 // Maps index 0-2 to corresponding color channel. Used as a shorthand when
@@ -39,10 +31,12 @@ String imgFile;
 // to default save filename 
 String sketchSteps;
 
-// Objects that keep track of sketch state
+// Sketch state managers
 ChannelManager channelManager;
 ShiftManager xShiftManager, yShiftManager;
 RandomizeManager randomizeManager;
+// Interface managers
+WindowManager windowManager;
 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
@@ -63,40 +57,20 @@ boolean[] sliderPercentValue = new boolean[]{true, true};
 
 // Window ----------------------------------------------------------------------
 
+// TODO: move to manager?
 /**
- * Calculate window dimensions based on image size and maxWindowSize config
- * @param img The PImage object that will be displayed in the window
- * @return A 2D array where [0] = width and [1] = height 
- */
-int[] getWindowDimensions(PImage img) {
-  int[] dimensions;
-  float ratio = (float) img.width/img.height;
-  // Set longer side to maxWindowSize, then multiply ratio by the shorter side to
-  // maintain aspect ratio
-  if (ratio < 1.0) {
-    dimensions = new int[]{(int)(maxWindowSize * ratio), maxWindowSize};
-  } else {
-    dimensions = new int[]{maxWindowSize, (int)(maxWindowSize / ratio)};
-  }
-  return dimensions;
-}
-
-/**
- * Set windowWidth and windowHeight and resize surface
+ * Update windowManager based on sourceImg dimensions and resize surface
  */
 void updateWindowSize() {
-  int[] dimensions = getWindowDimensions(sourceImg);
-  // Set globals for later use
-  windowWidth = dimensions[0];
-  windowHeight = dimensions[1];
-  surface.setSize(windowWidth, windowHeight);
+  windowManager.updateWindowDimensions(sourceImg);
+  surface.setSize(windowManager.getWidth(), windowManager.getHeight());
 }
 
 /**
  * Re-draws previewImg and sets previewImgUpdated to false
  */
 void updatePreview() {
-  image(previewImg, 0, 0, windowWidth, windowHeight);
+  image(previewImg, 0, 0, windowManager.getWidth(), windowManager.getHeight());
   previewImgUpdated = false;
 }
 
@@ -704,6 +678,7 @@ void setup() {
   xShiftManager = new ShiftManager();
   yShiftManager = new ShiftManager();
   randomizeManager = new RandomizeManager();
+  windowManager = new WindowManager();
   // Load image (initializes global PImage objects)
   loadImageFile(defaultImgPath, defaultImgName);
   // Window
