@@ -2,6 +2,9 @@
 // Classes to manage the internal state of the sketch
 // =============================================================================
 
+// TODO: consistent syntax/naming/usage of this
+// TODO: make attributes public so getters aren't necessary?
+
 // Source/Target Channels ======================================================
 
 /**

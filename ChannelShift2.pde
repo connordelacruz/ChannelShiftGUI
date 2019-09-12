@@ -24,6 +24,7 @@ String[] CHANNELS = new String[]{"R","G","B"};
 // String to use for indent in output msgs
 String INDENT = "   ";
 
+// TODO: step/save name manager?
 // Base image file name, used for default save name in conjunction with
 // sketchSteps
 String imgFile;
@@ -41,9 +42,11 @@ WindowManager windowManager;
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
 
+// TODO: img/preview manager?
 // Set to true if the preview image has been modified since the last time it
 // was rendered, telling the draw() method that it needs to be re-drawn
 boolean previewImgUpdated = true;
+// TODO: shift sliders manager
 // Set to true if a silder was changed. Window mouse event listener checks this
 // when the mouse is released and updates the preview image. This is to avoid
 // re-drawing the preview every time the slider value changes
