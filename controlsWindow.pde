@@ -136,20 +136,28 @@ int X_SLIDER_PANEL_Y = RAND_PANEL_Y + RAND_PANEL_HEIGHT + Y_MARGIN;
 int Y_SLIDER_PANEL_X = X_START; 
 int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 // Load/Save Buttons -----------------------------------------------------------
-int LOAD_SAVE_X = X_START;
-int LOAD_SAVE_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
-int LOAD_SAVE_WIDTH = WINDOW_WIDTH / 2 - X_MARGINS;
+int LOAD_SAVE_PANEL_X = X_START;
+int LOAD_SAVE_PANEL_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
+int LOAD_SAVE_PANEL_WIDTH = WINDOW_WIDTH / 2 - X_MARGINS;
 int LOAD_SAVE_BTN_HEIGHT = 30;
-// TODO MARGIN VARS
-int LOAD_SAVE_HEIGHT = 2*LOAD_SAVE_BTN_HEIGHT + 20;
+int LOAD_SAVE_PANEL_HEIGHT = 2 * (LOAD_SAVE_BTN_HEIGHT + Y_MARGIN);
+int LOAD_BTN_X = 0;
+int LOAD_BTN_Y = 0;
+int SAVE_BTN_X = 0;
+int SAVE_BTN_Y = LOAD_BTN_Y + LOAD_SAVE_BTN_HEIGHT + Y_MARGIN;
 // Reset/Confirm Buttons -------------------------------------------------------
-int RESET_CONFIRM_Y = LOAD_SAVE_Y;
-int RESET_CONFIRM_X = LOAD_SAVE_X + LOAD_SAVE_WIDTH + X_MARGINS;
-int RESET_CONFIRM_WIDTH = LOAD_SAVE_WIDTH;
+int RESET_CONFIRM_PANEL_X = LOAD_SAVE_PANEL_X + LOAD_SAVE_PANEL_WIDTH + X_MARGINS;
+int RESET_CONFIRM_PANEL_Y = LOAD_SAVE_PANEL_Y;
+int RESET_CONFIRM_PANEL_WIDTH = LOAD_SAVE_PANEL_WIDTH;
 int RESET_CONFIRM_BTN_HEIGHT = LOAD_SAVE_BTN_HEIGHT;
 int RECURSIVE_CHECKBOX_HEIGHT = 30;
-// TODO MARGIN VARS
-int RESET_CONFIRM_HEIGHT = 2 * RESET_CONFIRM_BTN_HEIGHT + RECURSIVE_CHECKBOX_HEIGHT + 20;
+int RESET_CONFIRM_PANEL_HEIGHT = 2 * (RESET_CONFIRM_BTN_HEIGHT + Y_MARGIN) + RECURSIVE_CHECKBOX_HEIGHT;
+int RESET_BTN_X = 0;
+int RESET_BTN_Y = 0;
+int CONFIRM_BTN_X = 0;
+int CONFIRM_BTN_Y = RESET_BTN_Y + RESET_CONFIRM_BTN_HEIGHT + Y_MARGIN;
+int RECURSIVE_CHECKBOX_X = 0;
+int RECURSIVE_CHECKBOX_Y = CONFIRM_BTN_Y + RESET_CONFIRM_BTN_HEIGHT;
 
 
 // Initialization ==============================================================
@@ -374,18 +382,18 @@ public void createRandomizePanel() {
 // Load/Save Panel -------------------------------------------------------------
 
 public void createLoadSavePanel() {
-  loadSavePanel = new GPanel(controlsWindow, LOAD_SAVE_X, LOAD_SAVE_Y, LOAD_SAVE_WIDTH, LOAD_SAVE_HEIGHT);
+  loadSavePanel = new GPanel(controlsWindow, LOAD_SAVE_PANEL_X, LOAD_SAVE_PANEL_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_PANEL_HEIGHT);
   setupGeneralPanel(loadSavePanel);
   loadSavePanel.setOpaque(false);
   // Load button
-  loadBtn = new GButton(controlsWindow, 0, 0, LOAD_SAVE_WIDTH, LOAD_SAVE_BTN_HEIGHT);
+  loadBtn = new GButton(controlsWindow, LOAD_BTN_X, LOAD_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
   loadBtn.setText("Load Image");
   loadBtn.setTextBold();
   loadBtn.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
   loadBtn.addEventHandler(this, "loadBtn_click");
   loadSavePanel.addControl(loadBtn);
   // Save button 
-  saveBtn = new GButton(controlsWindow, 0, LOAD_SAVE_BTN_HEIGHT + 10, LOAD_SAVE_WIDTH, LOAD_SAVE_BTN_HEIGHT);
+  saveBtn = new GButton(controlsWindow, SAVE_BTN_X, SAVE_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
   saveBtn.setText("Save Result");
   saveBtn.setTextBold();
   saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
@@ -396,23 +404,23 @@ public void createLoadSavePanel() {
 // Preview/Confirm Panel -------------------------------------------------------
 
 public void createResetConfirmPanel() {
-  resetConfirmPanel = new GPanel(controlsWindow, RESET_CONFIRM_X, RESET_CONFIRM_Y, RESET_CONFIRM_WIDTH, RESET_CONFIRM_HEIGHT);
+  resetConfirmPanel = new GPanel(controlsWindow, RESET_CONFIRM_PANEL_X, RESET_CONFIRM_PANEL_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_PANEL_HEIGHT);
   setupGeneralPanel(resetConfirmPanel);
   resetConfirmPanel.setOpaque(false);
   // Reset Button
-  resetBtn = new GButton(controlsWindow, 0, 0, RESET_CONFIRM_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
+  resetBtn = new GButton(controlsWindow, RESET_BTN_X, RESET_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
   resetBtn.setText("Reset Step");
   resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
   resetBtn.addEventHandler(this, "resetBtn_click");
   resetConfirmPanel.addControl(resetBtn);
   // Confirm Button 
   // TODO: disable when SRC == TARG && sliders are 0
-  confirmBtn = new GButton(controlsWindow, 0, RESET_CONFIRM_BTN_HEIGHT + 10, RESET_CONFIRM_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
+  confirmBtn = new GButton(controlsWindow, CONFIRM_BTN_X, CONFIRM_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
   confirmBtn.setText("Confirm Step");
   confirmBtn.addEventHandler(this, "confirmBtn_click");
   resetConfirmPanel.addControl(confirmBtn);
   // Recursive checkbox
-  recursiveCheckbox = new GCheckbox(controlsWindow, 0, 2*RESET_CONFIRM_BTN_HEIGHT + 10, RESET_CONFIRM_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
+  recursiveCheckbox = new GCheckbox(controlsWindow, RECURSIVE_CHECKBOX_X, RECURSIVE_CHECKBOX_Y, RESET_CONFIRM_PANEL_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
   recursiveCheckbox.setSelected(true);
   recursiveCheckbox.setText("Recursive", GAlign.CENTER, GAlign.MIDDLE);
   recursiveCheckbox.setOpaque(true);
