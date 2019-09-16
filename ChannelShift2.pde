@@ -13,10 +13,6 @@ String outputImgExt = ".png";
 
 // Globals =====================================================================
 
-// Original image and working image
-// TODO: REMOVE
-/* PImage sourceImg, targetImg, previewImg; */
-
 // TODO: step/save name manager?
 // Base image file name, used for default save name in conjunction with
 // sketchSteps
@@ -303,8 +299,10 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
  * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
  */
 void showPreview() {
+  // Make sure preview image matches target
   imgManager.copyTargetToPreview();
   shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel());
+  // Update preview image pixels and redraw
   previewImgUpdated = true;
   imgManager.updatePreview();
 }

@@ -3,11 +3,10 @@
 // =============================================================================
 
 // TODO: consistent syntax/naming/usage of this
-// TODO: make attributes public so getters aren't necessary?
+// TODO: make attributes public so getters aren't necessary
 
 // Images ======================================================================
 
-// TODO: doc and implement
 public class ImgManager {
   // Source, modified, and preview images
   public PImage sourceImg, targetImg, previewImg;
