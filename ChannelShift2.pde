@@ -17,13 +17,6 @@ String outputImgExt = ".png";
 // Original image and working image
 PImage sourceImg, targetImg, previewImg;
 
-// TODO: "Constants" section
-// Maps index 0-2 to corresponding color channel. Used as a shorthand when
-// making operations more human readable
-String[] CHANNELS = new String[]{"R","G","B"};
-// String to use for indent in output msgs
-String INDENT = "   ";
-
 // TODO: step/save name manager?
 // Base image file name, used for default save name in conjunction with
 // sketchSteps
@@ -55,6 +48,13 @@ boolean sliderChanged = false;
 // values. Default is percentages. [0] is x slider and [1] is y slider
 boolean[] sliderPercentValue = new boolean[]{true, true};
 
+// Constants ===================================================================
+
+// Maps index 0-2 to corresponding color channel. Used as a shorthand when
+// making operations more human readable
+String[] CHANNELS = new String[]{"R","G","B"};
+// String to use for indent in output msgs
+String INDENT = "   ";
 
 // Helper Methods ==============================================================
 
