@@ -13,9 +13,9 @@ String outputImgExt = ".png";
 
 // Globals =====================================================================
 
-// TODO: clearly define what each of these are, make consistent; Rename targetImg to previousImg or something?
 // Original image and working image
-PImage sourceImg, targetImg, previewImg;
+// TODO: REMOVE
+/* PImage sourceImg, targetImg, previewImg; */
 
 // TODO: step/save name manager?
 // Base image file name, used for default save name in conjunction with
@@ -25,6 +25,8 @@ String imgFile;
 // to default save filename 
 String sketchSteps;
 
+// Image managers
+ImgManager imgManager;
 // Sketch state managers
 ChannelManager channelManager;
 ShiftManager xShiftManager, yShiftManager;
@@ -65,7 +67,7 @@ String INDENT = "   ";
  * Update windowManager based on sourceImg dimensions and resize surface
  */
 void updateWindowSize() {
-  windowManager.updateWindowDimensions(sourceImg);
+  windowManager.updateWindowDimensions(imgManager.sourceImg);
   surface.setSize(windowManager.getWidth(), windowManager.getHeight());
 }
 
@@ -73,7 +75,7 @@ void updateWindowSize() {
  * Re-draws previewImg and sets previewImgUpdated to false
  */
 void updatePreview() {
-  image(previewImg, 0, 0, windowManager.getWidth(), windowManager.getHeight());
+  image(imgManager.previewImg, 0, 0, windowManager.getWidth(), windowManager.getHeight());
   previewImgUpdated = false;
 }
 
@@ -117,10 +119,8 @@ void imageFileSelected(File selection) {
  * saving
  */
 void loadImageFile(String path, String name) {
-  // Set globals
-  sourceImg = loadImage(path);
-  targetImg = sourceImg.copy();
-  previewImg = sourceImg.copy();
+  // Load image objects
+  imgManager.loadImageFile(path);
   // Update window size
   updateWindowSize();
   // Update imgFile (for default output name)
@@ -128,8 +128,8 @@ void loadImageFile(String path, String name) {
   // Reset steps string
   sketchSteps = "";
   // Update managers
-  xShiftManager.setImgDimension(sourceImg.width);
-  yShiftManager.setImgDimension(sourceImg.height);
+  xShiftManager.setImgDimension(imgManager.imgWidth);
+  yShiftManager.setImgDimension(imgManager.imgHeight);
   // Redraw preview
   previewImgUpdated = true;
 }
@@ -209,7 +209,7 @@ void outFileSelected(File selection) {
     println("Saving...");
     String outputFile = selection.getAbsolutePath();
     // Save previewImg so preview matches output file
-    previewImg.save(outputFile);
+    imgManager.savePreviewImg(outputFile);
     // Print output
     println("Result saved:");
     println(INDENT + outputFile);
@@ -303,10 +303,10 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
  * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
  */
 void showPreview() {
-  previewImg = targetImg.copy();
-  shiftChannel(sourceImg, previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel());
+  imgManager.copyTargetToPreview();
+  shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel());
   previewImgUpdated = true;
-  previewImg.updatePixels();
+  imgManager.updatePreview();
 }
 
 // Source/Target Channel -------------------------------------------------------
@@ -646,10 +646,10 @@ public void confirmBtn_click(GButton source, GEvent event) {
   // Update sketch steps
   updateSteps();
   // Update targetImg to match preview
-  targetImg = previewImg.copy();
+  imgManager.copyPreviewToTarget();
   // If recursive, sourceImg.pixels = targetImg.pixels
   if (recursiveIteration)
-    sourceImg.pixels = targetImg.pixels;
+    imgManager.copyTargetPixelsToSource();
   // Reset shift values and UI
   resetShift();
 } 
@@ -677,6 +677,7 @@ public void saveBtn_click(GButton source, GEvent event) {
 
 void setup() {
   // Initialize managers
+  imgManager = new ImgManager();
   channelManager = new ChannelManager();
   xShiftManager = new ShiftManager();
   yShiftManager = new ShiftManager();

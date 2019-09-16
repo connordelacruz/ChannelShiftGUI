@@ -5,6 +5,58 @@
 // TODO: consistent syntax/naming/usage of this
 // TODO: make attributes public so getters aren't necessary?
 
+// Images ======================================================================
+
+// TODO: doc and implement
+public class ImgManager {
+  // Source, modified, and preview images
+  public PImage sourceImg, targetImg, previewImg;
+  // TODO: width/height vars for easy access
+  public int imgWidth, imgHeight;
+
+  public ImgManager() {
+    // TODO: initialize images?
+    imgWidth = imgHeight = 0;
+  }
+
+  // Getter/Setter
+
+  public void loadImageFile(String path) {
+    // Initialize images
+    sourceImg = loadImage(path);
+    targetImg = sourceImg.copy();
+    previewImg = sourceImg.copy();
+    // Update width/height vars
+    imgWidth = sourceImg.width;
+    imgHeight = sourceImg.height;
+  }
+
+  // Image Utility Methods
+  // TODO: doc, better names?
+
+  public void savePreviewImg(String path) {
+    previewImg.save(path);
+  }
+
+  public void copyTargetToPreview() {
+    previewImg = targetImg.copy();
+  }
+
+  public void copyPreviewToTarget() {
+    targetImg = previewImg.copy();
+  }
+
+  public void updatePreview() {
+    previewImg.updatePixels();
+  }
+
+  // For recursive iterations
+  public void copyTargetPixelsToSource() {
+    sourceImg.pixels = targetImg.pixels;
+  }
+
+}
+
 // Source/Target Channels ======================================================
 
 /**
