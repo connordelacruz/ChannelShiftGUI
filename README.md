@@ -2,14 +2,15 @@
 
 ## Overview
 
-**TODO:** Explain what it does, example images
+**TODO:** Overview of channel shifting, example images
 
 
 ## Installation
 
 This sketch requires [Processing 3+](https://processing.org/download/) (tested
 using Processing 3.5). It uses the [G4P GUI
-library](http://www.lagers.org.uk/g4p/), which is included in this repo.
+library](http://www.lagers.org.uk/g4p/), which is included in this repo, so no
+additional setup is required.
 
 
 ## Controls
