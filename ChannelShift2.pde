@@ -11,27 +11,9 @@ String defaultImgPath = "source/" + defaultImgName + ".jpg";
 // File extension of the output image
 String outputImgExt = ".png";
 
-// Interface -------------------------------------------------------------------
-// Preview window size (does not affect output image size)
-int maxWindowSize = 600;
-
 // Globals =====================================================================
 
-// TODO: clearly define what each of these are, make consistent; Rename targetImg to previousImg or something?
-// Original image and working image
-PImage sourceImg, targetImg, previewImg;
-
-// TODO: manager class?
-// Window dimensions
-int windowWidth, windowHeight;
-
-// TODO: "Constants" section
-// Maps index 0-2 to corresponding color channel. Used as a shorthand when
-// making operations more human readable
-String[] CHANNELS = new String[]{"R","G","B"};
-// String to use for indent in output msgs
-String INDENT = "   ";
-
+// TODO: step/save name manager?
 // Base image file name, used for default save name in conjunction with
 // sketchSteps
 String imgFile;
@@ -39,17 +21,23 @@ String imgFile;
 // to default save filename 
 String sketchSteps;
 
-// Objects that keep track of sketch state
+// Image managers
+ImgManager imgManager;
+// Sketch state managers
 ChannelManager channelManager;
 ShiftManager xShiftManager, yShiftManager;
 RandomizeManager randomizeManager;
+// Interface managers
+WindowManager windowManager;
 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
 
+// TODO: img/preview manager?
 // Set to true if the preview image has been modified since the last time it
 // was rendered, telling the draw() method that it needs to be re-drawn
 boolean previewImgUpdated = true;
+// TODO: shift sliders manager
 // Set to true if a silder was changed. Window mouse event listener checks this
 // when the mouse is released and updates the preview image. This is to avoid
 // re-drawing the preview every time the slider value changes
@@ -58,45 +46,32 @@ boolean sliderChanged = false;
 // values. Default is percentages. [0] is x slider and [1] is y slider
 boolean[] sliderPercentValue = new boolean[]{true, true};
 
+// Constants ===================================================================
+
+// Maps index 0-2 to corresponding color channel. Used as a shorthand when
+// making operations more human readable
+String[] CHANNELS = new String[]{"R","G","B"};
+// String to use for indent in output msgs
+String INDENT = "   ";
 
 // Helper Methods ==============================================================
 
 // Window ----------------------------------------------------------------------
 
+// TODO: move to manager?
 /**
- * Calculate window dimensions based on image size and maxWindowSize config
- * @param img The PImage object that will be displayed in the window
- * @return A 2D array where [0] = width and [1] = height 
- */
-int[] getWindowDimensions(PImage img) {
-  int[] dimensions;
-  float ratio = (float) img.width/img.height;
-  // Set longer side to maxWindowSize, then multiply ratio by the shorter side to
-  // maintain aspect ratio
-  if (ratio < 1.0) {
-    dimensions = new int[]{(int)(maxWindowSize * ratio), maxWindowSize};
-  } else {
-    dimensions = new int[]{maxWindowSize, (int)(maxWindowSize / ratio)};
-  }
-  return dimensions;
-}
-
-/**
- * Set windowWidth and windowHeight and resize surface
+ * Update windowManager based on sourceImg dimensions and resize surface
  */
 void updateWindowSize() {
-  int[] dimensions = getWindowDimensions(sourceImg);
-  // Set globals for later use
-  windowWidth = dimensions[0];
-  windowHeight = dimensions[1];
-  surface.setSize(windowWidth, windowHeight);
+  windowManager.updateWindowDimensions(imgManager.sourceImg);
+  surface.setSize(windowManager.width, windowManager.height);
 }
 
 /**
  * Re-draws previewImg and sets previewImgUpdated to false
  */
 void updatePreview() {
-  image(previewImg, 0, 0, windowWidth, windowHeight);
+  image(imgManager.previewImg, 0, 0, windowManager.width, windowManager.height);
   previewImgUpdated = false;
 }
 
@@ -140,10 +115,8 @@ void imageFileSelected(File selection) {
  * saving
  */
 void loadImageFile(String path, String name) {
-  // Set globals
-  sourceImg = loadImage(path);
-  targetImg = sourceImg.copy();
-  previewImg = sourceImg.copy();
+  // Load image objects
+  imgManager.loadImageFile(path);
   // Update window size
   updateWindowSize();
   // Update imgFile (for default output name)
@@ -151,8 +124,8 @@ void loadImageFile(String path, String name) {
   // Reset steps string
   sketchSteps = "";
   // Update managers
-  xShiftManager.setImgDimension(sourceImg.width);
-  yShiftManager.setImgDimension(sourceImg.height);
+  xShiftManager.setImgDimension(imgManager.imgWidth);
+  yShiftManager.setImgDimension(imgManager.imgHeight);
   // Redraw preview
   previewImgUpdated = true;
 }
@@ -189,7 +162,7 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
  * Returns a string representation of the current sketch step
  */
 String stringifyCurrentStep() {
-  return stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel(), recursiveIteration);
+  return stringifyStep(xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel, recursiveIteration);
 }
 
 /**
@@ -232,7 +205,7 @@ void outFileSelected(File selection) {
     println("Saving...");
     String outputFile = selection.getAbsolutePath();
     // Save previewImg so preview matches output file
-    previewImg.save(outputFile);
+    imgManager.savePreviewImg(outputFile);
     // Print output
     println("Result saved:");
     println(INDENT + outputFile);
@@ -326,25 +299,15 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
  * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
  */
 void showPreview() {
-  previewImg = targetImg.copy();
-  shiftChannel(sourceImg, previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel());
+  // Make sure preview image matches target
+  imgManager.copyTargetToPreview();
+  shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel);
+  // Update preview image pixels and redraw
   previewImgUpdated = true;
-  previewImg.updatePixels();
+  imgManager.updatePreview();
 }
 
 // Source/Target Channel -------------------------------------------------------
-
-/**
- * Set the current source/target channel
- * @param source If true, set sourceChannel, else set targetChannel
- * @param channel Channel to set (Index into CHANNELS)
- */
-void selectChannel(boolean source, int channel) {
-  if (source)
-    channelManager.setSourceChannel(channel);
-  else
-    channelManager.setTargetChannel(channel);
-}
 
 /**
  * Select a source/target channel toggle
@@ -381,7 +344,7 @@ void updateChannelToggles() {
 }
 
 public void channelOption_clicked(ChannelOption source, GEvent event) {
-  selectChannel(source.isSource(), source.getChannel());
+  channelManager.setChannel(source.isSource(), source.getChannel());
   showPreview();
 }
 
@@ -410,10 +373,10 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   GSlider target = horizontal ? xSlider : ySlider;
   int updatedValue, upperBound;
   if (setPercentValue) {
-    updatedValue = manager.getShiftPercent();
+    updatedValue = manager.shiftPercent;
     upperBound = 100;
   } else {
-    updatedValue = manager.getShiftAmount();
+    updatedValue = manager.shiftAmount;
     upperBound = manager.getImgDimension();
   }
   // Set bounds and current value
@@ -448,7 +411,7 @@ void updateShiftSlider(boolean horizontal) {
   GTextField sliderInput = horizontal ? xSliderInput : ySliderInput;
   ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
   boolean percentValue = sliderPercentValue(horizontal);
-  int val = percentValue ? manager.getShiftPercent() : manager.getShiftAmount();
+  int val = percentValue ? manager.shiftPercent : manager.shiftAmount;
   // TODO: extract upperBound calc to method and update usages?
   int upperBound = percentValue ? 100 : manager.getImgDimension();
   slider.setLimits(val, 0, upperBound);
@@ -565,16 +528,16 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 void randomizeValues() {
   // Channels
   if (randomizeManager.randomizeChannel()) {
-    channelManager.randomize(randomizeManager.randomizeSource(), randomizeManager.randomizeTarget());
+    channelManager.randomize(randomizeManager.src, randomizeManager.targ);
     updateChannelToggles();
   }
   // Shift
-  if (randomizeManager.randomizeXShift()) {
-    xShiftManager.randomize(randomizeManager.xShiftMaxPercent());
+  if (randomizeManager.xShift) {
+    xShiftManager.randomize(randomizeManager.xShiftMax);
     updateShiftSlider(true);
   }
-  if (randomizeManager.randomizeYShift()) {
-    yShiftManager.randomize(randomizeManager.yShiftMaxPercent());
+  if (randomizeManager.yShift) {
+    yShiftManager.randomize(randomizeManager.yShiftMax);
     updateShiftSlider(false);
   }
 }
@@ -669,10 +632,10 @@ public void confirmBtn_click(GButton source, GEvent event) {
   // Update sketch steps
   updateSteps();
   // Update targetImg to match preview
-  targetImg = previewImg.copy();
+  imgManager.copyPreviewToTarget();
   // If recursive, sourceImg.pixels = targetImg.pixels
   if (recursiveIteration)
-    sourceImg.pixels = targetImg.pixels;
+    imgManager.copyTargetPixelsToSource();
   // Reset shift values and UI
   resetShift();
 } 
@@ -700,10 +663,12 @@ public void saveBtn_click(GButton source, GEvent event) {
 
 void setup() {
   // Initialize managers
+  imgManager = new ImgManager();
   channelManager = new ChannelManager();
   xShiftManager = new ShiftManager();
   yShiftManager = new ShiftManager();
   randomizeManager = new RandomizeManager();
+  windowManager = new WindowManager();
   // Load image (initializes global PImage objects)
   loadImageFile(defaultImgPath, defaultImgName);
   // Window

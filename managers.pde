@@ -2,6 +2,59 @@
 // Classes to manage the internal state of the sketch
 // =============================================================================
 
+// TODO: should these just manage state and calculations? Or should they do the work too?
+
+// Images ======================================================================
+
+public class ImgManager {
+  // Source, modified, and preview images
+  public PImage sourceImg, targetImg, previewImg;
+  // Width/height vars for easy access
+  public int imgWidth, imgHeight;
+
+  public ImgManager() {
+    // TODO: initialize images?
+    imgWidth = imgHeight = 0;
+  }
+
+  // Getter/Setter
+
+  public void loadImageFile(String path) {
+    // Initialize images
+    sourceImg = loadImage(path);
+    targetImg = sourceImg.copy();
+    previewImg = sourceImg.copy();
+    // Update width/height vars
+    imgWidth = sourceImg.width;
+    imgHeight = sourceImg.height;
+  }
+
+  // Image Utility Methods
+  // TODO: doc, better names?
+
+  public void savePreviewImg(String path) {
+    previewImg.save(path);
+  }
+
+  public void copyTargetToPreview() {
+    previewImg = targetImg.copy();
+  }
+
+  public void copyPreviewToTarget() {
+    targetImg = previewImg.copy();
+  }
+
+  public void updatePreview() {
+    previewImg.updatePixels();
+  }
+
+  // For recursive iterations
+  public void copyTargetPixelsToSource() {
+    sourceImg.pixels = targetImg.pixels;
+  }
+
+}
+
 // Source/Target Channels ======================================================
 
 /**
@@ -9,63 +62,63 @@
  */
 public class ChannelManager {
   // Source and target channels
-  int sourceChannel, targetChannel;
+  public int sourceChannel, targetChannel;
   // TODO: boolean swapChannels?
 
   public ChannelManager() {
-    this.sourceChannel = this.targetChannel = 0;
+    sourceChannel = targetChannel = 0;
   }
 
   // Getter/Setter Methods
 
   public void setSourceChannel(int channel) {
-    this.sourceChannel = channel;
+    sourceChannel = channel;
   }
-
-  public int getSourceChannel() { return this.sourceChannel; }
 
   public void setTargetChannel(int channel) {
-    this.targetChannel = channel;
+    targetChannel = channel;
   }
 
-  public int getTargetChannel() { return this.targetChannel; }
-
-  // TODO: setChannel(boolean source, int channel)
+  public void setChannel(boolean source, int channel) {
+    if (source)
+      sourceChannel = channel;
+    else
+      targetChannel = channel;
+  }
 
   public int getChannel(boolean source) {
-    return source ? this.sourceChannel : this.targetChannel;
+    return source ? sourceChannel : targetChannel;
   }
 
   public void setChannels(int source, int target) {
-    this.sourceChannel = source;
-    this.targetChannel = target;
+    sourceChannel = source;
+    targetChannel = target;
   }
 
   public int[] getChannels() { 
-    return new int[]{ this.sourceChannel, this.targetChannel }; 
+    return new int[]{ sourceChannel, targetChannel }; 
   }
 
   // Set target to match source (i.e. don't swap)
-  public void linkTargetToSource() { this.targetChannel = this.sourceChannel; }
+  public void linkTargetToSource() { targetChannel = sourceChannel; }
 
   // Return true if channels match
-  public boolean channelsMatch() { return this.sourceChannel == this.targetChannel; }
+  public boolean channelsMatch() { return sourceChannel == targetChannel; }
 
   // Reset channels to default
-  public void resetChannels() { this.sourceChannel = this.targetChannel = 0; }
+  public void resetChannels() { sourceChannel = targetChannel = 0; }
 
   // Randomize channels
   public void randomize(boolean source, boolean target) {
     if (source) {
-      this.sourceChannel = int(random(3));
+      sourceChannel = int(random(3));
       // Set target to match source if we're not randomizing it
-      // TODO: document this behavior somewhere or only do this if !this.swapChannels?
       if (!target) {
-        this.targetChannel = this.sourceChannel;
+        targetChannel = sourceChannel;
       }
     }
     if (target) {
-      this.targetChannel = int(random(3));
+      targetChannel = int(random(3));
     }
   }
 
@@ -79,127 +132,118 @@ public class ChannelManager {
  */
 public class ShiftManager {
   // Shift amounts (pixels and percentage)
-  int shiftAmount, shiftPercent;
+  public int shiftAmount, shiftPercent;
   // Corresponding image dimension (used for percent and max calculations)
-  int imgDimension;
+  public int imgDimension;
 
   public ShiftManager() {
-    this.shiftAmount = this.shiftPercent = this.imgDimension = 0;
+    shiftAmount = shiftPercent = imgDimension = 0;
   }
 
   public ShiftManager(int imgDimension) {
-    this();
+    this(); 
     this.imgDimension = imgDimension;
   }
 
   // Percent/Pixel Conversion
 
-  private int shiftPercentToPixels(int shiftPercent) {
-    return (int)(this.imgDimension * shiftPercent / 100);
+  private int shiftPercentToPixels(int percent) {
+    return (int)(imgDimension * percent / 100);
   }
 
-  private int shiftPixelsToPercent(int shiftAmount) {
-    return (int)(100 * shiftAmount / this.imgDimension);
+  private int shiftPixelsToPercent(int amount) {
+    return (int)(100 * amount / imgDimension);
   }
 
   // Getter/Setter Methods
 
-  public void setShiftAmount(int shiftAmount) {
+  public void setShiftAmount(int amount) {
     // Upper bound
-    if (shiftAmount > this.imgDimension)
-      shiftAmount = this.imgDimension;
-    this.shiftAmount = shiftAmount;
-    this.shiftPercent = this.shiftPixelsToPercent(shiftAmount);
+    if (amount > imgDimension)
+      amount = imgDimension;
+    shiftAmount = amount;
+    shiftPercent = shiftPixelsToPercent(amount);
   }
 
-  public int getShiftAmount() { return this.shiftAmount; }
-
-  public void setShiftPercent(int shiftPercent) {
+  public void setShiftPercent(int percent) {
     // Upper bound
-    if (shiftPercent > 100)
-      shiftPercent = 100;
-    this.shiftPercent = shiftPercent;
-    this.shiftAmount = this.shiftPercentToPixels(shiftPercent);
+    if (percent > 100)
+      percent = 100;
+    shiftPercent = percent;
+    shiftAmount = shiftPercentToPixels(percent);
   }
 
-  public int getShiftPercent() { return this.shiftPercent; }
-
-  public void resetShift() { this.shiftAmount = this.shiftPercent = 0; }
+  public void resetShift() { shiftAmount = shiftPercent = 0; }
 
   // Randomize shift value
   public void randomize(int maxPercent) {
-    this.setShiftAmount(int(random(this.imgDimension * maxPercent / 100)));
+    setShiftAmount(int(random(imgDimension * maxPercent / 100)));
   }
-  public void randomize() { this.randomize(100); }
+  public void randomize() { randomize(100); }
 
   // Return true if shift is 0
-  public boolean shiftIsZero() { return this.shiftAmount == 0; }
+  public boolean shiftIsZero() { return shiftAmount == 0; }
 
-  public void setImgDimension(int imgDimension) {
+  public void setImgDimension(int dimension) {
     // Skip if dimension is unchanged
-    if (imgDimension == this.imgDimension)
+    if (dimension == imgDimension)
       return;
-    this.imgDimension = imgDimension;
+    imgDimension = dimension;
     // Recalculate shift amount based on new dimension
-    this.shiftAmount = this.shiftPercentToPixels(this.shiftPercent);
+    shiftAmount = shiftPercentToPixels(shiftPercent);
   }
 
-  public int getImgDimension() { return this.imgDimension; }
+  public int getImgDimension() { return imgDimension; }
 }
 
 // Randomize Config ============================================================
 
 public class RandomizeManager {
+  // TODO: more informative names now that these are public 
   // If true, randomize the corresponding settings
-  boolean src, targ, xShift, yShift; 
+  public boolean src, targ, xShift, yShift; 
   // Maximum percent channels can be shifted
-  int xShiftMax, yShiftMax;
+  public int xShiftMax, yShiftMax;
 
   public RandomizeManager() {
-    this.src = this.targ = this.xShift = this.yShift = true; 
-    this.xShiftMax = this.yShiftMax = 100;
+    src = targ = xShift = yShift = true; 
+    xShiftMax = yShiftMax = 100;
   }
 
   // Getter/Setter Methods
 
   // Source channel
-  public void toggleSource(boolean val) { this.src = val; }
-  public boolean randomizeSource() { return this.src; }
+  public void toggleSource(boolean val) { src = val; }
 
   // Target channel
-  public void toggleTarget(boolean val) { this.targ = val; }
-  public boolean randomizeTarget() { return this.targ; }
+  public void toggleTarget(boolean val) { targ = val; }
 
   // Either channel (let ChannelManager determine which one(s))
-  public boolean randomizeChannel() { return this.src || this.targ; }
+  public boolean randomizeChannel() { return src || targ; }
 
   // Horizontal shift
-  public void toggleXShift(boolean val) { this.xShift = val; }
-  public boolean randomizeXShift() { return this.xShift; }
+  public void toggleXShift(boolean val) { xShift = val; }
   // Horizontal shift max percent
   public void setXShiftMaxPercent(int percent) {
-    this.xShiftMax = this.getPercentWithinBounds(percent);
+    xShiftMax = getPercentWithinBounds(percent);
   }
-  public int xShiftMaxPercent() { return this.xShiftMax; }
 
   // Vertical shift
-  public void toggleYShift(boolean val) { this.yShift = val; }
-  public boolean randomizeYShift() { return this.yShift; }
+  public void toggleYShift(boolean val) { yShift = val; }
   // Vertical shift max percent
   public void setYShiftMaxPercent(int percent) {
-    this.yShiftMax = this.getPercentWithinBounds(percent);
+    yShiftMax = getPercentWithinBounds(percent);
   }
-  public int yShiftMaxPercent() { return this.yShiftMax; }
 
   // Conditional max shift getter/setters
   public void setShiftMaxPercent(int percent, boolean horizontal) {
     if (horizontal)
-      this.setXShiftMaxPercent(percent);
+      setXShiftMaxPercent(percent);
     else
-      this.setYShiftMaxPercent(percent);
+      setYShiftMaxPercent(percent);
   }
   public int shiftMaxPercent(boolean horizontal) {
-    return horizontal ? this.xShiftMax : this.yShiftMax;
+    return horizontal ? xShiftMax : yShiftMax;
   }
 
   // Helpers
@@ -213,4 +257,50 @@ public class RandomizeManager {
   }
 
 }
+
+// Preview Window ==============================================================
+
+/**
+ * Manages the preview window dimensions
+ */
+public class WindowManager {
+  // Window dimensions
+  public int width, height;
+  // Preview window size (does not affect output image size)
+  public int maxWindowSize;
+
+  public WindowManager() {
+    width = height = 0;
+    maxWindowSize = 600;
+  }
+
+  // Getter/Setter Methods
+
+  public void updateWindowDimensions(PImage img) {
+    int[] dimensions = calculateWindowDimensions(img);
+    width = dimensions[0];
+    height = dimensions[1];
+  }
+
+  // Helpers
+
+  /**
+   * Calculate window dimensions based on image size and maxWindowSize config
+   * @param img The PImage object that will be displayed in the window
+   * @return A 2D array where [0] = width and [1] = height 
+   */
+  int[] calculateWindowDimensions(PImage img) {
+    int[] dimensions;
+    float ratio = (float) img.width/img.height;
+    // Set longer side to maxWindowSize, then multiply ratio by the shorter side to
+    // maintain aspect ratio
+    if (ratio < 1.0) {
+      dimensions = new int[]{(int)(maxWindowSize * ratio), maxWindowSize};
+    } else {
+      dimensions = new int[]{maxWindowSize, (int)(maxWindowSize / ratio)};
+    }
+    return dimensions;
+  }
+}
+
 
