@@ -267,7 +267,7 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
   }
 }
 
-// TODO Use manager and state pattern instaed so we're not checking the type each time this is called
+// TODO Use manager and state pattern instead so we're not checking the type each time this is called
 int calculateShiftOffset(int pos, int shift, boolean horizontal) {
   // TODO: have manager handle calculations based on shiftType
   int offset = 0;
@@ -374,6 +374,15 @@ void updateChannelToggles() {
 
 public void channelOption_clicked(ChannelOption source, GEvent event) {
   channelManager.setChannel(source.isSource(), source.getChannel());
+  showPreview();
+}
+
+// Shift Type ------------------------------------------------------------------
+
+public void shiftTypeSelect_change(GDropList source, GEvent event) {
+  // TODO global will move to manager
+  // TODO make sure both dropdowns are updated
+  shiftType = source.getSelectedIndex();
   showPreview();
 }
 

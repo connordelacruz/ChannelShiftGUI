@@ -409,7 +409,6 @@ public void createRandomizePanel() {
 
 // Shift Type Panel ------------------------------------------------------------
 
-// TODO: implement
 public void createShiftTypePanel() {
   shiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT, "Shift Type");
   setupGeneralPanel(shiftTypePanel, GCScheme.PURPLE_SCHEME);
@@ -417,7 +416,7 @@ public void createShiftTypePanel() {
   shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
   // TODO UPDATE; this global will be moved
   shiftTypeSelect.setItems(SHIFT_TYPES, 0);
-  // TODO: event handler
+  shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
   shiftTypePanel.addControl(shiftTypeSelect);
   // Button
   shiftTypeOptionsBtn = new GButton(controlsWindow, TYPE_OPTIONS_BTN_X, TYPE_OPTIONS_BTN_Y, TYPE_OPTIONS_BTN_WIDTH, TYPE_OPTIONS_BTN_HEIGHT, "Advanced Options...");
