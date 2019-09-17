@@ -30,6 +30,14 @@ RandomizeManager randomizeManager;
 // Interface managers
 WindowManager windowManager;
 
+// TODO: doc, manager class, GUI (pop up dialog?), sketch steps
+// TODO: rename Multiply -> Scale? 
+String[] SHIFT_TYPES = new String[]{"Default", "Multiply"};
+int shiftType = 0; 
+// TODO: make float for granularity?
+int xMultiplier = 2;
+int yMultiplier = 0;
+
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
 
@@ -215,6 +223,7 @@ void outFileSelected(File selection) {
 
 // Channel Shift ---------------------------------------------------------------
 
+// TODO re-work for shift types
 /**
  * Shift and swap color channels
  * @param sourceImg The base PImage object to be channel shifted
@@ -235,11 +244,11 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
   color[] targetPixels = targetImg.pixels;
   // Loop thru rows
   for (int y = 0; y < targetImg.height; y++) {
-    int yOffset = (y + yShift) % targetImg.height;
+    int yOffset = calculateShiftOffset(y, yShift, false) % targetImg.height;
 
     // Loop thru pixels in current row
     for (int x = 0; x < targetImg.width; x++) {
-      int xOffset = (x + xShift) % targetImg.width;
+      int xOffset = calculateShiftOffset(x, xShift, true) % targetImg.width;
 
       // Get source pixel and its RGB vals
       int sourceIndex = yOffset * sourceImg.width + xOffset;
@@ -256,6 +265,26 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
       targetPixels[targetIndex] = color(targetRGB[0], targetRGB[1], targetRGB[2]);
     }
   }
+}
+
+// TODO doc and implement
+int calculateShiftOffset(int pos, int shift, boolean horizontal) {
+  // TODO: have manager handle calculations based on shiftType
+  int offset = 0;
+  switch (shiftType) {
+    // Default
+    case 0:
+      offset = pos + shift;
+      break;
+    // Multiply
+    case 1:
+      int multiplier = horizontal ? xMultiplier : yMultiplier;
+      offset = (pos * multiplier) + shift; 
+      break;
+    default:
+      break;
+  }
+  return offset;
 }
 
 // Sketch State ----------------------------------------------------------------
