@@ -125,6 +125,101 @@ public class ChannelManager {
 }
 
 
+// Shift Type ==================================================================
+
+// Shift Type States -----------------------------------------------------------
+
+// TODO doc and implement; move to a .java file so it can include static attributes
+public interface ShiftTypeState {
+  // Index of this shift type in the array of types
+  // TODO: not working?
+  /* public int SHIFT_TYPE_INDEX; */
+  // Calculate offset for this shift type
+  public int calculateShiftOffset(int pos, int shift, boolean horizontal);
+}
+
+// Implementations
+
+public class DefaultShiftType implements ShiftTypeState {
+  public int SHIFT_TYPE_INDEX = 0;
+
+  public int calculateShiftOffset(int pos, int shift, boolean horizontal) {
+    return pos + shift;
+  }
+}
+
+public class MultiplyShiftType implements ShiftTypeState {
+  public int SHIFT_TYPE_INDEX = 1;
+
+  // Multiplier values specific to this shift type
+  public int xMultiplier, yMultiplier;
+
+  public MultiplyShiftType(int xMult, int yMult) {
+    xMultiplier = xMult;
+    yMultiplier = yMult;
+  }
+
+  public MultiplyShiftType() {
+    // Arbitrarily using 2 in the event that this doesn't get set
+    this(2, 2);
+  }
+
+  public int calculateShiftOffset(int pos, int shift, boolean horizontal) {
+    int multiplier = horizontal ? xMultiplier : yMultiplier;
+    return (pos * multiplier) + shift; 
+  }
+
+  // Set multipliers
+  public void setXMultiplier(int val) { xMultiplier = val; }
+  public void setYMultiplier(int val) { yMultiplier = val; }
+  public void setMultipliers(int xMult, int yMult) {
+    xMultiplier = xMult;
+    yMultiplier = yMult;
+  }
+}
+
+// Manager ---------------------------------------------------------------------
+
+public class ShiftTypeManager {
+  // Current state
+  ShiftTypeState state;
+  // TODO: array of initialized states instead, toggle selected index and keep configs stored in them
+
+  // Configs for shift types (stored here so GUI can update it regardless of
+  // current state)
+  int xMultiplier, yMultiplier;
+
+
+  public ShiftTypeManager() {
+    state = new DefaultShiftType();
+    // TODO MAKE defaults consistent with GUI
+    xMultiplier = yMultiplier = 2;
+  }
+
+  public int calculateShiftOffset(int pos, int shift, boolean horizontal) {
+    return state.calculateShiftOffset(pos, shift, horizontal);
+  }
+
+  public void setShiftType(int shiftType) {
+    // TODO move these to constants, we can't use static stuff within a pde file so SHIFT_TYPE_INDEX doesn't help here
+    switch (shiftType) {
+      // Multiply
+      case 1:
+        state = new MultiplyShiftType(xMultiplier, yMultiplier);
+      // Default
+      case 0:
+      default:
+        state = new DefaultShiftType();
+        break;
+    }
+  }
+
+  // Config Setters
+  // TODO: figure out how this is gonna update state values?
+
+}
+
+
 // Channel Shift ===============================================================
 
 /**
