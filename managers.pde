@@ -201,56 +201,51 @@ public class ShiftManager {
 // Randomize Config ============================================================
 
 public class RandomizeManager {
+  // TODO: more informative names now that these are public 
   // If true, randomize the corresponding settings
-  boolean src, targ, xShift, yShift; 
+  public boolean src, targ, xShift, yShift; 
   // Maximum percent channels can be shifted
-  int xShiftMax, yShiftMax;
+  public int xShiftMax, yShiftMax;
 
   public RandomizeManager() {
-    this.src = this.targ = this.xShift = this.yShift = true; 
-    this.xShiftMax = this.yShiftMax = 100;
+    src = targ = xShift = yShift = true; 
+    xShiftMax = yShiftMax = 100;
   }
 
   // Getter/Setter Methods
 
   // Source channel
-  public void toggleSource(boolean val) { this.src = val; }
-  public boolean randomizeSource() { return this.src; }
+  public void toggleSource(boolean val) { src = val; }
 
   // Target channel
-  public void toggleTarget(boolean val) { this.targ = val; }
-  public boolean randomizeTarget() { return this.targ; }
+  public void toggleTarget(boolean val) { targ = val; }
 
   // Either channel (let ChannelManager determine which one(s))
-  public boolean randomizeChannel() { return this.src || this.targ; }
+  public boolean randomizeChannel() { return src || targ; }
 
   // Horizontal shift
-  public void toggleXShift(boolean val) { this.xShift = val; }
-  public boolean randomizeXShift() { return this.xShift; }
+  public void toggleXShift(boolean val) { xShift = val; }
   // Horizontal shift max percent
   public void setXShiftMaxPercent(int percent) {
-    this.xShiftMax = this.getPercentWithinBounds(percent);
+    xShiftMax = getPercentWithinBounds(percent);
   }
-  public int xShiftMaxPercent() { return this.xShiftMax; }
 
   // Vertical shift
-  public void toggleYShift(boolean val) { this.yShift = val; }
-  public boolean randomizeYShift() { return this.yShift; }
+  public void toggleYShift(boolean val) { yShift = val; }
   // Vertical shift max percent
   public void setYShiftMaxPercent(int percent) {
-    this.yShiftMax = this.getPercentWithinBounds(percent);
+    yShiftMax = getPercentWithinBounds(percent);
   }
-  public int yShiftMaxPercent() { return this.yShiftMax; }
 
   // Conditional max shift getter/setters
   public void setShiftMaxPercent(int percent, boolean horizontal) {
     if (horizontal)
-      this.setXShiftMaxPercent(percent);
+      setXShiftMaxPercent(percent);
     else
-      this.setYShiftMaxPercent(percent);
+      setYShiftMaxPercent(percent);
   }
   public int shiftMaxPercent(boolean horizontal) {
-    return horizontal ? this.xShiftMax : this.yShiftMax;
+    return horizontal ? xShiftMax : yShiftMax;
   }
 
   // Helpers

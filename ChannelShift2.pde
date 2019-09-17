@@ -528,16 +528,16 @@ public void ySliderPixels_clicked(GOption source, GEvent event) {
 void randomizeValues() {
   // Channels
   if (randomizeManager.randomizeChannel()) {
-    channelManager.randomize(randomizeManager.randomizeSource(), randomizeManager.randomizeTarget());
+    channelManager.randomize(randomizeManager.src, randomizeManager.targ);
     updateChannelToggles();
   }
   // Shift
-  if (randomizeManager.randomizeXShift()) {
-    xShiftManager.randomize(randomizeManager.xShiftMaxPercent());
+  if (randomizeManager.xShift) {
+    xShiftManager.randomize(randomizeManager.xShiftMax);
     updateShiftSlider(true);
   }
-  if (randomizeManager.randomizeYShift()) {
-    yShiftManager.randomize(randomizeManager.yShiftMaxPercent());
+  if (randomizeManager.yShift) {
+    yShiftManager.randomize(randomizeManager.yShiftMax);
     updateShiftSlider(false);
   }
 }
