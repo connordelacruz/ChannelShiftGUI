@@ -2,8 +2,6 @@
 // Classes to manage the internal state of the sketch
 // =============================================================================
 
-// TODO: consistent syntax/naming/usage of this
-// TODO: make attributes public so getters aren't necessary
 // TODO: should these just manage state and calculations? Or should they do the work too?
 
 // Images ======================================================================
@@ -11,7 +9,7 @@
 public class ImgManager {
   // Source, modified, and preview images
   public PImage sourceImg, targetImg, previewImg;
-  // TODO: width/height vars for easy access
+  // Width/height vars for easy access
   public int imgWidth, imgHeight;
 
   public ImgManager() {
