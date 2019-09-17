@@ -134,72 +134,68 @@ public class ChannelManager {
  */
 public class ShiftManager {
   // Shift amounts (pixels and percentage)
-  int shiftAmount, shiftPercent;
+  public int shiftAmount, shiftPercent;
   // Corresponding image dimension (used for percent and max calculations)
-  int imgDimension;
+  public int imgDimension;
 
   public ShiftManager() {
-    this.shiftAmount = this.shiftPercent = this.imgDimension = 0;
+    shiftAmount = shiftPercent = imgDimension = 0;
   }
 
   public ShiftManager(int imgDimension) {
-    this();
+    this(); 
     this.imgDimension = imgDimension;
   }
 
   // Percent/Pixel Conversion
 
-  private int shiftPercentToPixels(int shiftPercent) {
-    return (int)(this.imgDimension * shiftPercent / 100);
+  private int shiftPercentToPixels(int percent) {
+    return (int)(imgDimension * percent / 100);
   }
 
-  private int shiftPixelsToPercent(int shiftAmount) {
-    return (int)(100 * shiftAmount / this.imgDimension);
+  private int shiftPixelsToPercent(int amount) {
+    return (int)(100 * amount / imgDimension);
   }
 
   // Getter/Setter Methods
 
-  public void setShiftAmount(int shiftAmount) {
+  public void setShiftAmount(int amount) {
     // Upper bound
-    if (shiftAmount > this.imgDimension)
-      shiftAmount = this.imgDimension;
-    this.shiftAmount = shiftAmount;
-    this.shiftPercent = this.shiftPixelsToPercent(shiftAmount);
+    if (amount > imgDimension)
+      amount = imgDimension;
+    shiftAmount = amount;
+    shiftPercent = shiftPixelsToPercent(amount);
   }
 
-  public int getShiftAmount() { return this.shiftAmount; }
-
-  public void setShiftPercent(int shiftPercent) {
+  public void setShiftPercent(int percent) {
     // Upper bound
-    if (shiftPercent > 100)
-      shiftPercent = 100;
-    this.shiftPercent = shiftPercent;
-    this.shiftAmount = this.shiftPercentToPixels(shiftPercent);
+    if (percent > 100)
+      percent = 100;
+    shiftPercent = percent;
+    shiftAmount = shiftPercentToPixels(percent);
   }
 
-  public int getShiftPercent() { return this.shiftPercent; }
-
-  public void resetShift() { this.shiftAmount = this.shiftPercent = 0; }
+  public void resetShift() { shiftAmount = shiftPercent = 0; }
 
   // Randomize shift value
   public void randomize(int maxPercent) {
-    this.setShiftAmount(int(random(this.imgDimension * maxPercent / 100)));
+    setShiftAmount(int(random(imgDimension * maxPercent / 100)));
   }
-  public void randomize() { this.randomize(100); }
+  public void randomize() { randomize(100); }
 
   // Return true if shift is 0
-  public boolean shiftIsZero() { return this.shiftAmount == 0; }
+  public boolean shiftIsZero() { return shiftAmount == 0; }
 
-  public void setImgDimension(int imgDimension) {
+  public void setImgDimension(int dimension) {
     // Skip if dimension is unchanged
-    if (imgDimension == this.imgDimension)
+    if (dimension == imgDimension)
       return;
-    this.imgDimension = imgDimension;
+    imgDimension = dimension;
     // Recalculate shift amount based on new dimension
-    this.shiftAmount = this.shiftPercentToPixels(this.shiftPercent);
+    shiftAmount = shiftPercentToPixels(shiftPercent);
   }
 
-  public int getImgDimension() { return this.imgDimension; }
+  public int getImgDimension() { return imgDimension; }
 }
 
 // Randomize Config ============================================================

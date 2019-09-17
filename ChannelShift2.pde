@@ -162,7 +162,7 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
  * Returns a string representation of the current sketch step
  */
 String stringifyCurrentStep() {
-  return stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.sourceChannel, channelManager.targetChannel, recursiveIteration);
+  return stringifyStep(xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel, recursiveIteration);
 }
 
 /**
@@ -301,7 +301,7 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
 void showPreview() {
   // Make sure preview image matches target
   imgManager.copyTargetToPreview();
-  shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.sourceChannel, channelManager.targetChannel);
+  shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel);
   // Update preview image pixels and redraw
   previewImgUpdated = true;
   imgManager.updatePreview();
@@ -373,10 +373,10 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   GSlider target = horizontal ? xSlider : ySlider;
   int updatedValue, upperBound;
   if (setPercentValue) {
-    updatedValue = manager.getShiftPercent();
+    updatedValue = manager.shiftPercent;
     upperBound = 100;
   } else {
-    updatedValue = manager.getShiftAmount();
+    updatedValue = manager.shiftAmount;
     upperBound = manager.getImgDimension();
   }
   // Set bounds and current value
@@ -411,7 +411,7 @@ void updateShiftSlider(boolean horizontal) {
   GTextField sliderInput = horizontal ? xSliderInput : ySliderInput;
   ShiftManager manager = horizontal ? xShiftManager : yShiftManager;
   boolean percentValue = sliderPercentValue(horizontal);
-  int val = percentValue ? manager.getShiftPercent() : manager.getShiftAmount();
+  int val = percentValue ? manager.shiftPercent : manager.shiftAmount;
   // TODO: extract upperBound calc to method and update usages?
   int upperBound = percentValue ? 100 : manager.getImgDimension();
   slider.setLimits(val, 0, upperBound);
