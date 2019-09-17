@@ -10,6 +10,17 @@ ChannelOption srcR, srcG, srcB;
 GPanel targChannelPanel;
 GToggleGroup targChannelToggle; 
 ChannelOption targR, targG, targB; 
+// Randomize Button/Toggles ----------------------------------------------------
+GPanel randomizePanel, randomizeCheckboxPanel;
+GButton randomizeBtn; 
+GCheckbox randSrcCheckbox, randTargCheckbox, 
+          randXShiftCheckbox, randYShiftCheckbox;
+GTextField randXMaxInput, randYMaxInput;
+GLabel randXMaxLabel, randYMaxLabel;
+// Shift Type ------------------------------------------------------------------
+GPanel shiftTypePanel;
+GDropList shiftTypeSelect;
+GButton shiftTypeOptionsBtn;
 // X Slider --------------------------------------------------------------------
 GPanel xShiftPanel;
 GSlider xSlider; 
@@ -22,13 +33,6 @@ GSlider ySlider;
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
 GTextField ySliderInput;
-// Randomize Button/Toggles ----------------------------------------------------
-GPanel randomizePanel, randomizeCheckboxPanel;
-GButton randomizeBtn; 
-GCheckbox randSrcCheckbox, randTargCheckbox, 
-          randXShiftCheckbox, randYShiftCheckbox;
-GTextField randXMaxInput, randYMaxInput;
-GLabel randXMaxLabel, randYMaxLabel;
 // Reset/Confirm Buttons -------------------------------------------------------
 GPanel resetConfirmPanel;
 GButton resetBtn, confirmBtn; 
@@ -60,7 +64,7 @@ int WINDOW_HEIGHT = 475;
 // Toggles ---------------------------------------------------------------------
 // General
 int CHANNEL_TOGGLE_WIDTH = 150;
-int CHANNEL_TOGGLE_HEIGHT = 30;
+int CHANNEL_TOGGLE_HEIGHT = 25;
 int CHANNEL_PANEL_HEIGHT = 3 * CHANNEL_TOGGLE_HEIGHT + PANEL_Y_START;
 int R_CHANNEL_Y = PANEL_Y_START;
 int G_CHANNEL_Y = PANEL_Y_START + CHANNEL_TOGGLE_HEIGHT;
@@ -111,6 +115,27 @@ int RAND_BTN_HEIGHT = 30;
 int RAND_BTN_X = 0;
 int RAND_BTN_Y = RAND_MAX_LABEL_Y + RAND_MAX_TOTAL_HEIGHT;
 int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
+// Shift Type Select -----------------------------------------------------------
+// Panel
+int TYPE_PANEL_X = X_START;
+int TYPE_PANEL_Y = SRC_CHANNEL_Y + CHANNEL_PANEL_HEIGHT + Y_MARGIN;
+int TYPE_PANEL_WIDTH = (CHANNEL_TOGGLE_WIDTH * 2) + X_MARGINS;
+// Fill the space below toggles, align bottom w/ randomize panel
+int TYPE_PANEL_HEIGHT = RAND_PANEL_HEIGHT - CHANNEL_PANEL_HEIGHT - Y_MARGIN;
+// Dropdown
+int TYPE_SELECT_X = 0;
+int TYPE_SELECT_Y = PANEL_Y_START;
+int TYPE_SELECT_WIDTH = TYPE_PANEL_WIDTH / 2;
+int TYPE_SELECT_HEIGHT = 100; // TODO tweak these to get the height right
+int TYPE_SELECT_MAX_ITEMS = 4;
+// TODO MARGINS
+int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
+// Advanced Options Button
+// TODO MARGINS
+int TYPE_OPTIONS_BTN_WIDTH = TYPE_PANEL_WIDTH - TYPE_SELECT_WIDTH;
+int TYPE_OPTIONS_BTN_HEIGHT = 30;
+int TYPE_OPTIONS_BTN_X = TYPE_SELECT_X + TYPE_SELECT_WIDTH;
+int TYPE_OPTIONS_BTN_Y = PANEL_Y_START + (TYPE_PANEL_HEIGHT - PANEL_Y_START - TYPE_OPTIONS_BTN_HEIGHT) / 2;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -123,7 +148,7 @@ int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
 int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - (SLIDER_INPUT_WIDTH + SLIDER_TOGGLE_WIDTH);
 int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
 int SLIDER_INPUT_X = 0;
-int SLIDER_INPUT_Y = PANEL_Y_START + (SLIDER_HEIGHT / 2) - (SLIDER_INPUT_HEIGHT / 2);
+int SLIDER_INPUT_Y = PANEL_Y_START + (SLIDER_HEIGHT - SLIDER_INPUT_HEIGHT) / 2;
 int SLIDER_X = SLIDER_INPUT_X + SLIDER_INPUT_WIDTH;
 int SLIDER_Y = PANEL_Y_START;
 int SLIDER_TOGGLE_X = SLIDER_X + SLIDER_WIDTH;
@@ -177,12 +202,14 @@ public void createGUI(){
   createSrcChannelPanel();
   // Target channel toggle 
   createTargChannelPanel();
+  // Randomize  options
+  createRandomizePanel();
+  // Shift type
+  createShiftTypePanel();
   // Horizontal shift slider 
   createXShiftPanel();
   // Vertical shift slider 
   createYShiftPanel();
-  // Randomize/reset buttons 
-  createRandomizePanel();
   // Load/save buttons 
   createLoadSavePanel();
   // Preview/Confirm buttons
@@ -195,6 +222,7 @@ public void createGUI(){
 // Helpers =====================================================================
 
 // General Panels --------------------------------------------------------------
+// TODO extended class that uses these defaults?
 
 // Common panel formatting
 public void setupGeneralPanel(GPanel panel) {
@@ -377,6 +405,24 @@ public void createRandomizePanel() {
   randYMaxInput.setText("100");
   randYMaxInput.addEventHandler(this, "randYMaxInput_change");
   randomizePanel.addControl(randYMaxInput);
+}
+
+// Shift Type Panel ------------------------------------------------------------
+
+// TODO: implement
+public void createShiftTypePanel() {
+  shiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT, "Shift Type");
+  setupGeneralPanel(shiftTypePanel, GCScheme.PURPLE_SCHEME);
+  // Dropdown
+  shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
+  // TODO UPDATE; this global will be moved
+  shiftTypeSelect.setItems(SHIFT_TYPES, 0);
+  // TODO: event handler
+  shiftTypePanel.addControl(shiftTypeSelect);
+  // Button
+  shiftTypeOptionsBtn = new GButton(controlsWindow, TYPE_OPTIONS_BTN_X, TYPE_OPTIONS_BTN_Y, TYPE_OPTIONS_BTN_WIDTH, TYPE_OPTIONS_BTN_HEIGHT, "Advanced Options...");
+  // TODO: event handler
+  shiftTypePanel.addControl(shiftTypeOptionsBtn);
 }
 
 // Load/Save Panel -------------------------------------------------------------

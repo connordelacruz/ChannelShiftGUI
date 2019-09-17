@@ -267,7 +267,7 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
   }
 }
 
-// TODO doc and implement
+// TODO Use manager and state pattern instaed so we're not checking the type each time this is called
 int calculateShiftOffset(int pos, int shift, boolean horizontal) {
   // TODO: have manager handle calculations based on shiftType
   int offset = 0;
