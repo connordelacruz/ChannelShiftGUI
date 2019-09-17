@@ -64,14 +64,14 @@ String INDENT = "   ";
  */
 void updateWindowSize() {
   windowManager.updateWindowDimensions(imgManager.sourceImg);
-  surface.setSize(windowManager.getWidth(), windowManager.getHeight());
+  surface.setSize(windowManager.width, windowManager.height);
 }
 
 /**
  * Re-draws previewImg and sets previewImgUpdated to false
  */
 void updatePreview() {
-  image(imgManager.previewImg, 0, 0, windowManager.getWidth(), windowManager.getHeight());
+  image(imgManager.previewImg, 0, 0, windowManager.width, windowManager.height);
   previewImgUpdated = false;
 }
 
