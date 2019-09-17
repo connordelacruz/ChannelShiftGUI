@@ -4,6 +4,7 @@
 
 // TODO: consistent syntax/naming/usage of this
 // TODO: make attributes public so getters aren't necessary
+// TODO: should these just manage state and calculations? Or should they do the work too?
 
 // Images ======================================================================
 
