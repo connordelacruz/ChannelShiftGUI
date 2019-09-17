@@ -162,7 +162,7 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
  * Returns a string representation of the current sketch step
  */
 String stringifyCurrentStep() {
-  return stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel(), recursiveIteration);
+  return stringifyStep(xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.sourceChannel, channelManager.targetChannel, recursiveIteration);
 }
 
 /**
@@ -301,25 +301,13 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
 void showPreview() {
   // Make sure preview image matches target
   imgManager.copyTargetToPreview();
-  shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.getSourceChannel(), channelManager.getTargetChannel());
+  shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.getShiftAmount(), yShiftManager.getShiftAmount(), channelManager.sourceChannel, channelManager.targetChannel);
   // Update preview image pixels and redraw
   previewImgUpdated = true;
   imgManager.updatePreview();
 }
 
 // Source/Target Channel -------------------------------------------------------
-
-/**
- * Set the current source/target channel
- * @param source If true, set sourceChannel, else set targetChannel
- * @param channel Channel to set (Index into CHANNELS)
- */
-void selectChannel(boolean source, int channel) {
-  if (source)
-    channelManager.setSourceChannel(channel);
-  else
-    channelManager.setTargetChannel(channel);
-}
 
 /**
  * Select a source/target channel toggle
@@ -356,7 +344,7 @@ void updateChannelToggles() {
 }
 
 public void channelOption_clicked(ChannelOption source, GEvent event) {
-  selectChannel(source.isSource(), source.getChannel());
+  channelManager.setChannel(source.isSource(), source.getChannel());
   showPreview();
 }
 

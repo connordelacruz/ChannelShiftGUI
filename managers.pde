@@ -64,63 +64,63 @@ public class ImgManager {
  */
 public class ChannelManager {
   // Source and target channels
-  int sourceChannel, targetChannel;
+  public int sourceChannel, targetChannel;
   // TODO: boolean swapChannels?
 
   public ChannelManager() {
-    this.sourceChannel = this.targetChannel = 0;
+    sourceChannel = targetChannel = 0;
   }
 
   // Getter/Setter Methods
 
   public void setSourceChannel(int channel) {
-    this.sourceChannel = channel;
+    sourceChannel = channel;
   }
-
-  public int getSourceChannel() { return this.sourceChannel; }
 
   public void setTargetChannel(int channel) {
-    this.targetChannel = channel;
+    targetChannel = channel;
   }
 
-  public int getTargetChannel() { return this.targetChannel; }
-
-  // TODO: setChannel(boolean source, int channel)
+  public void setChannel(boolean source, int channel) {
+    if (source)
+      sourceChannel = channel;
+    else
+      targetChannel = channel;
+  }
 
   public int getChannel(boolean source) {
-    return source ? this.sourceChannel : this.targetChannel;
+    return source ? sourceChannel : targetChannel;
   }
 
   public void setChannels(int source, int target) {
-    this.sourceChannel = source;
-    this.targetChannel = target;
+    sourceChannel = source;
+    targetChannel = target;
   }
 
   public int[] getChannels() { 
-    return new int[]{ this.sourceChannel, this.targetChannel }; 
+    return new int[]{ sourceChannel, targetChannel }; 
   }
 
   // Set target to match source (i.e. don't swap)
-  public void linkTargetToSource() { this.targetChannel = this.sourceChannel; }
+  public void linkTargetToSource() { targetChannel = sourceChannel; }
 
   // Return true if channels match
-  public boolean channelsMatch() { return this.sourceChannel == this.targetChannel; }
+  public boolean channelsMatch() { return sourceChannel == targetChannel; }
 
   // Reset channels to default
-  public void resetChannels() { this.sourceChannel = this.targetChannel = 0; }
+  public void resetChannels() { sourceChannel = targetChannel = 0; }
 
   // Randomize channels
   public void randomize(boolean source, boolean target) {
     if (source) {
-      this.sourceChannel = int(random(3));
+      sourceChannel = int(random(3));
       // Set target to match source if we're not randomizing it
-      // TODO: document this behavior somewhere or only do this if !this.swapChannels?
       if (!target) {
-        this.targetChannel = this.sourceChannel;
+        targetChannel = sourceChannel;
       }
     }
     if (target) {
-      this.targetChannel = int(random(3));
+      targetChannel = int(random(3));
     }
   }
 
