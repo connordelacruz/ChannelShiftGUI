@@ -29,6 +29,7 @@ GLabel defaultShiftConfigLabel;
 // Multiply
 GLabel xMultiplierLabel, yMultiplierLabel;
 GTextField xMultiplierInput, yMultiplierInput;
+// TODO GButton multiplyShiftResetBtn;
 // TODO better way to do this?
 // Keep track of shift type config panels w/ indices matching globals
 GPanel[] shiftTypeConfigPanels;
@@ -157,7 +158,10 @@ int TYPE_CONFIG_PANEL_X = 0;
 int TYPE_CONFIG_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
 int TYPE_CONFIG_PANEL_WIDTH = TYPE_PANEL_WIDTH;
 int TYPE_CONFIG_PANEL_HEIGHT = TYPE_PANEL_HEIGHT - TYPE_CONFIG_PANEL_Y;
-// TODO reset button at bottom
+int TYPE_CONFIG_RESET_WIDTH = TYPE_CONFIG_PANEL_WIDTH;
+int TYPE_CONFIG_RESET_HEIGHT = 30;
+int TYPE_CONFIG_RESET_X = 0;
+int TYPE_CONFIG_RESET_Y = TYPE_CONFIG_PANEL_HEIGHT - TYPE_CONFIG_RESET_HEIGHT;
 // Default Shift Type Panel ----------------------------------------------------
 int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
 int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
@@ -458,7 +462,7 @@ public void createRandomizePanel() {
 }
 
 // Shift Type Panel ------------------------------------------------------------
-// TODO move down, rename advanced panel
+// TODO organize, rename advanced panel
 
 // Advanced options panel
 public void createShiftTypePanel() {
