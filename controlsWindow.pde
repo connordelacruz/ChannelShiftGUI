@@ -29,6 +29,9 @@ GLabel defaultShiftConfigLabel;
 // Multiply
 GLabel xMultiplierLabel, yMultiplierLabel;
 GTextField xMultiplierInput, yMultiplierInput;
+// TODO better way to do this?
+// Keep track of shift type config panels w/ indices matching globals
+GPanel[] shiftTypeConfigPanels;
 // X Slider --------------------------------------------------------------------
 GPanel xShiftPanel;
 GSlider xSlider; 
@@ -266,6 +269,15 @@ public void setupGeneralLabel(GLabel label) {
   label.setTextBold();
 }
 
+// General Utilities -----------------------------------------------------------
+
+// Show/hide a panel (w/ collapse)
+public void togglePanelVisibility(GPanel panel, boolean show) {
+  panel.setCollapsed(!show);
+  panel.setVisible(show);
+  // TODO disable children too?
+}
+
 // Channel Toggle Panels -------------------------------------------------------
 
 public void createChannelPanel(GPanel channelPanel, GToggleGroup channelToggle, ChannelOption R, ChannelOption G, ChannelOption B, boolean src) {
@@ -449,8 +461,12 @@ public void createShiftTypePanel() {
   shiftTypeSelect.setItems(SHIFT_TYPES, 0);
   shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
   shiftTypePanel.addControl(shiftTypeSelect);
-  // TODO Add type config panels
+  // Add type config panels
   createDefaultShiftTypePanel();
+  createMultiplyShiftTypePanel();
+  // Keep track of each config panel in global
+  // TODO use globals or something to ensure correct indices
+  shiftTypeConfigPanels = new GPanel[]{ defaultShiftTypePanel, multiplyShiftTypePanel };
 }
 
 // Type config panels (called above)
@@ -474,7 +490,15 @@ public void createDefaultShiftTypePanel() {
   shiftTypePanel.addControl(defaultShiftTypePanel);
 }
 
-// TODO createMultiplyShiftTypePanel()
+public void createMultiplyShiftTypePanel() {
+  multiplyShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
+  // TODO: store name in constant
+  setupShiftTypePanel(multiplyShiftTypePanel, "Multiply");
+  // TODO add controls
+  // Hide by default and add to advanced options
+  togglePanelVisibility(multiplyShiftTypePanel, false);
+  shiftTypePanel.addControl(multiplyShiftTypePanel);
+}
 
 // Load/Save Panel -------------------------------------------------------------
 

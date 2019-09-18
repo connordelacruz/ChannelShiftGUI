@@ -363,9 +363,11 @@ public void channelOption_clicked(ChannelOption source, GEvent event) {
 // Shift Type ------------------------------------------------------------------
 
 public void shiftTypeSelect_change(GDropList source, GEvent event) {
-  // TODO: collapse/hide previously selected's panel
+  // Hide previously selected panel
+  togglePanelVisibility(shiftTypeConfigPanels[shiftTypeManager.state], false);
   shiftTypeManager.setShiftType(source.getSelectedIndex());
-  // TODO: expand/show currently selected's panel
+  // Show newly selected panel
+  togglePanelVisibility(shiftTypeConfigPanels[shiftTypeManager.state], true);
   showPreview();
 }
 
