@@ -18,9 +18,17 @@ GCheckbox randSrcCheckbox, randTargCheckbox,
 GTextField randXMaxInput, randYMaxInput;
 GLabel randXMaxLabel, randYMaxLabel;
 // Shift Type ------------------------------------------------------------------
+// Type Select
 GPanel shiftTypePanel;
 GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
+// Per-Type configs
+GPanel defaultShiftTypePanel, multiplyShiftTypePanel;
+// Default (just a label)
+GLabel defaultShiftConfigLabel;
+// Multiply
+GLabel xMultiplierLabel, yMultiplierLabel;
+GTextField xMultiplierInput, yMultiplierInput;
 // X Slider --------------------------------------------------------------------
 GPanel xShiftPanel;
 GSlider xSlider; 
@@ -141,6 +149,16 @@ int TYPE_SELECT_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int TYPE_SELECT_HEIGHT = 100; // TODO tweak these to get the height right
 int TYPE_SELECT_MAX_ITEMS = 4;
 int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
+// Common shift type configs
+int TYPE_CONFIG_PANEL_X = 0;
+int TYPE_CONFIG_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
+int TYPE_CONFIG_PANEL_WIDTH = TYPE_PANEL_WIDTH;
+int TYPE_CONFIG_PANEL_HEIGHT = TYPE_PANEL_HEIGHT - TYPE_CONFIG_PANEL_Y - Y_MARGIN;
+// Default Shift Type Panel ----------------------------------------------------
+int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
+int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
+int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
+int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_CONFIG_PANEL_HEIGHT - PANEL_Y_START;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -418,6 +436,7 @@ public void createRandomizePanel() {
 // Shift Type Panel ------------------------------------------------------------
 // TODO move down, rename advanced panel
 
+// Advanced options panel
 public void createShiftTypePanel() {
   shiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT, "Advanced Options");
   setupGeneralPanel(shiftTypePanel, GCScheme.PURPLE_SCHEME);
@@ -430,7 +449,32 @@ public void createShiftTypePanel() {
   shiftTypeSelect.setItems(SHIFT_TYPES, 0);
   shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
   shiftTypePanel.addControl(shiftTypeSelect);
+  // TODO Add type config panels
+  createDefaultShiftTypePanel();
 }
+
+// Type config panels (called above)
+
+public void setupShiftTypePanel(GPanel panel, String typeName) {
+  setupGeneralPanel(panel);
+  panel.setText(typeName + " Shift Settings");
+}
+
+public void createDefaultShiftTypePanel() {
+  defaultShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
+  // TODO: store name in constant
+  setupShiftTypePanel(defaultShiftTypePanel, "Default");
+  // Default has no configs, add a label explaining this
+  defaultShiftConfigLabel = new GLabel(controlsWindow, DEFAULT_CONFIG_LABEL_X, DEFAULT_CONFIG_LABEL_Y, DEFAULT_CONFIG_LABEL_WIDTH, DEFAULT_CONFIG_LABEL_HEIGHT);
+  defaultShiftConfigLabel.setText("No advanced options for default shift type");
+  defaultShiftConfigLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
+  defaultShiftConfigLabel.setTextItalic();
+  defaultShiftTypePanel.addControl(defaultShiftConfigLabel);
+  // Add to advanced options
+  shiftTypePanel.addControl(defaultShiftTypePanel);
+}
+
+// TODO createMultiplyShiftTypePanel()
 
 // Load/Save Panel -------------------------------------------------------------
 
