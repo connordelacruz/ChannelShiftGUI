@@ -162,6 +162,17 @@ int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
 int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
 int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
 int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_CONFIG_PANEL_HEIGHT - PANEL_Y_START;
+// Multiply Shift Type Panel ---------------------------------------------------
+int MULTIPLY_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
+int MULTIPLY_CONFIG_LABEL_HEIGHT = 20;
+int MULTIPLY_CONFIG_INPUT_WIDTH = MULTIPLY_CONFIG_LABEL_WIDTH;
+int MULTIPLY_CONFIG_INPUT_HEIGHT = 20;
+int MULTIPLY_CONFIG_LABEL_X = X_MARGIN;
+int MULTIPLY_CONFIG_INPUT_X = X_MARGIN;
+int MULTIPLY_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
+int MULTIPLY_CONFIG_INPUT_TOP_Y = MULTIPLY_CONFIG_LABEL_TOP_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
+int MULTIPLY_CONFIG_LABEL_BOTTOM_Y = MULTIPLY_CONFIG_INPUT_TOP_Y + MULTIPLY_CONFIG_INPUT_HEIGHT + Y_MARGIN;
+int MULTIPLY_CONFIG_INPUT_BOTTOM_Y = MULTIPLY_CONFIG_LABEL_BOTTOM_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -494,7 +505,23 @@ public void createMultiplyShiftTypePanel() {
   multiplyShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
   // TODO: store name in constant
   setupShiftTypePanel(multiplyShiftTypePanel, "Multiply");
-  // TODO add controls
+  // TODO: merge common
+  // X Multiplier
+  xMultiplierLabel = new GLabel(controlsWindow, MULTIPLY_CONFIG_LABEL_X, MULTIPLY_CONFIG_LABEL_TOP_Y, MULTIPLY_CONFIG_LABEL_WIDTH, MULTIPLY_CONFIG_LABEL_HEIGHT);
+  xMultiplierLabel.setText("Horizontal Shift Multiplier:");
+  setupGeneralLabel(xMultiplierLabel);
+  multiplyShiftTypePanel.addControl(xMultiplierLabel);
+  xMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_TOP_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
+  // TODO event handler, default value
+  multiplyShiftTypePanel.addControl(xMultiplierInput);
+  // Y Multiplier
+  yMultiplierLabel = new GLabel(controlsWindow, MULTIPLY_CONFIG_LABEL_X, MULTIPLY_CONFIG_LABEL_BOTTOM_Y, MULTIPLY_CONFIG_LABEL_WIDTH, MULTIPLY_CONFIG_LABEL_HEIGHT);
+  yMultiplierLabel.setText("Vertical Shift Multiplier:");
+  setupGeneralLabel(yMultiplierLabel);
+  multiplyShiftTypePanel.addControl(yMultiplierLabel);
+  yMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_BOTTOM_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
+  // TODO event handler, default value
+  multiplyShiftTypePanel.addControl(yMultiplierInput);
   // Hide by default and add to advanced options
   togglePanelVisibility(multiplyShiftTypePanel, false);
   shiftTypePanel.addControl(multiplyShiftTypePanel);

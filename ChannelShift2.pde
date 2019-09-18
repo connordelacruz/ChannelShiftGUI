@@ -32,8 +32,7 @@ ShiftTypeManager shiftTypeManager;
 // Interface managers
 WindowManager windowManager;
 
-// TODO: doc, manager class, GUI (pop up dialog?), sketch steps
-// TODO: rename Multiply -> Scale? 
+// TODO: doc, sketch steps
 String[] SHIFT_TYPES = new String[]{"Default", "Multiply"};
 
 // Use resulting image as the source for next iteration
