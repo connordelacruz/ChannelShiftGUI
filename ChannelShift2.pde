@@ -27,16 +27,14 @@ ImgManager imgManager;
 ChannelManager channelManager;
 ShiftManager xShiftManager, yShiftManager;
 RandomizeManager randomizeManager;
+// Advanced option managers
+ShiftTypeManager shiftTypeManager;
 // Interface managers
 WindowManager windowManager;
 
 // TODO: doc, manager class, GUI (pop up dialog?), sketch steps
 // TODO: rename Multiply -> Scale? 
 String[] SHIFT_TYPES = new String[]{"Default", "Multiply"};
-int shiftType = 0; 
-// TODO: make float for granularity?
-int xMultiplier = 0;
-int yMultiplier = 2;
 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
@@ -267,24 +265,9 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
   }
 }
 
-// TODO Use manager and state pattern instead so we're not checking the type each time this is called
+// TODO this is redundant, just call manager directly?
 int calculateShiftOffset(int pos, int shift, boolean horizontal) {
-  // TODO: have manager handle calculations based on shiftType
-  int offset = 0;
-  switch (shiftType) {
-    // Default
-    case 0:
-      offset = pos + shift;
-      break;
-    // Multiply
-    case 1:
-      int multiplier = horizontal ? xMultiplier : yMultiplier;
-      offset = (pos * multiplier) + shift; 
-      break;
-    default:
-      break;
-  }
-  return offset;
+  return shiftTypeManager.calculateShiftOffset(pos, shift, horizontal);
 }
 
 // Sketch State ----------------------------------------------------------------
@@ -380,9 +363,8 @@ public void channelOption_clicked(ChannelOption source, GEvent event) {
 // Shift Type ------------------------------------------------------------------
 
 public void shiftTypeSelect_change(GDropList source, GEvent event) {
-  // TODO global will move to manager
   // TODO make sure both dropdowns are updated
-  shiftType = source.getSelectedIndex();
+  shiftTypeManager.setShiftType(source.getSelectedIndex());
   showPreview();
 }
 
@@ -706,6 +688,7 @@ void setup() {
   xShiftManager = new ShiftManager();
   yShiftManager = new ShiftManager();
   randomizeManager = new RandomizeManager();
+  shiftTypeManager = new ShiftTypeManager();
   windowManager = new WindowManager();
   // Load image (initializes global PImage objects)
   loadImageFile(defaultImgPath, defaultImgName);
