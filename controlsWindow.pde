@@ -149,14 +149,15 @@ int TYPE_LABEL_HEIGHT = 20;
 int TYPE_SELECT_X = X_MARGIN;
 int TYPE_SELECT_Y = TYPE_LABEL_Y + TYPE_LABEL_HEIGHT;
 int TYPE_SELECT_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
-int TYPE_SELECT_HEIGHT = 100; // TODO tweak these to get the height right
+int TYPE_SELECT_HEIGHT = 100; 
 int TYPE_SELECT_MAX_ITEMS = 4;
 int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
 // Common shift type configs
 int TYPE_CONFIG_PANEL_X = 0;
 int TYPE_CONFIG_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
 int TYPE_CONFIG_PANEL_WIDTH = TYPE_PANEL_WIDTH;
-int TYPE_CONFIG_PANEL_HEIGHT = TYPE_PANEL_HEIGHT - TYPE_CONFIG_PANEL_Y - Y_MARGIN;
+int TYPE_CONFIG_PANEL_HEIGHT = TYPE_PANEL_HEIGHT - TYPE_CONFIG_PANEL_Y;
+// TODO reset button at bottom
 // Default Shift Type Panel ----------------------------------------------------
 int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
 int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
@@ -512,7 +513,8 @@ public void createMultiplyShiftTypePanel() {
   setupGeneralLabel(xMultiplierLabel);
   multiplyShiftTypePanel.addControl(xMultiplierLabel);
   xMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_TOP_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
-  // TODO event handler, default value
+  xMultiplierInput.setText("2"); // TODO: pull default from manager
+  xMultiplierInput.addEventHandler(this, "xMultiplierInput_change");
   multiplyShiftTypePanel.addControl(xMultiplierInput);
   // Y Multiplier
   yMultiplierLabel = new GLabel(controlsWindow, MULTIPLY_CONFIG_LABEL_X, MULTIPLY_CONFIG_LABEL_BOTTOM_Y, MULTIPLY_CONFIG_LABEL_WIDTH, MULTIPLY_CONFIG_LABEL_HEIGHT);
@@ -520,7 +522,8 @@ public void createMultiplyShiftTypePanel() {
   setupGeneralLabel(yMultiplierLabel);
   multiplyShiftTypePanel.addControl(yMultiplierLabel);
   yMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_BOTTOM_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
-  // TODO event handler, default value
+  yMultiplierInput.setText("2"); // TODO: pull default from manager
+  yMultiplierInput.addEventHandler(this, "yMultiplierInput_change");
   multiplyShiftTypePanel.addControl(yMultiplierInput);
   // Hide by default and add to advanced options
   togglePanelVisibility(multiplyShiftTypePanel, false);

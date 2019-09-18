@@ -370,6 +370,40 @@ public void shiftTypeSelect_change(GDropList source, GEvent event) {
   showPreview();
 }
 
+// Multiply Configs ------------------------------------------------------------
+
+void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
+  switch(event) {
+    // TODO: select all on focus (will need to extend class)
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      // TODO: have manager handle bounds when those are determined
+      int val = sanitizeNumericInputValue(source);
+      if (val > -1) {
+        shiftTypeManager.multiply_setMultiplier(val, horizontal);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + shiftTypeManager.multiply_getMultiplier(horizontal));
+      break;
+    default:
+      break;
+  }
+}
+
+public void xMultiplierInput_change(GTextField source, GEvent event) {
+  multiplierInputEventHandler(source, event, true);
+}
+
+public void yMultiplierInput_change(GTextField source, GEvent event) {
+  multiplierInputEventHandler(source, event, false);
+}
+
 // Horizontal/Vertical Shift ---------------------------------------------------
 
 /**
