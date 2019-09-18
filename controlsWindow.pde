@@ -59,8 +59,15 @@ int X_MARGINS = 2 * X_MARGIN;
 // Panel labels are ~20, add this so children don't overlap
 int PANEL_Y_START = 20;
 // Window ----------------------------------------------------------------------
-int WINDOW_WIDTH  = 650;
+int WINDOW_X = 10;
+int WINDOW_Y = 10;
 int WINDOW_HEIGHT = 475;
+// The main sketch section
+int WINDOW_MAIN_WIDTH = 650;
+// Advanced options sidebar
+int WINDOW_ADV_WIDTH = 200;
+// Total width
+int WINDOW_WIDTH = WINDOW_MAIN_WIDTH + WINDOW_ADV_WIDTH;
 // Toggles ---------------------------------------------------------------------
 // General
 int CHANNEL_TOGGLE_WIDTH = 150;
@@ -80,7 +87,7 @@ int TARG_CHANNEL_Y = Y_START;
 int RAND_PANEL_X = TARG_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
 int RAND_PANEL_Y = Y_START;
 // Fill rest of window (minus right margin)
-int RAND_PANEL_WIDTH = WINDOW_WIDTH - RAND_PANEL_X - X_MARGIN;
+int RAND_PANEL_WIDTH = WINDOW_MAIN_WIDTH - RAND_PANEL_X - X_MARGIN;
 // Randomize Checkboxes + Panel
 int RAND_CHECKBOX_PANEL_X = 0; 
 int RAND_CHECKBOX_PANEL_Y = PANEL_Y_START;
@@ -116,26 +123,21 @@ int RAND_BTN_X = 0;
 int RAND_BTN_Y = RAND_MAX_LABEL_Y + RAND_MAX_TOTAL_HEIGHT;
 int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
 // Shift Type Select -----------------------------------------------------------
+// TODO RENAME SECTION TO ADVANCED WHERE APPLICABLE
 // Panel
-int TYPE_PANEL_X = X_START;
-int TYPE_PANEL_Y = SRC_CHANNEL_Y + CHANNEL_PANEL_HEIGHT + Y_MARGIN;
-int TYPE_PANEL_WIDTH = (CHANNEL_TOGGLE_WIDTH * 2) + X_MARGINS;
-// Fill the space below toggles, align bottom w/ randomize panel
-int TYPE_PANEL_HEIGHT = RAND_PANEL_HEIGHT - CHANNEL_PANEL_HEIGHT - Y_MARGIN;
+int TYPE_PANEL_X = WINDOW_MAIN_WIDTH + X_MARGIN;
+int TYPE_PANEL_Y = Y_START;
+int TYPE_PANEL_WIDTH = WINDOW_ADV_WIDTH - X_MARGINS;
+// TODO should this take up the whole height?
+int TYPE_PANEL_HEIGHT = WINDOW_HEIGHT - (2 * Y_MARGIN);
 // Dropdown
-int TYPE_SELECT_X = 0;
+int TYPE_SELECT_X = X_MARGIN;
 int TYPE_SELECT_Y = PANEL_Y_START;
-int TYPE_SELECT_WIDTH = TYPE_PANEL_WIDTH / 2;
+int TYPE_SELECT_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int TYPE_SELECT_HEIGHT = 100; // TODO tweak these to get the height right
 int TYPE_SELECT_MAX_ITEMS = 4;
 // TODO MARGINS
 int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
-// Advanced Options Button
-// TODO MARGINS
-int TYPE_OPTIONS_BTN_WIDTH = TYPE_PANEL_WIDTH - TYPE_SELECT_WIDTH;
-int TYPE_OPTIONS_BTN_HEIGHT = 30;
-int TYPE_OPTIONS_BTN_X = TYPE_SELECT_X + TYPE_SELECT_WIDTH;
-int TYPE_OPTIONS_BTN_Y = PANEL_Y_START + (TYPE_PANEL_HEIGHT - PANEL_Y_START - TYPE_OPTIONS_BTN_HEIGHT) / 2;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -143,7 +145,7 @@ int SLIDER_INPUT_WIDTH = 75;
 int SLIDER_INPUT_HEIGHT = 20;
 float SLIDER_TRACK_WIDTH = 12.0;
 int SLIDER_HEIGHT = 60;
-int SLIDER_PANEL_WIDTH = WINDOW_WIDTH - X_MARGINS;
+int SLIDER_PANEL_WIDTH = WINDOW_MAIN_WIDTH - X_MARGINS;
 int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
 int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - (SLIDER_INPUT_WIDTH + SLIDER_TOGGLE_WIDTH);
 int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
@@ -163,7 +165,7 @@ int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 // Load/Save Buttons -----------------------------------------------------------
 int LOAD_SAVE_PANEL_X = X_START;
 int LOAD_SAVE_PANEL_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
-int LOAD_SAVE_PANEL_WIDTH = WINDOW_WIDTH / 2 - X_MARGINS;
+int LOAD_SAVE_PANEL_WIDTH = WINDOW_MAIN_WIDTH / 2 - X_MARGINS;
 int LOAD_SAVE_BTN_HEIGHT = 30;
 int LOAD_SAVE_PANEL_HEIGHT = 2 * (LOAD_SAVE_BTN_HEIGHT + Y_MARGIN);
 int LOAD_BTN_X = 0;
@@ -193,7 +195,7 @@ public void createGUI(){
   G4P.setMouseOverEnabled(false);
   surface.setTitle("Sketch Window");
   // Controls window 
-  controlsWindow = GWindow.getWindow(this, "Channel Shift", 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
+  controlsWindow = GWindow.getWindow(this, "Channel Shift", WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
   controlsWindow.noLoop();
   controlsWindow.setActionOnClose(G4P.KEEP_OPEN);
   controlsWindow.addDrawHandler(this, "controlsWindow_draw");
@@ -408,20 +410,18 @@ public void createRandomizePanel() {
 }
 
 // Shift Type Panel ------------------------------------------------------------
+// TODO move down, rename advanced panel
 
 public void createShiftTypePanel() {
-  shiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT, "Shift Type");
+  shiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT, "Advanced Options");
   setupGeneralPanel(shiftTypePanel, GCScheme.PURPLE_SCHEME);
-  // Dropdown
+  // Shift Type Dropdown
+  // TODO: label
   shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
   // TODO UPDATE; this global will be moved
   shiftTypeSelect.setItems(SHIFT_TYPES, 0);
   shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
   shiftTypePanel.addControl(shiftTypeSelect);
-  // Button
-  shiftTypeOptionsBtn = new GButton(controlsWindow, TYPE_OPTIONS_BTN_X, TYPE_OPTIONS_BTN_Y, TYPE_OPTIONS_BTN_WIDTH, TYPE_OPTIONS_BTN_HEIGHT, "Advanced Options...");
-  // TODO: event handler
-  shiftTypePanel.addControl(shiftTypeOptionsBtn);
 }
 
 // Load/Save Panel -------------------------------------------------------------

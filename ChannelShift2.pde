@@ -35,8 +35,8 @@ WindowManager windowManager;
 String[] SHIFT_TYPES = new String[]{"Default", "Multiply"};
 int shiftType = 0; 
 // TODO: make float for granularity?
-int xMultiplier = 2;
-int yMultiplier = 0;
+int xMultiplier = 0;
+int yMultiplier = 2;
 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
