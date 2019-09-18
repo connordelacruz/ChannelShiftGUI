@@ -20,7 +20,7 @@ GLabel randXMaxLabel, randYMaxLabel;
 // Shift Type ------------------------------------------------------------------
 GPanel shiftTypePanel;
 GDropList shiftTypeSelect;
-GButton shiftTypeOptionsBtn;
+GLabel shiftTypeLabel;
 // X Slider --------------------------------------------------------------------
 GPanel xShiftPanel;
 GSlider xSlider; 
@@ -128,15 +128,18 @@ int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAN
 int TYPE_PANEL_X = WINDOW_MAIN_WIDTH + X_MARGIN;
 int TYPE_PANEL_Y = Y_START;
 int TYPE_PANEL_WIDTH = WINDOW_ADV_WIDTH - X_MARGINS;
-// TODO should this take up the whole height?
 int TYPE_PANEL_HEIGHT = WINDOW_HEIGHT - (2 * Y_MARGIN);
+// Label
+int TYPE_LABEL_X = X_MARGIN;
+int TYPE_LABEL_Y = PANEL_Y_START;
+int TYPE_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int TYPE_LABEL_HEIGHT = 20;
 // Dropdown
 int TYPE_SELECT_X = X_MARGIN;
-int TYPE_SELECT_Y = PANEL_Y_START;
+int TYPE_SELECT_Y = TYPE_LABEL_Y + TYPE_LABEL_HEIGHT;
 int TYPE_SELECT_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int TYPE_SELECT_HEIGHT = 100; // TODO tweak these to get the height right
 int TYPE_SELECT_MAX_ITEMS = 4;
-// TODO MARGINS
 int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
 // Sliders ---------------------------------------------------------------------
 // General
@@ -223,7 +226,7 @@ public void createGUI(){
 
 // Helpers =====================================================================
 
-// General Panels --------------------------------------------------------------
+// General Configs -------------------------------------------------------------
 // TODO extended class that uses these defaults?
 
 // Common panel formatting
@@ -232,12 +235,17 @@ public void setupGeneralPanel(GPanel panel) {
   panel.setCollapsible(false);
   panel.setDraggable(false);
 }
-
 // Common panel formatting w/ colorscheme
 public void setupGeneralPanel(GPanel panel, int colorScheme) {
   setupGeneralPanel(panel);
   panel.setLocalColorScheme(colorScheme);
   panel.setOpaque(true);
+}
+
+// Common label formatting
+public void setupGeneralLabel(GLabel label) {
+  label.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
+  label.setTextBold();
 }
 
 // Channel Toggle Panels -------------------------------------------------------
@@ -391,8 +399,7 @@ public void createRandomizePanel() {
   randomizePanel.addControl(randomizeCheckboxPanel);
   // Max Shift Inputs and Labels
   randXMaxLabel = new GLabel(controlsWindow, RAND_MAX_LABEL_LEFT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Horizontal Shift %");
-  randXMaxLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
-  randXMaxLabel.setTextBold();
+  setupGeneralLabel(randXMaxLabel);
   randomizePanel.addControl(randXMaxLabel);
   randXMaxInput = new GTextField(controlsWindow, RAND_MAX_INPUT_LEFT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
   randXMaxInput.setText("100");
@@ -400,8 +407,7 @@ public void createRandomizePanel() {
   randomizePanel.addControl(randXMaxInput);
   // TODO: Extract common for both inputs
   randYMaxLabel = new GLabel(controlsWindow, RAND_MAX_LABEL_RIGHT_X, RAND_MAX_LABEL_Y, RAND_MAX_LABEL_WIDTH, RAND_MAX_LABEL_HEIGHT, "Max Vertical Shift %");
-  randYMaxLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
-  randYMaxLabel.setTextBold();
+  setupGeneralLabel(randYMaxLabel);
   randomizePanel.addControl(randYMaxLabel);
   randYMaxInput = new GTextField(controlsWindow, RAND_MAX_INPUT_RIGHT_X, RAND_MAX_INPUT_Y, RAND_MAX_INPUT_WIDTH, RAND_MAX_INPUT_HEIGHT);
   randYMaxInput.setText("100");
@@ -416,7 +422,9 @@ public void createShiftTypePanel() {
   shiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT, "Advanced Options");
   setupGeneralPanel(shiftTypePanel, GCScheme.PURPLE_SCHEME);
   // Shift Type Dropdown
-  // TODO: label
+  shiftTypeLabel = new GLabel(controlsWindow, TYPE_LABEL_X, TYPE_LABEL_Y, TYPE_LABEL_WIDTH, TYPE_LABEL_HEIGHT, "Shift Type:");
+  setupGeneralLabel(shiftTypeLabel);
+  shiftTypePanel.addControl(shiftTypeLabel);
   shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
   // TODO UPDATE; this global will be moved
   shiftTypeSelect.setItems(SHIFT_TYPES, 0);
