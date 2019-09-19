@@ -380,9 +380,8 @@ void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizo
       source.setFocus(false);
     case LOST_FOCUS:
       // Sanitize and update manager
-      // TODO: have manager handle bounds when those are determined
-      int val = sanitizeNumericInputValue(source);
-      if (val > -1) {
+      float val = sanitizeFloatInputValue(source);
+      if (val > -1.0) {
         shiftTypeManager.multiply_setMultiplier(val, horizontal);
         showPreview();
       } 
@@ -521,7 +520,7 @@ void sliderInputEventHandler(GTextField source, GEvent event, boolean horizontal
       // updateShiftSliderInput() after setting the slider to match the
       // ShiftManager, so we don't have to worry about going over the bounds at
       // this time
-      int val = sanitizeNumericInputValue(source);
+      int val = sanitizeIntegerInputValue(source);
       if (val > -1) {
         setShift(horizontal, val);
         updateShiftSlider(horizontal);
@@ -636,7 +635,7 @@ void randMaxInputEventHandler(GTextField source, GEvent event, boolean horizonta
       // Sanitize and update manager
       // NOTE: RandomizeManager percent setter methods ensure the value is
       // between 0 and 100
-      int val = sanitizeNumericInputValue(source);
+      int val = sanitizeIntegerInputValue(source);
       if (val > -1) {
         randomizeManager.setShiftMaxPercent(val, horizontal);
       } 

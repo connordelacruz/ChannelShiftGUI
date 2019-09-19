@@ -517,7 +517,7 @@ public void createMultiplyShiftTypePanel() {
   setupGeneralLabel(xMultiplierLabel);
   multiplyShiftTypePanel.addControl(xMultiplierLabel);
   xMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_TOP_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
-  xMultiplierInput.setText("2"); // TODO: pull default from manager
+  xMultiplierInput.setText("2.0"); // TODO: pull default from manager
   xMultiplierInput.addEventHandler(this, "xMultiplierInput_change");
   multiplyShiftTypePanel.addControl(xMultiplierInput);
   // Y Multiplier
@@ -526,7 +526,7 @@ public void createMultiplyShiftTypePanel() {
   setupGeneralLabel(yMultiplierLabel);
   multiplyShiftTypePanel.addControl(yMultiplierLabel);
   yMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_BOTTOM_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
-  yMultiplierInput.setText("2"); // TODO: pull default from manager
+  yMultiplierInput.setText("2.0"); // TODO: pull default from manager
   yMultiplierInput.addEventHandler(this, "yMultiplierInput_change");
   multiplyShiftTypePanel.addControl(yMultiplierInput);
   // Hide by default and add to advanced options

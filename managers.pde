@@ -145,39 +145,39 @@ public class DefaultShiftType implements ShiftTypeState {
 
 public class MultiplyShiftType implements ShiftTypeState {
   // Multiplier values specific to this shift type
-  public int xMultiplier, yMultiplier;
+  public float xMultiplier, yMultiplier;
 
-  public MultiplyShiftType(int xMult, int yMult) {
+  public MultiplyShiftType(float xMult, float yMult) {
     xMultiplier = xMult;
     yMultiplier = yMult;
   }
 
   public MultiplyShiftType() {
     // Arbitrarily using 2 in the event that this doesn't get set
-    this(2, 2);
+    this(2.0, 2.0);
   }
 
   public int calculateShiftOffset(int pos, int shift, boolean horizontal) {
-    int multiplier = horizontal ? xMultiplier : yMultiplier;
-    return (pos * multiplier) + shift; 
+    float multiplier = horizontal ? xMultiplier : yMultiplier;
+    return (int)(pos * multiplier) + shift; 
   }
 
   // Set multipliers
-  public void setXMultiplier(int val) { xMultiplier = val; }
-  public void setYMultiplier(int val) { yMultiplier = val; }
-  public void setMultiplier(int val, boolean horizontal) {
+  public void setXMultiplier(float val) { xMultiplier = val; }
+  public void setYMultiplier(float val) { yMultiplier = val; }
+  public void setMultiplier(float val, boolean horizontal) {
     if (horizontal)
       xMultiplier = val;
     else
       yMultiplier = val;
   }
-  public void setMultipliers(int xMult, int yMult) {
+  public void setMultipliers(float xMult, float yMult) {
     xMultiplier = xMult;
     yMultiplier = yMult;
   }
 
   // Get multipliers
-  public int getMultiplier(boolean horizontal) {
+  public float getMultiplier(boolean horizontal) {
     return horizontal ? xMultiplier : yMultiplier;
   }
 }
@@ -204,6 +204,7 @@ public class ShiftTypeManager {
     state = TYPE_DEFAULT;
   }
 
+  // TODO: take x and y to allow more complex transformations
   public int calculateShiftOffset(int pos, int shift, boolean horizontal) {
     return shiftTypes[state].calculateShiftOffset(pos, shift, horizontal);
   }
@@ -216,10 +217,10 @@ public class ShiftTypeManager {
   // Config Setters
 
   // Multiply
-  public void multiply_setMultiplier(int val, boolean horizontal) {
+  public void multiply_setMultiplier(float val, boolean horizontal) {
     ((MultiplyShiftType)shiftTypes[TYPE_MULTIPLY]).setMultiplier(val, horizontal);
   }
-  public int multiply_getMultiplier(boolean horizontal) {
+  public float multiply_getMultiplier(boolean horizontal) {
     return ((MultiplyShiftType)shiftTypes[TYPE_MULTIPLY]).getMultiplier(horizontal);
   }
 
