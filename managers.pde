@@ -192,10 +192,9 @@ public class MultiplyShiftType implements ShiftTypeState {
 // TODO better name?
 public class LinearShiftType implements ShiftTypeState {
   // Coefficient for equation
-  // TODO allow negative?
   public float m;
+  // TODO negative coefficient (boolean/checkbox)
   // y=mx+b if true, x=my+b if false
-  // TODO implement, better name?
   public boolean yEquals;
 
   public LinearShiftType(float m, boolean yEquals) {
