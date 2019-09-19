@@ -233,9 +233,6 @@ void outFileSelected(File selection) {
  * you don't want to swap color channels
  */
 void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, int sourceChannel, int targetChannel) {
-  // TODO FIXME only load when image is first loaded, I think this is why recursive isn't working so hot
-  sourceImg.loadPixels();
-  targetImg.loadPixels();
   // Get pixels
   color[] sourcePixels = sourceImg.pixels;
   color[] targetPixels = targetImg.pixels;

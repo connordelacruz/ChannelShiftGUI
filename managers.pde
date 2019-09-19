@@ -24,6 +24,10 @@ public class ImgManager {
     sourceImg = loadImage(path);
     targetImg = sourceImg.copy();
     previewImg = sourceImg.copy();
+    // This seems to fix a bug where the recursive option doesn't do anything
+    sourceImg.loadPixels();
+    targetImg.loadPixels();
+    previewImg.loadPixels();
     // Update width/height vars
     imgWidth = sourceImg.width;
     imgHeight = sourceImg.height;
