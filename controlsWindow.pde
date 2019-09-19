@@ -29,6 +29,7 @@ GLabel defaultShiftConfigLabel;
 // Multiply
 GLabel xMultiplierLabel, yMultiplierLabel;
 GTextField xMultiplierInput, yMultiplierInput;
+GTabManager multiplierTabManager;
 // TODO GButton multiplyShiftResetBtn;
 // TODO better way to do this?
 // Keep track of shift type config panels w/ indices matching globals
@@ -529,6 +530,9 @@ public void createMultiplyShiftTypePanel() {
   yMultiplierInput.setText("2.0"); // TODO: pull default from manager
   yMultiplierInput.addEventHandler(this, "yMultiplierInput_change");
   multiplyShiftTypePanel.addControl(yMultiplierInput);
+  // Tab manager for inputs
+  multiplierTabManager = new GTabManager();
+  multiplierTabManager.addControls(xMultiplierInput, yMultiplierInput);
   // Hide by default and add to advanced options
   togglePanelVisibility(multiplyShiftTypePanel, false);
   shiftTypePanel.addControl(multiplyShiftTypePanel);
