@@ -129,17 +129,17 @@ public class ChannelManager {
 
 // Shift Type States -----------------------------------------------------------
 
-// TODO doc and implement; move to a .java file so it can include static attributes?
+// TODO doc; move to a .java file so it can include static attributes?
 public interface ShiftTypeState {
   // Calculate offset for this shift type
-  public int calculateShiftOffset(int pos, int shift, boolean horizontal);
+  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal);
 }
 
 // Implementations
 
 public class DefaultShiftType implements ShiftTypeState {
-  public int calculateShiftOffset(int pos, int shift, boolean horizontal) {
-    return pos + shift;
+  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+    return (horizontal ? x : y) + shift;
   }
 }
 
@@ -157,9 +157,8 @@ public class MultiplyShiftType implements ShiftTypeState {
     this(2.0, 2.0);
   }
 
-  public int calculateShiftOffset(int pos, int shift, boolean horizontal) {
-    float multiplier = horizontal ? xMultiplier : yMultiplier;
-    return (int)(pos * multiplier) + shift; 
+  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+    return (int)(horizontal ? x * xMultiplier : y * yMultiplier) + shift; 
   }
 
   // Set multipliers
@@ -205,8 +204,8 @@ public class ShiftTypeManager {
   }
 
   // TODO: take x and y to allow more complex transformations
-  public int calculateShiftOffset(int pos, int shift, boolean horizontal) {
-    return shiftTypes[state].calculateShiftOffset(pos, shift, horizontal);
+  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+    return shiftTypes[state].calculateShiftOffset(x, y, shift, horizontal);
   }
 
   public void setShiftType(int shiftType) {

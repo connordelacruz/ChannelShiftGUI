@@ -241,11 +241,11 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
   color[] targetPixels = targetImg.pixels;
   // Loop thru rows
   for (int y = 0; y < targetImg.height; y++) {
-    int yOffset = calculateShiftOffset(y, yShift, false) % targetImg.height;
 
     // Loop thru pixels in current row
     for (int x = 0; x < targetImg.width; x++) {
-      int xOffset = calculateShiftOffset(x, xShift, true) % targetImg.width;
+      int yOffset = shiftTypeManager.calculateShiftOffset(x, y, yShift, false) % targetImg.height;
+      int xOffset = shiftTypeManager.calculateShiftOffset(x, y, xShift, true) % targetImg.width;
 
       // Get source pixel and its RGB vals
       int sourceIndex = yOffset * sourceImg.width + xOffset;
@@ -262,11 +262,6 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
       targetPixels[targetIndex] = color(targetRGB[0], targetRGB[1], targetRGB[2]);
     }
   }
-}
-
-// TODO this is redundant, just call manager directly?
-int calculateShiftOffset(int pos, int shift, boolean horizontal) {
-  return shiftTypeManager.calculateShiftOffset(pos, shift, horizontal);
 }
 
 // Sketch State ----------------------------------------------------------------
