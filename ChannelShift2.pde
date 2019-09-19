@@ -233,6 +233,7 @@ void outFileSelected(File selection) {
  * you don't want to swap color channels
  */
 void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, int sourceChannel, int targetChannel) {
+  // TODO FIXME only load when image is first loaded, I think this is why recursive isn't working so hot
   sourceImg.loadPixels();
   targetImg.loadPixels();
   // Get pixels
@@ -398,6 +399,17 @@ public void yMultiplierInput_change(GTextField source, GEvent event) {
 }
 
 // Linear Configs --------------------------------------------------------------
+
+// TODO: rename all _clicked to _click for consistency
+public void linearYEquals_clicked(GOption source, GEvent event) {
+  shiftTypeManager.linear_setEquationType(true);
+  showPreview();
+}
+
+public void linearXEquals_clicked(GOption source, GEvent event) {
+  shiftTypeManager.linear_setEquationType(false);
+  showPreview();
+}
 
 public void linearCoeffInput_change(GTextField source, GEvent event) {
   switch(event) {
@@ -708,6 +720,7 @@ public void confirmBtn_click(GButton source, GEvent event) {
   updateSteps();
   // Update targetImg to match preview
   imgManager.copyPreviewToTarget();
+  // TODO: make sure this works? getting some inconsistent results
   // If recursive, sourceImg.pixels = targetImg.pixels
   if (recursiveIteration)
     imgManager.copyTargetPixelsToSource();

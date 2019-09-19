@@ -575,14 +575,14 @@ public void createLinearShiftTypePanel() {
   linearYEquals = new GOption(controlsWindow, LINEAR_CONFIG_TOGGLE_LEFT_X, LINEAR_CONFIG_TOGGLE_Y, LINEAR_CONFIG_TOGGLE_WIDTH, LINEAR_CONFIG_TOGGLE_HEIGHT);
   linearYEquals.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   linearYEquals.setText("y=mx+b");
-  linearYEquals.setSelected(true);
-  // TODO: Event handler
+  linearYEquals.addEventHandler(this, "linearYEquals_clicked");
   linearEqTypeToggle.addControl(linearYEquals);
   linearShiftTypePanel.addControl(linearYEquals);
+  linearYEquals.setSelected(true);
   linearXEquals = new GOption(controlsWindow, LINEAR_CONFIG_TOGGLE_RIGHT_X, LINEAR_CONFIG_TOGGLE_Y, LINEAR_CONFIG_TOGGLE_WIDTH, LINEAR_CONFIG_TOGGLE_HEIGHT);
   linearXEquals.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   linearXEquals.setText("x=my+b");
-  // TODO: Event handler
+  linearXEquals.addEventHandler(this, "linearXEquals_clicked");
   linearEqTypeToggle.addControl(linearXEquals);
   linearShiftTypePanel.addControl(linearXEquals);
   // Equation Coefficient

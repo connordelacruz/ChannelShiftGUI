@@ -277,7 +277,12 @@ public class ShiftTypeManager {
   public float linear_getCoefficient() {
     return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).getCoefficient();
   }
-  // TODO yEquals
+  public void linear_setEquationType(boolean isYEquals) {
+    ((LinearShiftType)shiftTypes[TYPE_LINEAR]).setEquationType(isYEquals);
+  }
+  public boolean linear_isYEqualsEquation() {
+    return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).isYEqualsEquation();
+  }
 
 }
 
