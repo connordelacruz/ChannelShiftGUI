@@ -18,21 +18,27 @@ GCheckbox randSrcCheckbox, randTargCheckbox,
 GTextField randXMaxInput, randYMaxInput;
 GLabel randXMaxLabel, randYMaxLabel;
 // Shift Type ------------------------------------------------------------------
+// TODO randomize/reset buttons? add a randomize method to interface and call it on current state
 // Type Select
 GPanel shiftTypePanel;
 GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
 // Per-Type configs
-GPanel defaultShiftTypePanel, multiplyShiftTypePanel;
+GPanel defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel;
 // Default (just a label)
 GLabel defaultShiftConfigLabel;
 // Multiply
 GLabel xMultiplierLabel, yMultiplierLabel;
 GTextField xMultiplierInput, yMultiplierInput;
 GTabManager multiplierTabManager;
-// TODO GButton multiplyShiftResetBtn;
-// TODO better way to do this?
+// Linear
+GLabel linearCoeffLabel;
+GTextField linearCoeffInput;
+GToggleGroup linearEqTypeToggle;
+GOption linearYEquals, linearXEquals;
+
 // Keep track of shift type config panels w/ indices matching globals
+// TODO better way to do this?
 GPanel[] shiftTypeConfigPanels;
 // X Slider --------------------------------------------------------------------
 GPanel xShiftPanel;
@@ -179,6 +185,17 @@ int MULTIPLY_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
 int MULTIPLY_CONFIG_INPUT_TOP_Y = MULTIPLY_CONFIG_LABEL_TOP_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
 int MULTIPLY_CONFIG_LABEL_BOTTOM_Y = MULTIPLY_CONFIG_INPUT_TOP_Y + MULTIPLY_CONFIG_INPUT_HEIGHT + Y_MARGIN;
 int MULTIPLY_CONFIG_INPUT_BOTTOM_Y = MULTIPLY_CONFIG_LABEL_BOTTOM_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
+// Linear Shift Type Panel -----------------------------------------------------
+// TODO extract common w/ multiply to type_config_ general vars
+int LINEAR_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
+int LINEAR_CONFIG_LABEL_HEIGHT = 20;
+int LINEAR_CONFIG_INPUT_WIDTH = LINEAR_CONFIG_LABEL_WIDTH;
+int LINEAR_CONFIG_INPUT_HEIGHT = 20;
+int LINEAR_CONFIG_LABEL_X = X_MARGIN;
+// TODO: equation toggles above input
+int LINEAR_CONFIG_LABEL_Y = PANEL_Y_START;
+int LINEAR_CONFIG_INPUT_X = X_MARGIN;
+int LINEAR_CONFIG_INPUT_Y = LINEAR_CONFIG_LABEL_Y + LINEAR_CONFIG_LABEL_HEIGHT;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -481,9 +498,10 @@ public void createShiftTypePanel() {
   // Add type config panels
   createDefaultShiftTypePanel();
   createMultiplyShiftTypePanel();
+  createLinearShiftTypePanel();
   // Keep track of each config panel in global
   // TODO use globals or something to ensure correct indices
-  shiftTypeConfigPanels = new GPanel[]{ defaultShiftTypePanel, multiplyShiftTypePanel };
+  shiftTypeConfigPanels = new GPanel[]{ defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel };
 }
 
 // Type config panels (called above)
@@ -534,8 +552,30 @@ public void createMultiplyShiftTypePanel() {
   multiplierTabManager = new GTabManager();
   multiplierTabManager.addControls(xMultiplierInput, yMultiplierInput);
   // Hide by default and add to advanced options
+  // TODO move this to setup and update default case to make it visible since it's the outlier
   togglePanelVisibility(multiplyShiftTypePanel, false);
   shiftTypePanel.addControl(multiplyShiftTypePanel);
+}
+
+public void createLinearShiftTypePanel() {
+  linearShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
+  // TODO: store name in constant
+  setupShiftTypePanel(linearShiftTypePanel, "Linear");
+  // TODO Equation Type Toggle
+  // Equation Coefficient
+  linearCoeffLabel = new GLabel(controlsWindow, LINEAR_CONFIG_LABEL_X, LINEAR_CONFIG_LABEL_Y, LINEAR_CONFIG_LABEL_WIDTH, LINEAR_CONFIG_LABEL_HEIGHT);
+  linearCoeffLabel.setText("Coefficient (m):");
+  setupGeneralLabel(linearCoeffLabel);
+  linearShiftTypePanel.addControl(linearCoeffLabel);
+  linearCoeffInput = new GTextField(controlsWindow, LINEAR_CONFIG_INPUT_X, LINEAR_CONFIG_INPUT_Y, LINEAR_CONFIG_INPUT_WIDTH, LINEAR_CONFIG_INPUT_HEIGHT);
+  linearCoeffInput.setText("2.0"); // TODO: pull default from manager
+  // TODO EVENT HANDLER
+  /* linearCoeffInput.addEventHandler(this, "linearCoeffInput_change"); */
+  linearShiftTypePanel.addControl(linearCoeffInput);
+  // Hide by default and add to advanced options
+  // TODO move this to setup and update default case to make it visible since it's the outlier
+  togglePanelVisibility(linearShiftTypePanel, false);
+  shiftTypePanel.addControl(linearShiftTypePanel);
 }
 
 // Load/Save Panel -------------------------------------------------------------

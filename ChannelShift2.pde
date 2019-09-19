@@ -33,7 +33,7 @@ ShiftTypeManager shiftTypeManager;
 WindowManager windowManager;
 
 // TODO: doc, sketch steps
-String[] SHIFT_TYPES = new String[]{"Default", "Multiply"};
+String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear"};
 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
@@ -220,7 +220,6 @@ void outFileSelected(File selection) {
 
 // Channel Shift ---------------------------------------------------------------
 
-// TODO re-work for shift types
 /**
  * Shift and swap color channels
  * @param sourceImg The base PImage object to be channel shifted

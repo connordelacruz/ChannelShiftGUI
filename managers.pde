@@ -127,7 +127,7 @@ public class ChannelManager {
 
 // Shift Type ==================================================================
 
-// Shift Type States -----------------------------------------------------------
+// Shift Type Interface --------------------------------------------------------
 
 // TODO doc; move to a .java file so it can include static attributes?
 public interface ShiftTypeState {
@@ -135,13 +135,15 @@ public interface ShiftTypeState {
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal);
 }
 
-// Implementations
+// Default ---------------------------------------------------------------------
 
 public class DefaultShiftType implements ShiftTypeState {
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
     return (horizontal ? x : y) + shift;
   }
 }
+
+// Multiply --------------------------------------------------------------------
 
 public class MultiplyShiftType implements ShiftTypeState {
   // Multiplier values specific to this shift type
@@ -181,6 +183,52 @@ public class MultiplyShiftType implements ShiftTypeState {
   }
 }
 
+// Linear ----------------------------------------------------------------------
+
+// TODO better name?
+public class LinearShiftType implements ShiftTypeState {
+  // Coefficient for equation
+  // TODO allow negative?
+  public float m;
+  // y=mx+b if true, x=my+b if false
+  // TODO implement, better name?
+  public boolean yEquals;
+
+  public LinearShiftType(float m, boolean yEquals) {
+    this.m = m;
+    this.yEquals = yEquals;
+  }
+
+  public LinearShiftType() {
+    // Arbitrarily using y=2x+b as the default
+    this(2.0, true);
+  }
+
+  // TODO this isn't really having the desired effect, divide by coeff where applicable?
+  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+    int offset;
+    // y= equation
+    if (yEquals) 
+      // Don't modify x offset for y= equation
+      offset = ((int)(horizontal ? 1 : m) * x) + shift;
+    // x= equation
+    else 
+      // Don't modify y offset for x= equation
+      offset = ((int)(horizontal ? m : 1) * y) + shift;
+    return offset; 
+  }
+
+  // Setters
+  public void setCoefficient(float val) { m = val; }
+  public void setEquationType(boolean isYEquals) { yEquals = isYEquals; }
+  public void yEqualsEquation() { setEquationType(true); }
+  public void xEqualsEquation() { setEquationType(false); }
+
+  // Getters
+  public float getCoefficient() { return m; }
+  public boolean isYEqualsEquation() { return yEquals; }
+}
+
 // Manager ---------------------------------------------------------------------
 
 public class ShiftTypeManager {
@@ -191,14 +239,16 @@ public class ShiftTypeManager {
   // Indexes
   int TYPE_DEFAULT = 0;
   int TYPE_MULTIPLY = 1;
-  // TODO: figure out a better way to do this
-  int TOTAL_SHIFT_TYPES = 2;
+  int TYPE_LINEAR = 2;
+  // TODO: figure out a dynamic way to do this
+  int TOTAL_SHIFT_TYPES = 3;
 
   public ShiftTypeManager() {
     shiftTypes = new ShiftTypeState[TOTAL_SHIFT_TYPES];
     // Initialize state objects
     shiftTypes[TYPE_DEFAULT] = new DefaultShiftType();
     shiftTypes[TYPE_MULTIPLY] = new MultiplyShiftType();
+    shiftTypes[TYPE_LINEAR] = new LinearShiftType();
     // Start w/ default
     state = TYPE_DEFAULT;
   }
