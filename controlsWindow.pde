@@ -187,13 +187,19 @@ int MULTIPLY_CONFIG_LABEL_BOTTOM_Y = MULTIPLY_CONFIG_INPUT_TOP_Y + MULTIPLY_CONF
 int MULTIPLY_CONFIG_INPUT_BOTTOM_Y = MULTIPLY_CONFIG_LABEL_BOTTOM_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
 // Linear Shift Type Panel -----------------------------------------------------
 // TODO extract common w/ multiply to type_config_ general vars
+// Toggles
+int LINEAR_CONFIG_TOGGLE_WIDTH = TYPE_CONFIG_PANEL_WIDTH / 2;
+int LINEAR_CONFIG_TOGGLE_HEIGHT = 20;
+int LINEAR_CONFIG_TOGGLE_Y = PANEL_Y_START;
+int LINEAR_CONFIG_TOGGLE_LEFT_X = 0;
+int LINEAR_CONFIG_TOGGLE_RIGHT_X = LINEAR_CONFIG_TOGGLE_WIDTH;
+// Coefficient input
 int LINEAR_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
 int LINEAR_CONFIG_LABEL_HEIGHT = 20;
 int LINEAR_CONFIG_INPUT_WIDTH = LINEAR_CONFIG_LABEL_WIDTH;
 int LINEAR_CONFIG_INPUT_HEIGHT = 20;
 int LINEAR_CONFIG_LABEL_X = X_MARGIN;
-// TODO: equation toggles above input
-int LINEAR_CONFIG_LABEL_Y = PANEL_Y_START;
+int LINEAR_CONFIG_LABEL_Y = LINEAR_CONFIG_TOGGLE_Y + LINEAR_CONFIG_TOGGLE_HEIGHT + Y_MARGIN;
 int LINEAR_CONFIG_INPUT_X = X_MARGIN;
 int LINEAR_CONFIG_INPUT_Y = LINEAR_CONFIG_LABEL_Y + LINEAR_CONFIG_LABEL_HEIGHT;
 // Sliders ---------------------------------------------------------------------
@@ -509,6 +515,8 @@ public void createShiftTypePanel() {
 public void setupShiftTypePanel(GPanel panel, String typeName) {
   setupGeneralPanel(panel);
   panel.setText(typeName + " Shift Settings");
+  // Hide by default
+  togglePanelVisibility(panel, false);
 }
 
 public void createDefaultShiftTypePanel() {
@@ -521,6 +529,8 @@ public void createDefaultShiftTypePanel() {
   defaultShiftConfigLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   defaultShiftConfigLabel.setTextItalic();
   defaultShiftTypePanel.addControl(defaultShiftConfigLabel);
+  // Default panel should be visible by default
+  togglePanelVisibility(defaultShiftTypePanel, true);
   // Add to advanced options
   shiftTypePanel.addControl(defaultShiftTypePanel);
 }
@@ -551,9 +561,7 @@ public void createMultiplyShiftTypePanel() {
   // Tab manager for inputs
   multiplierTabManager = new GTabManager();
   multiplierTabManager.addControls(xMultiplierInput, yMultiplierInput);
-  // Hide by default and add to advanced options
-  // TODO move this to setup and update default case to make it visible since it's the outlier
-  togglePanelVisibility(multiplyShiftTypePanel, false);
+  // Add to advanced options
   shiftTypePanel.addControl(multiplyShiftTypePanel);
 }
 
@@ -561,7 +569,22 @@ public void createLinearShiftTypePanel() {
   linearShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
   // TODO: store name in constant
   setupShiftTypePanel(linearShiftTypePanel, "Linear");
-  // TODO Equation Type Toggle
+  // Equation Type Toggles
+  // TODO extract common
+  linearEqTypeToggle = new GToggleGroup();
+  linearYEquals = new GOption(controlsWindow, LINEAR_CONFIG_TOGGLE_LEFT_X, LINEAR_CONFIG_TOGGLE_Y, LINEAR_CONFIG_TOGGLE_WIDTH, LINEAR_CONFIG_TOGGLE_HEIGHT);
+  linearYEquals.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  linearYEquals.setText("y=mx+b");
+  linearYEquals.setSelected(true);
+  // TODO: Event handler
+  linearEqTypeToggle.addControl(linearYEquals);
+  linearShiftTypePanel.addControl(linearYEquals);
+  linearXEquals = new GOption(controlsWindow, LINEAR_CONFIG_TOGGLE_RIGHT_X, LINEAR_CONFIG_TOGGLE_Y, LINEAR_CONFIG_TOGGLE_WIDTH, LINEAR_CONFIG_TOGGLE_HEIGHT);
+  linearXEquals.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  linearXEquals.setText("x=my+b");
+  // TODO: Event handler
+  linearEqTypeToggle.addControl(linearXEquals);
+  linearShiftTypePanel.addControl(linearXEquals);
   // Equation Coefficient
   linearCoeffLabel = new GLabel(controlsWindow, LINEAR_CONFIG_LABEL_X, LINEAR_CONFIG_LABEL_Y, LINEAR_CONFIG_LABEL_WIDTH, LINEAR_CONFIG_LABEL_HEIGHT);
   linearCoeffLabel.setText("Coefficient (m):");
@@ -571,9 +594,7 @@ public void createLinearShiftTypePanel() {
   linearCoeffInput.setText("1.0"); // TODO: pull default from manager
   linearCoeffInput.addEventHandler(this, "linearCoeffInput_change");
   linearShiftTypePanel.addControl(linearCoeffInput);
-  // Hide by default and add to advanced options
-  // TODO move this to setup and update default case to make it visible since it's the outlier
-  togglePanelVisibility(linearShiftTypePanel, false);
+  // Add to advanced options
   shiftTypePanel.addControl(linearShiftTypePanel);
 }
 
