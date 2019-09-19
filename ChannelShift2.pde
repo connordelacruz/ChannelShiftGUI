@@ -397,6 +397,32 @@ public void yMultiplierInput_change(GTextField source, GEvent event) {
   multiplierInputEventHandler(source, event, false);
 }
 
+// Linear Configs --------------------------------------------------------------
+
+public void linearCoeffInput_change(GTextField source, GEvent event) {
+  switch(event) {
+    // TODO: select all on focus (will need to extend class)
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      // TODO: might want to add support for negatives (or add checkbox input)
+      if (val > -1.0) {
+        shiftTypeManager.linear_setCoefficient(val);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + shiftTypeManager.linear_getCoefficient());
+      break;
+    default:
+      break;
+  }
+}
+
 // Horizontal/Vertical Shift ---------------------------------------------------
 
 /**

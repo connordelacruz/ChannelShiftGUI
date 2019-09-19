@@ -200,7 +200,7 @@ public class LinearShiftType implements ShiftTypeState {
   }
 
   public LinearShiftType() {
-    // Arbitrarily using y=2x+b as the default
+    // Arbitrarily using y=x+shift as the default
     this(1.0, true);
   }
 
@@ -269,6 +269,15 @@ public class ShiftTypeManager {
   public float multiply_getMultiplier(boolean horizontal) {
     return ((MultiplyShiftType)shiftTypes[TYPE_MULTIPLY]).getMultiplier(horizontal);
   }
+
+  // Linear
+  public void linear_setCoefficient(float val) {
+    ((LinearShiftType)shiftTypes[TYPE_LINEAR]).setCoefficient(val);
+  }
+  public float linear_getCoefficient() {
+    return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).getCoefficient();
+  }
+  // TODO yEquals
 
 }
 

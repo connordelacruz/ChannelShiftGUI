@@ -569,8 +569,7 @@ public void createLinearShiftTypePanel() {
   linearShiftTypePanel.addControl(linearCoeffLabel);
   linearCoeffInput = new GTextField(controlsWindow, LINEAR_CONFIG_INPUT_X, LINEAR_CONFIG_INPUT_Y, LINEAR_CONFIG_INPUT_WIDTH, LINEAR_CONFIG_INPUT_HEIGHT);
   linearCoeffInput.setText("1.0"); // TODO: pull default from manager
-  // TODO EVENT HANDLER
-  /* linearCoeffInput.addEventHandler(this, "linearCoeffInput_change"); */
+  linearCoeffInput.addEventHandler(this, "linearCoeffInput_change");
   linearShiftTypePanel.addControl(linearCoeffInput);
   // Hide by default and add to advanced options
   // TODO move this to setup and update default case to make it visible since it's the outlier

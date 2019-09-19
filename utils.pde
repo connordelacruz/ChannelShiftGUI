@@ -8,6 +8,7 @@ import java.util.regex.*;
 // Math ========================================================================
 
 // Mod function that handles negatives
+// https://dev.to/maurobringolf/a-neat-trick-to-compute-modulo-of-negative-numbers-111e
 int mod(int x, int n) {
   return (x % n + n) % n;
 }
