@@ -5,6 +5,13 @@ import java.util.regex.*;
 
 // TODO: organize, move other stuff here
 
+// Math ========================================================================
+
+// Mod function that handles negatives
+int mod(int x, int n) {
+  return (x % n + n) % n;
+}
+
 
 // Input Helpers ===============================================================
 

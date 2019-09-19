@@ -243,8 +243,8 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
 
     // Loop thru pixels in current row
     for (int x = 0; x < targetImg.width; x++) {
-      int yOffset = shiftTypeManager.calculateShiftOffset(x, y, yShift, false) % targetImg.height;
-      int xOffset = shiftTypeManager.calculateShiftOffset(x, y, xShift, true) % targetImg.width;
+      int yOffset = mod(shiftTypeManager.calculateShiftOffset(x, y, yShift, false), targetImg.height);
+      int xOffset = mod(shiftTypeManager.calculateShiftOffset(x, y, xShift, true), targetImg.width);
 
       // Get source pixel and its RGB vals
       int sourceIndex = yOffset * sourceImg.width + xOffset;

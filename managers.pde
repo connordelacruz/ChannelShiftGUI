@@ -201,20 +201,17 @@ public class LinearShiftType implements ShiftTypeState {
 
   public LinearShiftType() {
     // Arbitrarily using y=2x+b as the default
-    this(2.0, true);
+    this(1.0, true);
   }
 
-  // TODO this isn't really having the desired effect, divide by coeff where applicable?
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
     int offset;
     // y= equation
     if (yEquals) 
-      // Don't modify x offset for y= equation
-      offset = ((int)(horizontal ? 1 : m) * x) + shift;
+      offset = horizontal ? x + (int)((y - shift) / m) : y + (int)(m * x + shift);
     // x= equation
     else 
-      // Don't modify y offset for x= equation
-      offset = ((int)(horizontal ? m : 1) * y) + shift;
+      offset = horizontal ? x + (int)(y * m + shift) : y + (int)((x - shift) / m);
     return offset; 
   }
 
