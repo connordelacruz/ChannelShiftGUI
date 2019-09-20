@@ -544,13 +544,26 @@ public void createShiftTypePanel() {
   shiftTypeConfigPanels = new GPanel[]{ defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel };
 }
 
+// Helpers
+
+public void hideShiftTypePanel(GPanel panel) {
+  togglePanelVisibility(panel, false);
+  // Move off screen to avoid issues w/ click through lag
+  panel.moveTo(WINDOW_WIDTH, WINDOW_HEIGHT);
+}
+public void showShiftTypePanel(GPanel panel) {
+  // Move on screen
+  panel.moveTo(TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y);
+  togglePanelVisibility(panel, true);
+}
+
 // Type config panels (called above)
 
 public void setupShiftTypePanel(GPanel panel, String typeName) {
   setupGeneralPanel(panel);
   panel.setText(typeName + " Shift Settings");
   // Hide by default
-  togglePanelVisibility(panel, false);
+  hideShiftTypePanel(panel);
 }
 
 public void createDefaultShiftTypePanel() {
@@ -564,7 +577,7 @@ public void createDefaultShiftTypePanel() {
   defaultShiftConfigLabel.setTextItalic();
   defaultShiftTypePanel.addControl(defaultShiftConfigLabel);
   // Default panel should be visible by default
-  togglePanelVisibility(defaultShiftTypePanel, true);
+  showShiftTypePanel(defaultShiftTypePanel);
   // Add to advanced options
   shiftTypePanel.addControl(defaultShiftTypePanel);
 }
