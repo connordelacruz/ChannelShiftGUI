@@ -420,6 +420,11 @@ public void linearCoeffInput_change(GTextField source, GEvent event) {
   }
 }
 
+public void linearNegativeCoeffCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.linear_setCoefficientSign(!source.isSelected());
+  showPreview();
+}
+
 // Skew Configs ----------------------------------------------------------------
 
 void skewInputEventHandler(GTextField source, GEvent event, boolean horizontal) {

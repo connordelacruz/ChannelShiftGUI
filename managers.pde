@@ -151,6 +151,7 @@ public class DefaultShiftType implements ShiftTypeState {
 public class MultiplyShiftType implements ShiftTypeState {
   // Multiplier values specific to this shift type
   public float xMultiplier, yMultiplier;
+  // TODO negative multipliers?
 
   public MultiplyShiftType(float xMult, float yMult) {
     xMultiplier = xMult;
@@ -191,47 +192,50 @@ public class MultiplyShiftType implements ShiftTypeState {
 public class LinearShiftType implements ShiftTypeState {
   // Coefficient for equation
   public float m;
-  // TODO negative coefficient (boolean/checkbox)
+  // Will be set to +/- 1 to determine coefficient sign
+  public float mSign;
   // y=mx+b if true, x=my+b if false
   public boolean yEquals;
 
-  public LinearShiftType(float m, boolean yEquals) {
+  public LinearShiftType(float m, boolean positiveCoeff, boolean yEquals) {
     this.m = m;
+    this.mSign = positiveCoeff ? 1 : -1;
     this.yEquals = yEquals;
   }
 
   public LinearShiftType() {
-    // Arbitrarily using y=x+shift as the default
-    this(1.0, true);
+    this(1.0, true, true);
   }
 
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
     int offset;
     // y= equation
     if (yEquals) 
-      offset = horizontal ? x + (int)((y - shift) / m) : y + (int)(m * x + shift);
+      offset = horizontal ? x + (int)((y - shift) / (mSign * m)) : y + (int)((mSign * m) * x + shift);
     // x= equation
     else 
-      offset = horizontal ? x + (int)(y * m + shift) : y + (int)((x - shift) / m);
+      offset = horizontal ? x + (int)((mSign * m) * y + shift) : y + (int)((x - shift) / (mSign * m));
     return offset; 
   }
 
   // Setters
   public void setCoefficient(float val) { m = val; }
+  public void setCoefficientSign(boolean positive) { mSign = positive ? 1 : -1; }
   public void setEquationType(boolean isYEquals) { yEquals = isYEquals; }
   public void yEqualsEquation() { setEquationType(true); }
   public void xEqualsEquation() { setEquationType(false); }
 
   // Getters
   public float getCoefficient() { return m; }
+  public boolean isPositiveCoefficient() { return mSign > 0.0; }
   public boolean isYEqualsEquation() { return yEquals; }
 }
 
 // Skew ------------------------------------------------------------------------
 
 public class SkewShiftType implements ShiftTypeState {
-  // TODO doc, floats? negative?
-  float xSkew, ySkew;
+  // TODO doc, negative
+  public float xSkew, ySkew;
 
   public SkewShiftType(float xSkew, float ySkew) {
     this.xSkew = xSkew;
@@ -313,6 +317,12 @@ public class ShiftTypeManager {
   }
   public float linear_getCoefficient() {
     return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).getCoefficient();
+  }
+  public void linear_setCoefficientSign(boolean positive) {
+    ((LinearShiftType)shiftTypes[TYPE_LINEAR]).setCoefficientSign(positive);
+  }
+  public boolean linear_isPositiveCoefficient() {
+    return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).isPositiveCoefficient();
   }
   public void linear_setEquationType(boolean isYEquals) {
     ((LinearShiftType)shiftTypes[TYPE_LINEAR]).setEquationType(isYEquals);

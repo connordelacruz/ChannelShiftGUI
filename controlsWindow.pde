@@ -40,6 +40,7 @@ GLabel linearCoeffLabel;
 GTextField linearCoeffInput;
 GToggleGroup linearEqTypeToggle;
 GOption linearYEquals, linearXEquals;
+GCheckbox linearNegativeCoeffCheckbox;
 // Skew
 GLabel xSkewLabel, ySkewLabel;
 GTextField xSkewInput, ySkewInput;
@@ -209,6 +210,11 @@ int LINEAR_CONFIG_LABEL_X = X_MARGIN;
 int LINEAR_CONFIG_LABEL_Y = LINEAR_CONFIG_TOGGLE_Y + LINEAR_CONFIG_TOGGLE_HEIGHT + Y_MARGIN;
 int LINEAR_CONFIG_INPUT_X = X_MARGIN;
 int LINEAR_CONFIG_INPUT_Y = LINEAR_CONFIG_LABEL_Y + LINEAR_CONFIG_LABEL_HEIGHT;
+// Coefficient Sign
+int LINEAR_CONFIG_CHECKBOX_WIDTH = TYPE_CONFIG_PANEL_WIDTH;
+int LINEAR_CONFIG_CHECKBOX_HEIGHT = LINEAR_CONFIG_TOGGLE_HEIGHT;
+int LINEAR_CONFIG_CHECKBOX_X = 0;
+int LINEAR_CONFIG_CHECKBOX_Y = LINEAR_CONFIG_INPUT_Y + LINEAR_CONFIG_INPUT_HEIGHT + Y_MARGIN;
 // Skew Shift Type Panel -------------------------------------------------------
 int SKEW_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
 int SKEW_CONFIG_LABEL_HEIGHT = 20;
@@ -616,6 +622,10 @@ public void createLinearShiftTypePanel() {
   linearCoeffInput.setText("1.0"); // TODO: pull default from manager
   linearCoeffInput.addEventHandler(this, "linearCoeffInput_change");
   linearShiftTypePanel.addControl(linearCoeffInput);
+  // Coefficient Sign
+  linearNegativeCoeffCheckbox = new GCheckbox(controlsWindow, LINEAR_CONFIG_CHECKBOX_X, LINEAR_CONFIG_CHECKBOX_Y, LINEAR_CONFIG_CHECKBOX_WIDTH, LINEAR_CONFIG_CHECKBOX_HEIGHT, "Negative Coefficient");
+  linearNegativeCoeffCheckbox.addEventHandler(this, "linearNegativeCoeffCheckbox_click");
+  linearShiftTypePanel.addControl(linearNegativeCoeffCheckbox);
   // Add to advanced options
   shiftTypePanel.addControl(linearShiftTypePanel);
 }
