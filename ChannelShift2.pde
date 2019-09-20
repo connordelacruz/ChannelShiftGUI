@@ -262,8 +262,6 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
 
 // Sketch State ----------------------------------------------------------------
 
-// TODO: use each time a GUI change is made to enable/disable confirm
-
 /**
  * Returns true if source and target channels match and x/y shift are both 0
  */
@@ -317,13 +315,8 @@ void showPreview() {
  * @param channel Channel to set (Index into CHANNELS)
  */
 void setChannelToggle(boolean source, int channel) {
-  GOption[] toggles;
-  // TODO: move arrays to global so they don't need to be allocated each time
-  if (source)
-    toggles = new GOption[]{ srcR, srcG, srcB };
-  else
-    toggles = new GOption[]{ targR, targG, targB };
-  toggles[channel].setSelected(true);
+  ChannelOption toggle = source ? srcToggles[channel] : targToggles[channel];
+  toggle.setSelected(true);
 }
 
 /**

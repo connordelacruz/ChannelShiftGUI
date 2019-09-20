@@ -6,10 +6,14 @@ GWindow controlsWindow;
 GPanel srcChannelPanel;
 GToggleGroup srcChannelToggle; 
 ChannelOption srcR, srcG, srcB; 
+// Keep track of toggles in global w/ index corresponding to channel
+ChannelOption[] srcToggles;
 // Target Toggle ---------------------------------------------------------------
 GPanel targChannelPanel;
 GToggleGroup targChannelToggle; 
 ChannelOption targR, targG, targB; 
+// Keep track of toggles in global w/ index corresponding to channel
+ChannelOption[] targToggles;
 // Randomize Button/Toggles ----------------------------------------------------
 GPanel randomizePanel, randomizeCheckboxPanel;
 GButton randomizeBtn; 
@@ -38,7 +42,6 @@ GToggleGroup linearEqTypeToggle;
 GOption linearYEquals, linearXEquals;
 
 // Keep track of shift type config panels w/ indices matching globals
-// TODO better way to do this?
 GPanel[] shiftTypeConfigPanels;
 // X Slider --------------------------------------------------------------------
 GPanel xShiftPanel;
@@ -346,6 +349,8 @@ public void createSrcChannelPanel() {
   srcB = new ChannelOption(controlsWindow, 0, B_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT, 2, true);
   // Configure options
   createChannelPanel(srcChannelPanel, srcChannelToggle, srcR, srcG, srcB, true);
+  // Initialize global
+  srcToggles = new ChannelOption[]{ srcR, srcG, srcB };
 }
 
 public void createTargChannelPanel() {
@@ -359,6 +364,8 @@ public void createTargChannelPanel() {
   targB = new ChannelOption(controlsWindow, 0, B_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_TOGGLE_HEIGHT, 2, false);
   // Configure options
   createChannelPanel(targChannelPanel, targChannelToggle, targR, targG, targB, false);
+  // Initialize global
+  targToggles = new ChannelOption[]{ targR, targG, targB };
 }
 
 
