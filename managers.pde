@@ -39,10 +39,12 @@ public class ImgManager {
 
   public void copyTargetToPreview() {
     previewImg = targetImg.copy();
+    previewImg.loadPixels();
   }
 
   public void copyPreviewToTarget() {
     targetImg = previewImg.copy();
+    targetImg.loadPixels();
   }
 
   public void updatePreview() {
