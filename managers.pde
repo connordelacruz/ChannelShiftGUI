@@ -2,8 +2,6 @@
 // Classes to manage the internal state of the sketch
 // =============================================================================
 
-// TODO: should these just manage state and calculations? Or should they do the work too?
-
 // Images ======================================================================
 
 public class ImgManager {
@@ -13,7 +11,6 @@ public class ImgManager {
   public int imgWidth, imgHeight;
 
   public ImgManager() {
-    // TODO: initialize images?
     imgWidth = imgHeight = 0;
   }
 
@@ -67,7 +64,6 @@ public class ImgManager {
 public class ChannelManager {
   // Source and target channels
   public int sourceChannel, targetChannel;
-  // TODO: boolean swapChannels?
 
   public ChannelManager() {
     sourceChannel = targetChannel = 0;
@@ -133,8 +129,8 @@ public class ChannelManager {
 
 // Shift Type Interface --------------------------------------------------------
 
-// TODO doc; move to a .java file so it can include static attributes?
 public interface ShiftTypeState {
+  // TODO stringifyStep() method
   // Calculate offset for this shift type
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal);
 }
@@ -189,7 +185,6 @@ public class MultiplyShiftType implements ShiftTypeState {
 
 // Linear ----------------------------------------------------------------------
 
-// TODO better name?
 public class LinearShiftType implements ShiftTypeState {
   // Coefficient for equation
   public float m;
@@ -253,7 +248,6 @@ public class ShiftTypeManager {
     state = TYPE_DEFAULT;
   }
 
-  // TODO: take x and y to allow more complex transformations
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
     return shiftTypes[state].calculateShiftOffset(x, y, shift, horizontal);
   }

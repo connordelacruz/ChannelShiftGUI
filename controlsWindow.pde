@@ -318,7 +318,6 @@ public void setupGeneralLabel(GLabel label) {
 public void togglePanelVisibility(GPanel panel, boolean show) {
   panel.setCollapsed(!show);
   panel.setVisible(show);
-  // TODO disable children too?
 }
 
 // Channel Toggle Panels -------------------------------------------------------
@@ -640,7 +639,6 @@ public void createResetConfirmPanel() {
   resetBtn.addEventHandler(this, "resetBtn_click");
   resetConfirmPanel.addControl(resetBtn);
   // Confirm Button 
-  // TODO: disable when SRC == TARG && sliders are 0
   confirmBtn = new GButton(controlsWindow, CONFIRM_BTN_X, CONFIRM_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
   confirmBtn.setText("Confirm Step");
   confirmBtn.addEventHandler(this, "confirmBtn_click");

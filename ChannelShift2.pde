@@ -358,7 +358,6 @@ public void shiftTypeSelect_change(GDropList source, GEvent event) {
 
 void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
   switch(event) {
-    // TODO: select all on focus (will need to extend class)
     case ENTERED:
       // Unfocus on enter, then do same actions as LOST_FOCUS case
       source.setFocus(false);
@@ -389,7 +388,6 @@ public void yMultiplierInput_change(GTextField source, GEvent event) {
 
 // Linear Configs --------------------------------------------------------------
 
-// TODO: rename all _clicked to _click for consistency
 public void linearYEquals_clicked(GOption source, GEvent event) {
   shiftTypeManager.linear_setEquationType(true);
   showPreview();
@@ -402,14 +400,12 @@ public void linearXEquals_clicked(GOption source, GEvent event) {
 
 public void linearCoeffInput_change(GTextField source, GEvent event) {
   switch(event) {
-    // TODO: select all on focus (will need to extend class)
     case ENTERED:
       // Unfocus on enter, then do same actions as LOST_FOCUS case
       source.setFocus(false);
     case LOST_FOCUS:
       // Sanitize and update manager
       float val = sanitizeFloatInputValue(source);
-      // TODO: might want to add support for negatives (or add checkbox input)
       if (val > -1.0) {
         shiftTypeManager.linear_setCoefficient(val);
         showPreview();
@@ -463,7 +459,6 @@ void setSliderValueType(boolean horizontal, boolean setPercentValue) {
   sliderPercentValue[configIndex] = setPercentValue;
 }
 
-// TODO: better integrate w/ managers?
 /**
  * Set horizontal or vertical shift
  * @param horizontal If true, set horizontal shift, else set vertical shift
@@ -530,7 +525,6 @@ public void ySlider_change(GSlider source, GEvent event) {
  */
 void sliderInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
   switch(event) {
-    // TODO: select all on focus (will need to extend class)
     case ENTERED:
       // Unfocus on enter, then do same actions as LOST_FOCUS case
       source.setFocus(false);
@@ -648,7 +642,6 @@ public void randYShiftCheckbox_click(GCheckbox source, GEvent event) {
 // TODO: doc, merge common w/ slider inputs
 void randMaxInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
   switch(event) {
-    // TODO: select all on focus (will need to extend class)
     case ENTERED:
       // Unfocus on enter, then do same actions as LOST_FOCUS case
       source.setFocus(false);
@@ -700,7 +693,6 @@ public void resetBtn_click(GButton source, GEvent event) {
 // Confirm Button --------------------------------------------------------------
 
 // TODO: Undo button (keep track of steps)
-// TODO: Disable confirm button if no changes are made
 
 public void confirmBtn_click(GButton source, GEvent event) { 
   // Display preview
@@ -709,7 +701,7 @@ public void confirmBtn_click(GButton source, GEvent event) {
   updateSteps();
   // Update targetImg to match preview
   imgManager.copyPreviewToTarget();
-  // TODO: make sure this works? getting some inconsistent results
+  // TODO: make sure this works? getting some inconsistent results; maybe need to updatePixels??
   // If recursive, sourceImg.pixels = targetImg.pixels
   if (recursiveIteration)
     imgManager.copyTargetPixelsToSource();
