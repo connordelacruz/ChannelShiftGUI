@@ -13,7 +13,6 @@ String outputImgExt = ".png";
 
 // Globals =====================================================================
 
-// TODO: step/save name manager?
 // Base image file name, used for default save name in conjunction with
 // sketchSteps
 String imgFile;
@@ -32,17 +31,17 @@ ShiftTypeManager shiftTypeManager;
 // Interface managers
 WindowManager windowManager;
 
-// TODO: doc, sketch steps
+// Names of different shift types
+// TODO MOVE AND MERGE W/ SIMILAR SHIFT TYPE CONSTANTS
 String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear"};
 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
 
-// TODO: img/preview manager?
 // Set to true if the preview image has been modified since the last time it
 // was rendered, telling the draw() method that it needs to be re-drawn
 boolean previewImgUpdated = true;
-// TODO: shift sliders manager
+
 // Set to true if a silder was changed. Window mouse event listener checks this
 // when the mouse is released and updates the preview image. This is to avoid
 // re-drawing the preview every time the slider value changes
@@ -63,7 +62,6 @@ String INDENT = "   ";
 
 // Window ----------------------------------------------------------------------
 
-// TODO: move to manager?
 /**
  * Update windowManager based on sourceImg dimensions and resize surface
  */
@@ -184,11 +182,12 @@ void updateSteps() {
  * (depending on OS)
  */
 String defaultOutputFilename() {
-  // TODO: max filename of 255 characters
   String filename = imgFile + sketchSteps;
   // Append current step (unless nothing's changed)
   if (!noChangesInCurrentStep())
     filename += "_" + stringifyCurrentStep();
+  // Max filename of 255 characters
+  filename = truncateString(filename, 255 - outputImgExt.length());
   return filename + outputImgExt;
 }
 
