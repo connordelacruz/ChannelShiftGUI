@@ -52,6 +52,7 @@ public class ImgManager {
   // For recursive iterations
   public void copyTargetPixelsToSource() {
     sourceImg.pixels = targetImg.pixels;
+    sourceImg.updatePixels();
   }
 
 }
