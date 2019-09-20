@@ -40,7 +40,10 @@ GLabel linearCoeffLabel;
 GTextField linearCoeffInput;
 GToggleGroup linearEqTypeToggle;
 GOption linearYEquals, linearXEquals;
-// TODO Skew
+// Skew
+GLabel xSkewLabel, ySkewLabel;
+GTextField xSkewInput, ySkewInput;
+GTabManager skewTabManager;
 
 // Keep track of shift type config panels w/ indices matching globals
 GPanel[] shiftTypeConfigPanels;
@@ -206,6 +209,17 @@ int LINEAR_CONFIG_LABEL_X = X_MARGIN;
 int LINEAR_CONFIG_LABEL_Y = LINEAR_CONFIG_TOGGLE_Y + LINEAR_CONFIG_TOGGLE_HEIGHT + Y_MARGIN;
 int LINEAR_CONFIG_INPUT_X = X_MARGIN;
 int LINEAR_CONFIG_INPUT_Y = LINEAR_CONFIG_LABEL_Y + LINEAR_CONFIG_LABEL_HEIGHT;
+// Skew Shift Type Panel -------------------------------------------------------
+int SKEW_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
+int SKEW_CONFIG_LABEL_HEIGHT = 20;
+int SKEW_CONFIG_INPUT_WIDTH = SKEW_CONFIG_LABEL_WIDTH;
+int SKEW_CONFIG_INPUT_HEIGHT = 20;
+int SKEW_CONFIG_LABEL_X = X_MARGIN;
+int SKEW_CONFIG_INPUT_X = X_MARGIN;
+int SKEW_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
+int SKEW_CONFIG_INPUT_TOP_Y = SKEW_CONFIG_LABEL_TOP_Y + SKEW_CONFIG_LABEL_HEIGHT;
+int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_INPUT_TOP_Y + SKEW_CONFIG_INPUT_HEIGHT + Y_MARGIN;
+int SKEW_CONFIG_INPUT_BOTTOM_Y = SKEW_CONFIG_LABEL_BOTTOM_Y + SKEW_CONFIG_LABEL_HEIGHT;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -606,12 +620,32 @@ public void createLinearShiftTypePanel() {
   shiftTypePanel.addControl(linearShiftTypePanel);
 }
 
-// TODO implement
 public void createSkewShiftTypePanel() {
   skewShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
   // TODO: store name in constant
   setupShiftTypePanel(skewShiftTypePanel, "Skew");
-  // TODO x/y input
+  // TODO: merge common
+  // X Skew
+  xSkewLabel = new GLabel(controlsWindow, SKEW_CONFIG_LABEL_X, SKEW_CONFIG_LABEL_TOP_Y, SKEW_CONFIG_LABEL_WIDTH, SKEW_CONFIG_LABEL_HEIGHT);
+  xSkewLabel.setText("Horizontal Skew:");
+  setupGeneralLabel(xSkewLabel);
+  skewShiftTypePanel.addControl(xSkewLabel);
+  xSkewInput = new GTextField(controlsWindow, SKEW_CONFIG_INPUT_X, SKEW_CONFIG_INPUT_TOP_Y, SKEW_CONFIG_INPUT_WIDTH, SKEW_CONFIG_INPUT_HEIGHT);
+  xSkewInput.setText("2.0"); // TODO: pull default from manager
+  xSkewInput.addEventHandler(this, "xSkewInput_change");
+  skewShiftTypePanel.addControl(xSkewInput);
+  // Y Skew
+  ySkewLabel = new GLabel(controlsWindow, SKEW_CONFIG_LABEL_X, SKEW_CONFIG_LABEL_BOTTOM_Y, SKEW_CONFIG_LABEL_WIDTH, SKEW_CONFIG_LABEL_HEIGHT);
+  ySkewLabel.setText("Vertical Skew:");
+  setupGeneralLabel(ySkewLabel);
+  skewShiftTypePanel.addControl(ySkewLabel);
+  ySkewInput = new GTextField(controlsWindow, SKEW_CONFIG_INPUT_X, SKEW_CONFIG_INPUT_BOTTOM_Y, SKEW_CONFIG_INPUT_WIDTH, SKEW_CONFIG_INPUT_HEIGHT);
+  ySkewInput.setText("2.0"); // TODO: pull default from manager
+  ySkewInput.addEventHandler(this, "ySkewInput_change");
+  skewShiftTypePanel.addControl(ySkewInput);
+  // Tab manager for inputs
+  skewTabManager = new GTabManager();
+  skewTabManager.addControls(xSkewInput, ySkewInput);
   // Add to advanced options
   shiftTypePanel.addControl(skewShiftTypePanel);
 }

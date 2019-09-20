@@ -231,22 +231,35 @@ public class LinearShiftType implements ShiftTypeState {
 
 public class SkewShiftType implements ShiftTypeState {
   // TODO doc, floats? negative?
-  int xSkew, ySkew;
+  float xSkew, ySkew;
 
-  public SkewShiftType(int xSkew, int ySkew) {
+  public SkewShiftType(float xSkew, float ySkew) {
     this.xSkew = xSkew;
     this.ySkew = ySkew;
   }
 
   public SkewShiftType() {
-    this(2, 2);
+    this(2.0, 2.0);
   }
 
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
-    return horizontal ? x + shift + (xSkew * y) : y + shift + (ySkew * x);
+    return horizontal ? x + shift + (int)(xSkew * y) : y + shift + (int)(ySkew * x);
   }
 
-  // TODO getter/setter
+  // Setters
+  public void setXSkew(float val) { xSkew = val; }
+  public void setYSkew(float val) { ySkew = val; }
+  public void setSkew(float val, boolean horizontal) { 
+    if (horizontal)
+      xSkew = val;
+    else
+      ySkew = val;
+  }
+
+  // Getters
+  public float getXSkew() { return xSkew; }
+  public float getYSkew() { return ySkew; }
+  public float getSkew(boolean horizontal) { return horizontal ? xSkew : ySkew; }
 }
 
 // Manager ---------------------------------------------------------------------
@@ -306,6 +319,14 @@ public class ShiftTypeManager {
   }
   public boolean linear_isYEqualsEquation() {
     return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).isYEqualsEquation();
+  }
+
+  // Skew
+  public void skew_setSkew(float val, boolean horizontal) {
+    ((SkewShiftType)shiftTypes[TYPE_SKEW]).setSkew(val, horizontal);
+  }
+  public float skew_getSkew(boolean horizontal) {
+    return ((SkewShiftType)shiftTypes[TYPE_SKEW]).getSkew(horizontal);
   }
 
 }

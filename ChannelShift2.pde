@@ -420,6 +420,38 @@ public void linearCoeffInput_change(GTextField source, GEvent event) {
   }
 }
 
+// Skew Configs ----------------------------------------------------------------
+
+void skewInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val > -1.0) {
+        shiftTypeManager.skew_setSkew(val, horizontal);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + shiftTypeManager.skew_getSkew(horizontal));
+      break;
+    default:
+      break;
+  }
+}
+
+public void xSkewInput_change(GTextField source, GEvent event) {
+  skewInputEventHandler(source, event, true);
+}
+
+public void ySkewInput_change(GTextField source, GEvent event) {
+  skewInputEventHandler(source, event, false);
+}
+
 // Horizontal/Vertical Shift ---------------------------------------------------
 
 /**
