@@ -33,7 +33,7 @@ WindowManager windowManager;
 
 // Names of different shift types
 // TODO MOVE AND MERGE W/ SIMILAR SHIFT TYPE CONSTANTS
-String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear"};
+String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear", "Skew"};
 
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;

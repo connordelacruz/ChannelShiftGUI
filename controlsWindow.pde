@@ -28,7 +28,7 @@ GPanel shiftTypePanel;
 GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
 // Per-Type configs
-GPanel defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel;
+GPanel defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel;
 // Default (just a label)
 GLabel defaultShiftConfigLabel;
 // Multiply
@@ -40,6 +40,7 @@ GLabel linearCoeffLabel;
 GTextField linearCoeffInput;
 GToggleGroup linearEqTypeToggle;
 GOption linearYEquals, linearXEquals;
+// TODO Skew
 
 // Keep track of shift type config panels w/ indices matching globals
 GPanel[] shiftTypeConfigPanels;
@@ -511,9 +512,10 @@ public void createShiftTypePanel() {
   createDefaultShiftTypePanel();
   createMultiplyShiftTypePanel();
   createLinearShiftTypePanel();
+  createSkewShiftTypePanel();
   // Keep track of each config panel in global
   // TODO use globals or something to ensure correct indices
-  shiftTypeConfigPanels = new GPanel[]{ defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel };
+  shiftTypeConfigPanels = new GPanel[]{ defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel };
 }
 
 // Type config panels (called above)
@@ -602,6 +604,16 @@ public void createLinearShiftTypePanel() {
   linearShiftTypePanel.addControl(linearCoeffInput);
   // Add to advanced options
   shiftTypePanel.addControl(linearShiftTypePanel);
+}
+
+// TODO implement
+public void createSkewShiftTypePanel() {
+  skewShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
+  // TODO: store name in constant
+  setupShiftTypePanel(skewShiftTypePanel, "Skew");
+  // TODO x/y input
+  // Add to advanced options
+  shiftTypePanel.addControl(skewShiftTypePanel);
 }
 
 // Load/Save Panel -------------------------------------------------------------

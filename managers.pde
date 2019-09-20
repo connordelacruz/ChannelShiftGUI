@@ -227,6 +227,28 @@ public class LinearShiftType implements ShiftTypeState {
   public boolean isYEqualsEquation() { return yEquals; }
 }
 
+// Skew ------------------------------------------------------------------------
+
+public class SkewShiftType implements ShiftTypeState {
+  // TODO doc, floats? negative?
+  int xSkew, ySkew;
+
+  public SkewShiftType(int xSkew, int ySkew) {
+    this.xSkew = xSkew;
+    this.ySkew = ySkew;
+  }
+
+  public SkewShiftType() {
+    this(2, 2);
+  }
+
+  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+    return horizontal ? x + shift + (xSkew * y) : y + shift + (ySkew * x);
+  }
+
+  // TODO getter/setter
+}
+
 // Manager ---------------------------------------------------------------------
 
 public class ShiftTypeManager {
@@ -238,8 +260,9 @@ public class ShiftTypeManager {
   int TYPE_DEFAULT = 0;
   int TYPE_MULTIPLY = 1;
   int TYPE_LINEAR = 2;
+  int TYPE_SKEW = 3;
   // TODO: figure out a dynamic way to do this
-  int TOTAL_SHIFT_TYPES = 3;
+  int TOTAL_SHIFT_TYPES = 4;
 
   public ShiftTypeManager() {
     shiftTypes = new ShiftTypeState[TOTAL_SHIFT_TYPES];
@@ -247,6 +270,7 @@ public class ShiftTypeManager {
     shiftTypes[TYPE_DEFAULT] = new DefaultShiftType();
     shiftTypes[TYPE_MULTIPLY] = new MultiplyShiftType();
     shiftTypes[TYPE_LINEAR] = new LinearShiftType();
+    shiftTypes[TYPE_SKEW] = new SkewShiftType();
     // Start w/ default
     state = TYPE_DEFAULT;
   }
