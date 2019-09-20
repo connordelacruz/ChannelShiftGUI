@@ -45,6 +45,7 @@ GCheckbox linearNegativeCoeffCheckbox;
 GLabel xSkewLabel, ySkewLabel;
 GTextField xSkewInput, ySkewInput;
 GTabManager skewTabManager;
+GCheckbox xSkewNegativeCheckbox, ySkewNegativeCheckbox;
 
 // Keep track of shift type config panels w/ indices matching globals
 GPanel[] shiftTypeConfigPanels;
@@ -220,12 +221,17 @@ int SKEW_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
 int SKEW_CONFIG_LABEL_HEIGHT = 20;
 int SKEW_CONFIG_INPUT_WIDTH = SKEW_CONFIG_LABEL_WIDTH;
 int SKEW_CONFIG_INPUT_HEIGHT = 20;
+int SKEW_CONFIG_CHECKBOX_WIDTH = TYPE_CONFIG_PANEL_WIDTH;
+int SKEW_CONFIG_CHECKBOX_HEIGHT = 20;
 int SKEW_CONFIG_LABEL_X = X_MARGIN;
 int SKEW_CONFIG_INPUT_X = X_MARGIN;
+int SKEW_CONFIG_CHECKBOX_X = 0;
 int SKEW_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
 int SKEW_CONFIG_INPUT_TOP_Y = SKEW_CONFIG_LABEL_TOP_Y + SKEW_CONFIG_LABEL_HEIGHT;
-int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_INPUT_TOP_Y + SKEW_CONFIG_INPUT_HEIGHT + Y_MARGIN;
+int SKEW_CONFIG_CHECKBOX_TOP_Y = SKEW_CONFIG_INPUT_TOP_Y + SKEW_CONFIG_INPUT_HEIGHT;
+int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_CHECKBOX_TOP_Y + SKEW_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
 int SKEW_CONFIG_INPUT_BOTTOM_Y = SKEW_CONFIG_LABEL_BOTTOM_Y + SKEW_CONFIG_LABEL_HEIGHT;
+int SKEW_CONFIG_CHECKBOX_BOTTOM_Y = SKEW_CONFIG_INPUT_BOTTOM_Y + SKEW_CONFIG_INPUT_HEIGHT;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -644,6 +650,9 @@ public void createSkewShiftTypePanel() {
   xSkewInput.setText("2.0"); // TODO: pull default from manager
   xSkewInput.addEventHandler(this, "xSkewInput_change");
   skewShiftTypePanel.addControl(xSkewInput);
+  xSkewNegativeCheckbox = new GCheckbox(controlsWindow, SKEW_CONFIG_CHECKBOX_X, SKEW_CONFIG_CHECKBOX_TOP_Y, SKEW_CONFIG_CHECKBOX_WIDTH, SKEW_CONFIG_CHECKBOX_HEIGHT, "Negative X Skew");
+  xSkewNegativeCheckbox.addEventHandler(this, "xSkewNegativeCheckbox_click");
+  skewShiftTypePanel.addControl(xSkewNegativeCheckbox);
   // Y Skew
   ySkewLabel = new GLabel(controlsWindow, SKEW_CONFIG_LABEL_X, SKEW_CONFIG_LABEL_BOTTOM_Y, SKEW_CONFIG_LABEL_WIDTH, SKEW_CONFIG_LABEL_HEIGHT);
   ySkewLabel.setText("Vertical Skew:");
@@ -653,6 +662,9 @@ public void createSkewShiftTypePanel() {
   ySkewInput.setText("2.0"); // TODO: pull default from manager
   ySkewInput.addEventHandler(this, "ySkewInput_change");
   skewShiftTypePanel.addControl(ySkewInput);
+  ySkewNegativeCheckbox = new GCheckbox(controlsWindow, SKEW_CONFIG_CHECKBOX_X, SKEW_CONFIG_CHECKBOX_BOTTOM_Y, SKEW_CONFIG_CHECKBOX_WIDTH, SKEW_CONFIG_CHECKBOX_HEIGHT, "Negative Y Skew");
+  ySkewNegativeCheckbox.addEventHandler(this, "ySkewNegativeCheckbox_click");
+  skewShiftTypePanel.addControl(ySkewNegativeCheckbox);
   // Tab manager for inputs
   skewTabManager = new GTabManager();
   skewTabManager.addControls(xSkewInput, ySkewInput);

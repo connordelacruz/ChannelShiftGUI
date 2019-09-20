@@ -420,6 +420,7 @@ public void linearCoeffInput_change(GTextField source, GEvent event) {
   }
 }
 
+// TODO FIXME sometimes reverts even when checkbox isn't checked
 public void linearNegativeCoeffCheckbox_click(GCheckbox source, GEvent event) {
   shiftTypeManager.linear_setCoefficientSign(!source.isSelected());
   showPreview();
@@ -453,8 +454,18 @@ public void xSkewInput_change(GTextField source, GEvent event) {
   skewInputEventHandler(source, event, true);
 }
 
+public void xSkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.skew_setSign(!source.isSelected(), true);
+  showPreview();
+}
+
 public void ySkewInput_change(GTextField source, GEvent event) {
   skewInputEventHandler(source, event, false);
+}
+
+public void ySkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.skew_setSign(!source.isSelected(), false);
+  showPreview();
 }
 
 // Horizontal/Vertical Shift ---------------------------------------------------

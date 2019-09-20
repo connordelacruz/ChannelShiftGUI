@@ -234,20 +234,23 @@ public class LinearShiftType implements ShiftTypeState {
 // Skew ------------------------------------------------------------------------
 
 public class SkewShiftType implements ShiftTypeState {
-  // TODO doc, negative
+  // TODO doc
   public float xSkew, ySkew;
+  public float xSign, ySign;
 
-  public SkewShiftType(float xSkew, float ySkew) {
+  public SkewShiftType(float xSkew, boolean xPositive, float ySkew, boolean yPositive) {
     this.xSkew = xSkew;
     this.ySkew = ySkew;
+    this.xSign = xPositive ? 1 : -1;
+    this.ySign = yPositive ? 1 : -1;
   }
 
   public SkewShiftType() {
-    this(2.0, 2.0);
+    this(2.0, true, 2.0, true);
   }
 
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
-    return horizontal ? x + shift + (int)(xSkew * y) : y + shift + (int)(ySkew * x);
+    return horizontal ? x + shift + (int)(xSign * xSkew * y) : y + shift + (int)(ySign * ySkew * x);
   }
 
   // Setters
@@ -259,11 +262,22 @@ public class SkewShiftType implements ShiftTypeState {
     else
       ySkew = val;
   }
+  public void setXSign(boolean positive) { xSign = positive ? 1 : -1; }
+  public void setYSign(boolean positive) { ySign = positive ? 1 : -1; }
+  public void setSign(boolean positive, boolean horizontal) {
+    if (horizontal)
+      setXSign(positive);
+    else
+      setYSign(positive);
+  }
 
   // Getters
   public float getXSkew() { return xSkew; }
   public float getYSkew() { return ySkew; }
   public float getSkew(boolean horizontal) { return horizontal ? xSkew : ySkew; }
+  public boolean isPositiveX() { return xSign > 0.0; }
+  public boolean isPositiveY() { return ySign > 0.0; }
+  public boolean isPositive(boolean horizontal) { return horizontal ? isPositiveX() : isPositiveY(); }
 }
 
 // Manager ---------------------------------------------------------------------
@@ -337,6 +351,12 @@ public class ShiftTypeManager {
   }
   public float skew_getSkew(boolean horizontal) {
     return ((SkewShiftType)shiftTypes[TYPE_SKEW]).getSkew(horizontal);
+  }
+  public void skew_setSign(boolean positive, boolean horizontal) {
+    ((SkewShiftType)shiftTypes[TYPE_SKEW]).setSign(positive, horizontal);
+  }
+  public boolean skew_isPositive(boolean horizontal) {
+    return ((SkewShiftType)shiftTypes[TYPE_SKEW]).isPositive(horizontal);
   }
 
 }
