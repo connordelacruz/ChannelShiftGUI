@@ -7,16 +7,9 @@ import g4p_controls.*;
 String defaultImgName = "test";
 String defaultImgPath = "source/" + defaultImgName + ".jpg";
 
-// Output File -----------------------------------------------------------------
-// File extension of the output image
-String outputImgExt = ".png";
-
 // Globals =====================================================================
 
-// TODO: save/step manager
-// Base image file name, used for default save name in conjunction with
-// sketchSteps
-String imgFile;
+// TODO: step manager
 // Store shift values and which channels were shifted/swapped. Will be appended
 // to default save filename 
 String sketchSteps;
@@ -40,61 +33,6 @@ boolean recursiveIteration = true;
 String INDENT = "   ";
 
 // Helper Methods ==============================================================
-
-// Loading ---------------------------------------------------------------------
-
-/**
- * Returns the name of a file with the extension removed
- */
-String getBaseFileName(File f) {
-  String name = f.getName();
-  // Return name stripping last . followed by 1 or more chars
-  return name.replaceFirst("[.][^.]+$", "");
-}
-
-/**
- * Show file select dialog and attempt to load image on callback
- */
-void selectFile() {
-  selectInput("Load image:", "imageFileSelected");
-}
-
-/**
- * Callback function for selectInput() when loading a file
- */
-void imageFileSelected(File selection) {
-  if (selection != null) {
-    println("Loading...");
-    loadImageFile(selection.getAbsolutePath(), getBaseFileName(selection));
-    println("Image loaded.");
-    println("");
-    // Reset UI and configs
-    resetShift();
-  }
-}
-
-/**
- * Load an image file. Sets global variables and updates window size
- * accordingly. 
- * @param path Full path to the image file
- * @param name Name of file without extension. Used for default filename when
- * saving
- */
-void loadImageFile(String path, String name) {
-  // Load image objects
-  imgManager.loadImageFile(path);
-  // Update window size
-  updateWindowSize();
-  // Update imgFile (for default output name)
-  imgFile = name;
-  // Reset steps string
-  sketchSteps = "";
-  // Update managers
-  xShiftManager.setImgDimension(imgManager.imgWidth);
-  yShiftManager.setImgDimension(imgManager.imgHeight);
-  // Redraw preview
-  previewImgUpdated = true;
-}
 
 // Saving ----------------------------------------------------------------------
 
@@ -139,47 +77,6 @@ void updateSteps() {
   sketchSteps += "_" + stringifyCurrentStep();
 }
 
-/**
- * Returns an output file path based on source image name and sketch steps.
- * @return File name with the image file and sketch steps. Parent directory is
- * not specified, so selectOutput() should default to last opened directory
- * (depending on OS)
- */
-String defaultOutputFilename() {
-  String filename = imgFile + sketchSteps;
-  // Append current step (unless nothing's changed)
-  if (!noChangesInCurrentStep())
-    filename += "_" + stringifyCurrentStep();
-  // Max filename of 255 characters
-  filename = truncateString(filename, 255 - outputImgExt.length());
-  return filename + outputImgExt;
-}
-
-/**
- * Pull up save dialog for current result. Default path is generated using
- * defaultOutputFilename()
- */
-void saveResultAs() {
-  String outputFile = defaultOutputFilename();
-  File defaultOutFile = new File(outputFile);
-  selectOutput("Save as:", "outFileSelected", defaultOutFile);
-}
-
-/**
- * Callback function for selectOutput() when saving result
- */
-void outFileSelected(File selection) {
-  if (selection != null) {
-    println("Saving...");
-    String outputFile = selection.getAbsolutePath();
-    // Save previewImg so preview matches output file
-    imgManager.savePreviewImg(outputFile);
-    // Print output
-    println("Result saved:");
-    println(INDENT + outputFile);
-    println("");
-  }
-}
 
 // Channel Shift ---------------------------------------------------------------
 
@@ -313,19 +210,6 @@ public void confirmBtn_click(GButton source, GEvent event) {
 public void recursiveCheckbox_click(GCheckbox source, GEvent event) {
   recursiveIteration = source.isSelected();
 }
-
-// Load Button -----------------------------------------------------------------
-
-public void loadBtn_click(GButton source, GEvent event) {
-  selectFile();
-}
-
-// Save Button -----------------------------------------------------------------
-
-public void saveBtn_click(GButton source, GEvent event) {
-  saveResultAs();
-} 
-
 
 // Processing ==================================================================
 
