@@ -80,6 +80,7 @@ void updateSteps() {
 
 // Channel Shift ---------------------------------------------------------------
 
+// TODO move this to its own file? Or to shift.pde? Even tho it relies on shift type?
 /**
  * Shift and swap color channels
  * @param sourceImg The base PImage object to be channel shifted
