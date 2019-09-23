@@ -47,10 +47,6 @@ boolean sliderChanged = false;
 boolean[] sliderPercentValue = new boolean[]{true, true};
 
 // Constants ===================================================================
-
-// Maps index 0-2 to corresponding color channel. Used as a shorthand when
-// making operations more human readable
-String[] CHANNELS = new String[]{"R","G","B"};
 // String to use for indent in output msgs
 String INDENT = "   ";
 
@@ -161,6 +157,7 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
  * Returns a string representation of the current sketch step
  */
 String stringifyCurrentStep() {
+  // TODO: delegate stringify parts to manager classes
   return stringifyStep(xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel, recursiveIteration);
 }
 
@@ -301,42 +298,6 @@ void showPreview() {
   // Update preview image pixels and redraw
   previewImgUpdated = true;
   imgManager.updatePreview();
-}
-
-// Source/Target Channel -------------------------------------------------------
-
-/**
- * Select a source/target channel toggle
- * @param source If true, set sourceChannel, else set targetChannel
- * @param channel Channel to set (Index into CHANNELS)
- */
-void setChannelToggle(boolean source, int channel) {
-  ChannelOption toggle = source ? srcToggles[channel] : targToggles[channel];
-  toggle.setSelected(true);
-}
-
-/**
- * Update the selected source/target channel toggle to match the corresponding
- * global variable
- * @param source If true, set sourceChannel, else set targetChannel
- */
-void updateChannelToggle(boolean source) {
-  setChannelToggle(source, channelManager.getChannel(source));
-}
-
-/**
- * Update the selected source and target channel toggles to match global
- * variables. Wrapper that calls updateChannelToggle() for both source and
- * target
- */
-void updateChannelToggles() {
-  updateChannelToggle(true);
-  updateChannelToggle(false);
-}
-
-public void channelOption_clicked(ChannelOption source, GEvent event) {
-  channelManager.setChannel(source.isSource(), source.getChannel());
-  showPreview();
 }
 
 // Horizontal/Vertical Shift ---------------------------------------------------

@@ -1,13 +1,10 @@
 // =============================================================================
-// Code for different channel shift types
+// Globals, logic, and event handlers related to shift type variations
 // =============================================================================
-
-// TODO: move controls window stuff here?
 
 // Constants ===================================================================
 
 // Names of different shift types
-// TODO: merge w/ similar arrays of shift types?
 String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear", "Skew"};
 
 
