@@ -13,6 +13,7 @@ String outputImgExt = ".png";
 
 // Globals =====================================================================
 
+// TODO: save/step manager
 // Base image file name, used for default save name in conjunction with
 // sketchSteps
 String imgFile;

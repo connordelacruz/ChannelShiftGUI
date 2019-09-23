@@ -1,5 +1,5 @@
 // =============================================================================
-// Globals, logic, and event handlers related to the image preview window
+// Globals and  logic related to the image preview window
 // =============================================================================
 
 // Globals =====================================================================
