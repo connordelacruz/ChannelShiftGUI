@@ -34,10 +34,6 @@ WindowManager windowManager;
 // Use resulting image as the source for next iteration
 boolean recursiveIteration = true;
 
-// Set to true if the preview image has been modified since the last time it
-// was rendered, telling the draw() method that it needs to be re-drawn
-boolean previewImgUpdated = true;
-
 // Set to true if a silder was changed. Window mouse event listener checks this
 // when the mouse is released and updates the preview image. This is to avoid
 // re-drawing the preview every time the slider value changes
@@ -53,6 +49,8 @@ String INDENT = "   ";
 // Helper Methods ==============================================================
 
 // Window ----------------------------------------------------------------------
+
+// TODO move to previewWindow.pde? Relies on imgManager but I think that should be fine
 
 /**
  * Update windowManager based on sourceImg dimensions and resize surface
@@ -623,7 +621,7 @@ void setup() {
   loadImageFile(defaultImgPath, defaultImgName);
   // Window
   size(1,1);
-  surface.setResizable(true);
+  /* surface.setResizable(true); */
   updateWindowSize();
   // Display controls window
   createGUI();
@@ -631,6 +629,7 @@ void setup() {
 
 
 void draw() {
+  // TODO: move to windowManager.updatePreview() and just call that?
   if (previewImgUpdated) {
     updatePreview();
   } 

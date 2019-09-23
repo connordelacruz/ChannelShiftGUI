@@ -1,6 +1,7 @@
 // =============================================================================
 // Globals, logic, and event handlers related to source/target color channels
 // =============================================================================
+// TODO rename file? "toggles" is sorta specific to GUI
 
 // Constants ===================================================================
 
