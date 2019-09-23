@@ -71,6 +71,7 @@ void loadImageFile(String path, String name) {
  * (depending on OS)
  */
 String defaultOutputFilename() {
+  // TODO move sketch steps/current step logic to steps.pde?
   String filename = imgFile + sketchSteps;
   // Append current step (unless nothing's changed)
   if (!noChangesInCurrentStep())

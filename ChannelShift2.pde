@@ -9,11 +9,6 @@ String defaultImgPath = "source/" + defaultImgName + ".jpg";
 
 // Globals =====================================================================
 
-// TODO: step manager
-// Store shift values and which channels were shifted/swapped. Will be appended
-// to default save filename 
-String sketchSteps;
-
 // Image managers
 ImgManager imgManager;
 // Sketch state managers
@@ -25,58 +20,11 @@ ShiftTypeManager shiftTypeManager;
 // Interface managers
 WindowManager windowManager;
 
-// Use resulting image as the source for next iteration
-boolean recursiveIteration = true;
-
 // Constants ===================================================================
 // String to use for indent in output msgs
 String INDENT = "   ";
 
 // Helper Methods ==============================================================
-
-// Saving ----------------------------------------------------------------------
-
-/**
- * Returns a string representation of a channel shift step.
- * @param horizontalShift Amount channel was shifted horizontally
- * @param verticalShift Amount channel was shifted vertically
- * @param sourceChannel Channel from the source image (Index into CHANNELS)
- * @param targetChannel Channel from the target image (Index into CHANNELS)
- * @param recursiveIteration Whether this was a recursive iteration or not
- * @return String representation of the sketch step. The general format is:
- * "s{RGB}-t{RGB}-x{int}-y{int}{-rec}"
- * If source and target channels are the same, a single RGB channel will be
- * listed instead of "s{RGB}-t{RGB}".
- */
-String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, int targetChannel, boolean recursiveIteration) {
-  String step = "";
-  // Only show what channel was shifted if not swapped
-  if (sourceChannel == targetChannel)
-    step += CHANNELS[sourceChannel];
-  else
-    step += "s" + CHANNELS[sourceChannel] + "t" + CHANNELS[targetChannel];
-  step += "-x" + horizontalShift;
-  step += "-y" + verticalShift;
-  if (recursiveIteration)
-    step += "-rec";
-  return step;
-}
-
-/**
- * Returns a string representation of the current sketch step
- */
-String stringifyCurrentStep() {
-  // TODO: delegate stringify parts to manager classes
-  return stringifyStep(xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel, recursiveIteration);
-}
-
-/**
- * Update sketchSteps using globals
- */
-void updateSteps() {
-  sketchSteps += "_" + stringifyCurrentStep();
-}
-
 
 // Channel Shift ---------------------------------------------------------------
 
@@ -122,15 +70,6 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
   }
 }
 
-// Sketch State ----------------------------------------------------------------
-
-/**
- * Returns true if source and target channels match and x/y shift are both 0
- */
-boolean noChangesInCurrentStep() {
-  return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero();
-}
-
 // GUI =========================================================================
 
 // Controls Window -------------------------------------------------------------
@@ -156,6 +95,7 @@ public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) 
 
 // Preview Window --------------------------------------------------------------
 
+// TODO move to previewWindow.pde?
 /**
  * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
  * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
@@ -167,49 +107,6 @@ void showPreview() {
   // Update preview image pixels and redraw
   previewImgUpdated = true;
   imgManager.updatePreview();
-}
-
-// Reset Button ----------------------------------------------------------------
-
-/**
- * Reset selected source/target channels and horizontal/vertical shift values
- */
-void resetShift() {
-  channelManager.resetChannels();
-  updateChannelToggles();
-  xShiftManager.resetShift();
-  yShiftManager.resetShift();
-  updateShiftSliders();
-}
-
-public void resetBtn_click(GButton source, GEvent event) { 
-  resetShift();
-  showPreview();
-} 
-
-// Confirm Button --------------------------------------------------------------
-
-// TODO: Undo button (keep track of steps)
-
-public void confirmBtn_click(GButton source, GEvent event) { 
-  // Display preview
-  showPreview();
-  // Update sketch steps
-  updateSteps();
-  // Update targetImg to match preview
-  imgManager.copyPreviewToTarget();
-  // TODO: make sure this works? getting some inconsistent results; maybe need to updatePixels??
-  // If recursive, sourceImg.pixels = targetImg.pixels
-  if (recursiveIteration)
-    imgManager.copyTargetPixelsToSource();
-  // Reset shift values and UI
-  resetShift();
-} 
-
-// Recursive Checkbox ----------------------------------------------------------
-
-public void recursiveCheckbox_click(GCheckbox source, GEvent event) {
-  recursiveIteration = source.isSelected();
 }
 
 // Processing ==================================================================
