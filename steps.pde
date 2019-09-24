@@ -2,16 +2,57 @@
 // Globals, logic, and event handlers related to confirming, resetting, and
 // recording sketch steps
 // =============================================================================
+import java.util.ArrayList;
 
 // Globals =====================================================================
 
 // TODO: step manager
+// TODO manage index of current step, allow for it to be shared w/ ImgManager for history
+
+// TODO use array, String.join("_", sketchSteps);
 // Store shift values and which channels were shifted/swapped. Will be appended
 // to default save filename 
 String sketchSteps;
 
+// TODO: move to manager?
 // Use resulting image as the source for next iteration upon confirming step
 boolean recursiveIteration = true;
+
+// Manager =====================================================================
+
+// TODO doc, implement
+public class StepManager {
+  // Store string representation of info about each step
+  ArrayList<String> sketchSteps;
+
+  public StepManager() {
+    sketchSteps = new ArrayList<String>();
+  }
+
+  // TODO stringifyStep(), commitStep(), resetSteps(), stepsToString() (with way of appending current step)
+
+  // TODO recursiveIteration move to manager?
+  public String stringifyStep(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager, boolean recursiveIteration) {
+    String step = "";
+    step += channelManager.stringifyStep();
+    step += xShiftManager.stringifyStep() + yShiftManager.stringifyStep();
+    step += shiftTypeManager.stringifyStep();
+    if (recursiveIteration)
+      step += "-rec";
+    return step;
+  }
+
+  // TODO store current stringified step in local so it doesn't have to be passed?
+  public void commitStep(String step) {
+    sketchSteps.add(step);
+  }
+
+  public String stepsToString() { return String.join("_", sketchSteps); }
+
+  public void resetSteps() { sketchSteps.clear(); }
+
+  // TODO return index of most recent step
+}
 
 // Helper Methods ==============================================================
 

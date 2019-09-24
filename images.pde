@@ -2,10 +2,9 @@
 // Globals related to working PImage objects
 // =============================================================================
 
-// TODO should other things be moved here? Load/save stuff?
-
 // Manager =====================================================================
 
+// TODO store previous image objects to allow for undo?
 /** 
  * Manage the source, target, and preview PImage objects
  */
@@ -58,7 +57,6 @@ public class ImgManager {
 
   // For recursive iterations
   public void copyTargetPixelsToSource() {
-    // TODO: sourceImg = targetImg.copy(); sourceImg.loadPixels(); ?
     sourceImg.pixels = targetImg.pixels;
     sourceImg.updatePixels();
   }

@@ -78,8 +78,9 @@ void setup() {
   // Initialize managers
   imgManager = new ImgManager();
   channelManager = new ChannelManager();
-  xShiftManager = new ShiftManager();
-  yShiftManager = new ShiftManager();
+  // TODO 2D shift manager that handles both
+  xShiftManager = new ShiftManager(true);
+  yShiftManager = new ShiftManager(false);
   randomizeManager = new RandomizeManager();
   shiftTypeManager = new ShiftTypeManager();
   windowManager = new WindowManager();
