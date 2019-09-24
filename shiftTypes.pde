@@ -6,6 +6,13 @@
 
 // Names of different shift types
 String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear", "Skew"};
+// Indexes
+int TYPE_DEFAULT = 0;
+int TYPE_MULTIPLY = 1;
+int TYPE_LINEAR = 2;
+int TYPE_SKEW = 3;
+// Total # of shift types
+int TOTAL_SHIFT_TYPES = SHIFT_TYPES.length;
 
 
 // Manager/State Classes =======================================================
@@ -167,13 +174,6 @@ public class ShiftTypeManager {
   ShiftTypeState[] shiftTypes;
   // Current state index
   public int state;
-  // Indexes
-  int TYPE_DEFAULT = 0;
-  int TYPE_MULTIPLY = 1;
-  int TYPE_LINEAR = 2;
-  int TYPE_SKEW = 3;
-  // TODO: figure out a dynamic way to do this
-  int TOTAL_SHIFT_TYPES = 4;
 
   public ShiftTypeManager() {
     shiftTypes = new ShiftTypeState[TOTAL_SHIFT_TYPES];

@@ -21,10 +21,10 @@ GCheckbox randSrcCheckbox, randTargCheckbox,
           randXShiftCheckbox, randYShiftCheckbox;
 GTextField randXMaxInput, randYMaxInput;
 GLabel randXMaxLabel, randYMaxLabel;
-// Shift Type ------------------------------------------------------------------
+// Advanced Options ------------------------------------------------------------
 // TODO randomize/reset buttons? add a randomize method to interface and call it on current state
+GPanel advancedOptionsPanel;
 // Type Select
-GPanel shiftTypePanel;
 GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
 // Per-Type configs
@@ -151,40 +151,35 @@ int RAND_BTN_X = 0;
 int RAND_BTN_Y = RAND_MAX_LABEL_Y + RAND_MAX_TOTAL_HEIGHT;
 int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
 // Shift Type Select -----------------------------------------------------------
-// TODO RENAME SECTION TO ADVANCED WHERE APPLICABLE
 // Panel
-int TYPE_PANEL_X = WINDOW_MAIN_WIDTH + X_MARGIN;
-int TYPE_PANEL_Y = Y_START;
-int TYPE_PANEL_WIDTH = WINDOW_ADV_WIDTH - X_MARGINS;
-int TYPE_PANEL_HEIGHT = WINDOW_HEIGHT - (2 * Y_MARGIN);
+int ADV_OPTS_PANEL_X = WINDOW_MAIN_WIDTH + X_MARGIN;
+int ADV_OPTS_PANEL_Y = Y_START;
+int ADV_OPTS_PANEL_WIDTH = WINDOW_ADV_WIDTH - X_MARGINS;
+int ADV_OPTS_PANEL_HEIGHT = WINDOW_HEIGHT - (2 * Y_MARGIN);
 // Label
 int TYPE_LABEL_X = X_MARGIN;
 int TYPE_LABEL_Y = PANEL_Y_START;
-int TYPE_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int TYPE_LABEL_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
 int TYPE_LABEL_HEIGHT = 20;
 // Dropdown
 int TYPE_SELECT_X = X_MARGIN;
 int TYPE_SELECT_Y = TYPE_LABEL_Y + TYPE_LABEL_HEIGHT;
-int TYPE_SELECT_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int TYPE_SELECT_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
 int TYPE_SELECT_HEIGHT = 100; 
 int TYPE_SELECT_MAX_ITEMS = 4;
 int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
 // Common shift type configs
-int TYPE_CONFIG_PANEL_X = 0;
-int TYPE_CONFIG_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
-int TYPE_CONFIG_PANEL_WIDTH = TYPE_PANEL_WIDTH;
-int TYPE_CONFIG_PANEL_HEIGHT = TYPE_PANEL_HEIGHT - TYPE_CONFIG_PANEL_Y;
-int TYPE_CONFIG_RESET_WIDTH = TYPE_CONFIG_PANEL_WIDTH;
-int TYPE_CONFIG_RESET_HEIGHT = 30;
-int TYPE_CONFIG_RESET_X = 0;
-int TYPE_CONFIG_RESET_Y = TYPE_CONFIG_PANEL_HEIGHT - TYPE_CONFIG_RESET_HEIGHT;
+int TYPE_PANEL_X = 0;
+int TYPE_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
+int TYPE_PANEL_WIDTH = ADV_OPTS_PANEL_WIDTH;
+int TYPE_PANEL_HEIGHT = ADV_OPTS_PANEL_HEIGHT - TYPE_PANEL_Y;
 // Default Shift Type Panel ----------------------------------------------------
 int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
 int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
-int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
-int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_CONFIG_PANEL_HEIGHT - PANEL_Y_START;
+int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_PANEL_HEIGHT - PANEL_Y_START;
 // Multiply Shift Type Panel ---------------------------------------------------
-int MULTIPLY_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
+int MULTIPLY_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int MULTIPLY_CONFIG_LABEL_HEIGHT = 20;
 int MULTIPLY_CONFIG_INPUT_WIDTH = MULTIPLY_CONFIG_LABEL_WIDTH;
 int MULTIPLY_CONFIG_INPUT_HEIGHT = 20;
@@ -197,13 +192,13 @@ int MULTIPLY_CONFIG_INPUT_BOTTOM_Y = MULTIPLY_CONFIG_LABEL_BOTTOM_Y + MULTIPLY_C
 // Linear Shift Type Panel -----------------------------------------------------
 // TODO extract common w/ multiply to type_config_ general vars
 // Toggles
-int LINEAR_CONFIG_TOGGLE_WIDTH = TYPE_CONFIG_PANEL_WIDTH / 2;
+int LINEAR_CONFIG_TOGGLE_WIDTH = TYPE_PANEL_WIDTH / 2;
 int LINEAR_CONFIG_TOGGLE_HEIGHT = 20;
 int LINEAR_CONFIG_TOGGLE_Y = PANEL_Y_START;
 int LINEAR_CONFIG_TOGGLE_LEFT_X = 0;
 int LINEAR_CONFIG_TOGGLE_RIGHT_X = LINEAR_CONFIG_TOGGLE_WIDTH;
 // Coefficient input
-int LINEAR_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
+int LINEAR_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int LINEAR_CONFIG_LABEL_HEIGHT = 20;
 int LINEAR_CONFIG_INPUT_WIDTH = LINEAR_CONFIG_LABEL_WIDTH;
 int LINEAR_CONFIG_INPUT_HEIGHT = 20;
@@ -212,16 +207,16 @@ int LINEAR_CONFIG_LABEL_Y = LINEAR_CONFIG_TOGGLE_Y + LINEAR_CONFIG_TOGGLE_HEIGHT
 int LINEAR_CONFIG_INPUT_X = X_MARGIN;
 int LINEAR_CONFIG_INPUT_Y = LINEAR_CONFIG_LABEL_Y + LINEAR_CONFIG_LABEL_HEIGHT;
 // Coefficient Sign
-int LINEAR_CONFIG_CHECKBOX_WIDTH = TYPE_CONFIG_PANEL_WIDTH;
+int LINEAR_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
 int LINEAR_CONFIG_CHECKBOX_HEIGHT = LINEAR_CONFIG_TOGGLE_HEIGHT;
 int LINEAR_CONFIG_CHECKBOX_X = 0;
 int LINEAR_CONFIG_CHECKBOX_Y = LINEAR_CONFIG_INPUT_Y + LINEAR_CONFIG_INPUT_HEIGHT + Y_MARGIN;
 // Skew Shift Type Panel -------------------------------------------------------
-int SKEW_CONFIG_LABEL_WIDTH = TYPE_CONFIG_PANEL_WIDTH - X_MARGINS;
+int SKEW_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int SKEW_CONFIG_LABEL_HEIGHT = 20;
 int SKEW_CONFIG_INPUT_WIDTH = SKEW_CONFIG_LABEL_WIDTH;
 int SKEW_CONFIG_INPUT_HEIGHT = 20;
-int SKEW_CONFIG_CHECKBOX_WIDTH = TYPE_CONFIG_PANEL_WIDTH;
+int SKEW_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
 int SKEW_CONFIG_CHECKBOX_HEIGHT = 20;
 int SKEW_CONFIG_LABEL_X = X_MARGIN;
 int SKEW_CONFIG_INPUT_X = X_MARGIN;
@@ -301,7 +296,7 @@ public void createGUI(){
   // Randomize  options
   createRandomizePanel();
   // Shift type
-  createShiftTypePanel();
+  createAdvancedOptionsPanel();
   // Horizontal shift slider 
   createXShiftPanel();
   // Vertical shift slider 
@@ -527,29 +522,26 @@ public void createRandomizePanel() {
 }
 
 // Shift Type Panel ------------------------------------------------------------
-// TODO organize, rename advanced panel
 
 // Advanced options panel
-public void createShiftTypePanel() {
-  shiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT, "Advanced Options");
-  setupGeneralPanel(shiftTypePanel, GCScheme.PURPLE_SCHEME);
+public void createAdvancedOptionsPanel() {
+  advancedOptionsPanel = new GPanel(controlsWindow, ADV_OPTS_PANEL_X, ADV_OPTS_PANEL_Y, ADV_OPTS_PANEL_WIDTH, ADV_OPTS_PANEL_HEIGHT, "Advanced Options");
+  setupGeneralPanel(advancedOptionsPanel, GCScheme.PURPLE_SCHEME);
   // Shift Type Dropdown
   shiftTypeLabel = new GLabel(controlsWindow, TYPE_LABEL_X, TYPE_LABEL_Y, TYPE_LABEL_WIDTH, TYPE_LABEL_HEIGHT, "Shift Type:");
   setupGeneralLabel(shiftTypeLabel);
-  shiftTypePanel.addControl(shiftTypeLabel);
+  advancedOptionsPanel.addControl(shiftTypeLabel);
   shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
-  // TODO UPDATE; this global will be moved
-  shiftTypeSelect.setItems(SHIFT_TYPES, 0);
+  shiftTypeSelect.setItems(SHIFT_TYPES, TYPE_DEFAULT);
   shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
-  shiftTypePanel.addControl(shiftTypeSelect);
-  // Add type config panels
+  advancedOptionsPanel.addControl(shiftTypeSelect);
+  // Keep track of each config panel in global
+  shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
+  // Add type config panels and add them to shiftTypeConfigPanels
   createDefaultShiftTypePanel();
   createMultiplyShiftTypePanel();
   createLinearShiftTypePanel();
   createSkewShiftTypePanel();
-  // Keep track of each config panel in global
-  // TODO use globals or something to ensure correct indices
-  shiftTypeConfigPanels = new GPanel[]{ defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel };
 }
 
 // Helpers
@@ -561,23 +553,26 @@ public void hideShiftTypePanel(GPanel panel) {
 }
 public void showShiftTypePanel(GPanel panel) {
   // Move on screen
-  panel.moveTo(TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y);
+  panel.moveTo(TYPE_PANEL_X, TYPE_PANEL_Y);
   togglePanelVisibility(panel, true);
 }
 
 // Type config panels (called above)
 
-public void setupShiftTypePanel(GPanel panel, String typeName) {
+public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
   setupGeneralPanel(panel);
-  panel.setText(typeName + " Shift Settings");
+  panel.setText(SHIFT_TYPES[shiftTypeIndex] + " Shift Settings");
   // Hide by default
   hideShiftTypePanel(panel);
+  // Add to global
+  shiftTypeConfigPanels[shiftTypeIndex] = panel;
 }
 
+// Shift Type Panels
+
 public void createDefaultShiftTypePanel() {
-  defaultShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
-  // TODO: store name in constant
-  setupShiftTypePanel(defaultShiftTypePanel, "Default");
+  defaultShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(defaultShiftTypePanel, TYPE_DEFAULT);
   // Default has no configs, add a label explaining this
   defaultShiftConfigLabel = new GLabel(controlsWindow, DEFAULT_CONFIG_LABEL_X, DEFAULT_CONFIG_LABEL_Y, DEFAULT_CONFIG_LABEL_WIDTH, DEFAULT_CONFIG_LABEL_HEIGHT);
   defaultShiftConfigLabel.setText("No advanced options for default shift type");
@@ -587,13 +582,12 @@ public void createDefaultShiftTypePanel() {
   // Default panel should be visible by default
   showShiftTypePanel(defaultShiftTypePanel);
   // Add to advanced options
-  shiftTypePanel.addControl(defaultShiftTypePanel);
+  advancedOptionsPanel.addControl(defaultShiftTypePanel);
 }
 
 public void createMultiplyShiftTypePanel() {
-  multiplyShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
-  // TODO: store name in constant
-  setupShiftTypePanel(multiplyShiftTypePanel, "Multiply");
+  multiplyShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(multiplyShiftTypePanel, TYPE_MULTIPLY);
   // TODO: merge common
   // X Multiplier
   xMultiplierLabel = new GLabel(controlsWindow, MULTIPLY_CONFIG_LABEL_X, MULTIPLY_CONFIG_LABEL_TOP_Y, MULTIPLY_CONFIG_LABEL_WIDTH, MULTIPLY_CONFIG_LABEL_HEIGHT);
@@ -617,13 +611,12 @@ public void createMultiplyShiftTypePanel() {
   multiplierTabManager = new GTabManager();
   multiplierTabManager.addControls(xMultiplierInput, yMultiplierInput);
   // Add to advanced options
-  shiftTypePanel.addControl(multiplyShiftTypePanel);
+  advancedOptionsPanel.addControl(multiplyShiftTypePanel);
 }
 
 public void createLinearShiftTypePanel() {
-  linearShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
-  // TODO: store name in constant
-  setupShiftTypePanel(linearShiftTypePanel, "Linear");
+  linearShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(linearShiftTypePanel, TYPE_LINEAR);
   // Equation Type Toggles
   // TODO extract common
   linearEqTypeToggle = new GToggleGroup();
@@ -654,13 +647,12 @@ public void createLinearShiftTypePanel() {
   linearNegativeCoeffCheckbox.addEventHandler(this, "linearNegativeCoeffCheckbox_click");
   linearShiftTypePanel.addControl(linearNegativeCoeffCheckbox);
   // Add to advanced options
-  shiftTypePanel.addControl(linearShiftTypePanel);
+  advancedOptionsPanel.addControl(linearShiftTypePanel);
 }
 
 public void createSkewShiftTypePanel() {
-  skewShiftTypePanel = new GPanel(controlsWindow, TYPE_CONFIG_PANEL_X, TYPE_CONFIG_PANEL_Y, TYPE_CONFIG_PANEL_WIDTH, TYPE_CONFIG_PANEL_HEIGHT);
-  // TODO: store name in constant
-  setupShiftTypePanel(skewShiftTypePanel, "Skew");
+  skewShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(skewShiftTypePanel, TYPE_SKEW);
   // TODO: merge common
   // X Skew
   xSkewLabel = new GLabel(controlsWindow, SKEW_CONFIG_LABEL_X, SKEW_CONFIG_LABEL_TOP_Y, SKEW_CONFIG_LABEL_WIDTH, SKEW_CONFIG_LABEL_HEIGHT);
@@ -690,7 +682,7 @@ public void createSkewShiftTypePanel() {
   skewTabManager = new GTabManager();
   skewTabManager.addControls(xSkewInput, ySkewInput);
   // Add to advanced options
-  shiftTypePanel.addControl(skewShiftTypePanel);
+  advancedOptionsPanel.addControl(skewShiftTypePanel);
 }
 
 // Load/Save Panel -------------------------------------------------------------

@@ -15,7 +15,10 @@ additional setup is required.
 
 ## Controls
 
-**TODO:** GUI screenshot (once finalized)
+**TODO:** 
+
+- GUI screenshot (once finalized)
+- Advanced Options panel + shift types
 
 ### Color Channels
 
