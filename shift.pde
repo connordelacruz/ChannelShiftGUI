@@ -181,6 +181,21 @@ public void ySlider_change(GSlider source, GEvent event) {
   sliderChanged = true;
 } 
 
+// Listens for mouse events and updates preview if a slider was changed
+public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) {
+  switch(event.getAction()) {
+    case MouseEvent.RELEASE:
+      // Update preview if a slider value was changed
+      if (sliderChanged) {
+        sliderChanged = false;
+        showPreview();
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 // Slider Text Inputs ----------------------------------------------------------
 
 // TODO: walk thru what's getting updated and pulling values and reduce any redundancy

@@ -1,14 +1,6 @@
 // =============================================================================
-// Globals and  logic related to the image preview window
+// Globals and logic related to the image preview window
 // =============================================================================
-
-// Globals =====================================================================
-
-// Set to true if the preview image has been modified since the last time it
-// was rendered, telling the draw() method that it needs to be re-drawn
-// TODO move to manager
-boolean previewImgUpdated = true;
-
 
 // Manager =====================================================================
 
@@ -20,10 +12,14 @@ public class WindowManager {
   public int width, height;
   // Preview window size (does not affect output image size)
   public int maxWindowSize;
+  // Set to true if the preview image has been modified since the last time it
+  // was rendered, telling the draw() method that it needs to be re-drawn
+  public boolean previewImgUpdated;
 
   public WindowManager() {
     width = height = 0;
     maxWindowSize = 600;
+    previewImgUpdated = true;
   }
 
   // Getter/Setter Methods
@@ -32,6 +28,25 @@ public class WindowManager {
     int[] dimensions = calculateWindowDimensions(img);
     width = dimensions[0];
     height = dimensions[1];
+    surface.setSize(width, height);
+  }
+
+  public void previewImgUpdated(boolean wasUpdated) {
+    previewImgUpdated = wasUpdated;
+  }
+  public void previewImgUpdated() { previewImgUpdated(true); }
+  public void previewImgDrawn() { previewImgUpdated(false); }
+
+  // Display preview image
+
+  // Redraw if previewImgUpdated
+  public void updatePreview(PImage previewImg) {
+    if (previewImgUpdated)
+      drawPreview(previewImg);
+  }
+  public void drawPreview(PImage previewImg) {
+    image(previewImg, 0, 0, width, height);
+    previewImgDrawn();
   }
 
   // Helpers
@@ -57,20 +72,19 @@ public class WindowManager {
 
 // Helper Methods ==============================================================
 
-/**
- * Update windowManager based on sourceImg dimensions and resize surface
- */
-void updateWindowSize() {
-  windowManager.updateWindowDimensions(imgManager.sourceImg);
-  surface.setSize(windowManager.width, windowManager.height);
-}
+// Displaying Preview ----------------------------------------------------------
 
 /**
- * Re-draws previewImg and sets previewImgUpdated to false
+ * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
+ * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
  */
-void updatePreview() {
-  image(imgManager.previewImg, 0, 0, windowManager.width, windowManager.height);
-  previewImgUpdated = false;
+void showPreview() {
+  // Make sure preview image matches target
+  imgManager.copyTargetToPreview();
+  shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel);
+  // Update preview image pixels and redraw
+  imgManager.updatePreview();
+  windowManager.previewImgUpdated();
 }
 
 

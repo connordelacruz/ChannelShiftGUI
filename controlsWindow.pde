@@ -314,6 +314,14 @@ public void createGUI(){
   controlsWindow.loop();
 }
 
+// Event Handlers ==============================================================
+
+// Controls Window -------------------------------------------------------------
+
+synchronized public void controlsWindow_draw(PApplet appc, GWinData data) { 
+  appc.background(230);
+} 
+
 
 // Helpers =====================================================================
 

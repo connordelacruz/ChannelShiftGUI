@@ -70,48 +70,11 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
   }
 }
 
-// GUI =========================================================================
-
-// Controls Window -------------------------------------------------------------
-
-synchronized public void controlsWindow_draw(PApplet appc, GWinData data) { 
-  appc.background(230);
-} 
-
-// Listens for mouse events and updates preview if a slider was changed
-public void controlsWindow_mouse(PApplet appc, GWinData data, MouseEvent event) {
-  switch(event.getAction()) {
-    case MouseEvent.RELEASE:
-      // Update preview if a slider value was changed
-      if (sliderChanged) {
-        sliderChanged = false;
-        showPreview();
-      }
-      break;
-    default:
-      break;
-  }
-}
-
-// Preview Window --------------------------------------------------------------
-
-// TODO move to previewWindow.pde?
-/**
- * Sets previewImg to a copy of targetImg and calls shiftChannel(). Sets
- * previewImgUpdated to true and calls previewImg.updatePixels() after shifting
- */
-void showPreview() {
-  // Make sure preview image matches target
-  imgManager.copyTargetToPreview();
-  shiftChannel(imgManager.sourceImg, imgManager.previewImg, xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel);
-  // Update preview image pixels and redraw
-  previewImgUpdated = true;
-  imgManager.updatePreview();
-}
-
 // Processing ==================================================================
 
 void setup() {
+  // Window
+  size(1,1);
   // Initialize managers
   imgManager = new ImgManager();
   channelManager = new ChannelManager();
@@ -122,19 +85,12 @@ void setup() {
   windowManager = new WindowManager();
   // Load image (initializes global PImage objects)
   loadImageFile(defaultImgPath, defaultImgName);
-  // Window
-  size(1,1);
-  /* surface.setResizable(true); */
-  updateWindowSize();
   // Display controls window
   createGUI();
 }
 
 
 void draw() {
-  // TODO: move to windowManager.updatePreview() and just call that?
-  if (previewImgUpdated) {
-    updatePreview();
-  } 
+  windowManager.updatePreview(imgManager.previewImg);
 }
 

@@ -50,7 +50,7 @@ void loadImageFile(String path, String name) {
   // Load image objects
   imgManager.loadImageFile(path);
   // Update window size
-  updateWindowSize();
+  windowManager.updateWindowDimensions(imgManager.sourceImg);
   // Update imgFile (for default output name)
   imgFile = name;
   // Reset steps string
@@ -59,7 +59,7 @@ void loadImageFile(String path, String name) {
   xShiftManager.setImgDimension(imgManager.imgWidth);
   yShiftManager.setImgDimension(imgManager.imgHeight);
   // Redraw preview
-  previewImgUpdated = true;
+  windowManager.previewImgUpdated();
 }
 
 // Saving ----------------------------------------------------------------------
