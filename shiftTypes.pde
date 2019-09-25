@@ -21,7 +21,7 @@ int TOTAL_SHIFT_TYPES = SHIFT_TYPES.length;
 
 public interface ShiftTypeState {
   // Calculate offset for this shift type
-  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal);
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal);
   // String representation of this step
   public String stringifyStep();
 }
@@ -29,7 +29,7 @@ public interface ShiftTypeState {
 // Default ---------------------------------------------------------------------
 
 public class DefaultShiftType implements ShiftTypeState {
-  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     return (horizontal ? x : y) + shift;
   }
 
@@ -56,7 +56,7 @@ public class MultiplyShiftType implements ShiftTypeState {
     this(2.0, 2.0);
   }
 
-  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     return (int)(horizontal ? x * xMultiplier : y * yMultiplier) + shift; 
   }
 
@@ -104,7 +104,7 @@ public class LinearShiftType implements ShiftTypeState {
     this(1.0, true, true);
   }
 
-  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     int offset;
     // y= equation
     if (yEquals) 
@@ -156,7 +156,7 @@ public class SkewShiftType implements ShiftTypeState {
     this(2.0, true, 2.0, true);
   }
 
-  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     return horizontal ? x + shift + (int)(xSign * xSkew * y) : y + shift + (int)(ySign * ySkew * x);
   }
 
@@ -215,8 +215,8 @@ public class ShiftTypeManager {
     state = TYPE_DEFAULT;
   }
 
-  public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
-    return shiftTypes[state].calculateShiftOffset(x, y, shift, horizontal);
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
+    return shiftTypes[state].calculateShiftOffset(x, y, width, height, shift, horizontal);
   }
 
   public void setShiftType(int shiftType) {
