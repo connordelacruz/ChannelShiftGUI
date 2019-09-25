@@ -6,14 +6,6 @@ import java.util.ArrayList;
 
 // Globals =====================================================================
 
-// TODO: step manager
-// TODO manage index of current step, allow for it to be shared w/ ImgManager for history
-
-// TODO use array, String.join("_", sketchSteps);
-// Store shift values and which channels were shifted/swapped. Will be appended
-// to default save filename 
-String sketchSteps;
-
 // TODO: move to manager?
 // Use resulting image as the source for next iteration upon confirming step
 boolean recursiveIteration = true;
@@ -24,12 +16,11 @@ boolean recursiveIteration = true;
 public class StepManager {
   // Store string representation of info about each step
   ArrayList<String> sketchSteps;
+  // TODO pointers to managers?
 
   public StepManager() {
     sketchSteps = new ArrayList<String>();
   }
-
-  // TODO stringifyStep(), commitStep(), resetSteps(), stepsToString() (with way of appending current step)
 
   // TODO recursiveIteration move to manager?
   public String stringifyStep(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager, boolean recursiveIteration) {
@@ -45,6 +36,10 @@ public class StepManager {
   // TODO store current stringified step in local so it doesn't have to be passed?
   public void commitStep(String step) {
     sketchSteps.add(step);
+  }
+
+  public void commitCurrentStep(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager, boolean recursiveIteration) {
+    commitStep(stringifyStep(xShiftManager, yShiftManager, channelManager, shiftTypeManager, recursiveIteration));
   }
 
   public String stepsToString() { return String.join("_", sketchSteps); }
@@ -67,7 +62,7 @@ boolean noChangesInCurrentStep() {
 
 // Recording Steps -------------------------------------------------------------
 
-// TODO handle shift type configs as well
+// TODO REMOVE
 /**
  * Returns a string representation of a channel shift step.
  * @param horizontalShift Amount channel was shifted horizontally
@@ -98,15 +93,8 @@ String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, 
  * Returns a string representation of the current sketch step
  */
 String stringifyCurrentStep() {
-  // TODO: delegate stringify parts to manager classes
-  return stringifyStep(xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel, recursiveIteration);
-}
-
-/**
- * Update sketchSteps using globals
- */
-void updateSteps() {
-  sketchSteps += "_" + stringifyCurrentStep();
+  // TODO: remove and just use manager?
+  return stepManager.stringifyStep(xShiftManager, yShiftManager, channelManager, shiftTypeManager, recursiveIteration);
 }
 
 // Event Handlers ==============================================================
@@ -136,7 +124,7 @@ public void confirmBtn_click(GButton source, GEvent event) {
   // Display preview
   showPreview();
   // Update sketch steps
-  updateSteps();
+  stepManager.commitCurrentStep(xShiftManager, yShiftManager, channelManager, shiftTypeManager, recursiveIteration);
   // Update targetImg to match preview
   imgManager.copyPreviewToTarget();
   // If recursive, sourceImg.pixels = targetImg.pixels

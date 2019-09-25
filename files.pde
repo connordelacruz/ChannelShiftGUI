@@ -54,7 +54,7 @@ void loadImageFile(String path, String name) {
   // Update imgFile (for default output name)
   imgFile = name;
   // Reset steps string
-  sketchSteps = "";
+  stepManager.resetSteps();
   // Update managers
   xShiftManager.setImgDimension(imgManager.imgWidth);
   yShiftManager.setImgDimension(imgManager.imgHeight);
@@ -72,9 +72,10 @@ void loadImageFile(String path, String name) {
  */
 String defaultOutputFilename() {
   // TODO move sketch steps/current step logic to steps.pde?
-  String filename = imgFile + sketchSteps;
+  String filename = imgFile + "_" + stepManager.stepsToString();
   // Append current step (unless nothing's changed)
   if (!noChangesInCurrentStep())
+    // TODO call manager directly?
     filename += "_" + stringifyCurrentStep();
   // Max filename of 255 characters
   filename = truncateString(filename, 255 - outputImgExt.length());
