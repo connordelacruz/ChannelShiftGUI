@@ -25,14 +25,25 @@ public class ShiftManager {
   public int shiftAmount, shiftPercent;
   // Corresponding image dimension (used for percent and max calculations)
   public int imgDimension;
+  // True if shifting on x axis, false if on y axis (for stringifying step)
+  public boolean horizontal;
 
-  public ShiftManager() {
+  public ShiftManager(boolean horizontal) {
     shiftAmount = shiftPercent = imgDimension = 0;
+    this.horizontal = horizontal;
   }
 
-  public ShiftManager(int imgDimension) {
-    this(); 
+  public ShiftManager(boolean horizontal, int imgDimension) {
+    this(horizontal); 
     this.imgDimension = imgDimension;
+  }
+
+  public String stringifyStep() {
+    String step = "";
+    // Only show shift if not 0
+    if (shiftAmount > 0)
+      step += "-" + (horizontal ? "x" : "y") + shiftAmount;
+    return step;
   }
 
   // Percent/Pixel Conversion

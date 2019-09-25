@@ -22,6 +22,14 @@ public class ChannelManager {
     sourceChannel = targetChannel = 0;
   }
 
+  public String stringifyStep() {
+    String step = CHANNELS[sourceChannel];
+    // Only show what channel was shifted if not swapped
+    if (sourceChannel != targetChannel)
+      step += CHANNELS[targetChannel];
+    return step;
+  }
+
   // Getter/Setter Methods
 
   public void setSourceChannel(int channel) {

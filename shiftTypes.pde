@@ -20,9 +20,10 @@ int TOTAL_SHIFT_TYPES = SHIFT_TYPES.length;
 // Shift Type Interface --------------------------------------------------------
 
 public interface ShiftTypeState {
-  // TODO stringifyStep() method
   // Calculate offset for this shift type
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal);
+  // String representation of this step
+  public String stringifyStep();
 }
 
 // Default ---------------------------------------------------------------------
@@ -30,6 +31,11 @@ public interface ShiftTypeState {
 public class DefaultShiftType implements ShiftTypeState {
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
     return (horizontal ? x : y) + shift;
+  }
+
+  public String stringifyStep() {
+    // Default requires no additional information
+    return "";
   }
 }
 
@@ -52,6 +58,10 @@ public class MultiplyShiftType implements ShiftTypeState {
 
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
     return (int)(horizontal ? x * xMultiplier : y * yMultiplier) + shift; 
+  }
+
+  public String stringifyStep() {
+    return "-mult-x" + xMultiplier + "y" + yMultiplier;
   }
 
   // Set multipliers
@@ -105,6 +115,17 @@ public class LinearShiftType implements ShiftTypeState {
     return offset; 
   }
 
+  public String stringifyStep() {
+    String step = "-line-";
+    String sign = isPositiveCoefficient() ? "" : "-";
+    if (yEquals) {
+      step += "y=" + sign + m + "x";
+    } else {
+      step += "x=" + sign + m + "y";
+    }
+    return step;
+  }
+
   // Setters
   public void setCoefficient(float val) { m = val; }
   public void setCoefficientSign(boolean positive) { mSign = positive ? 1 : -1; }
@@ -121,7 +142,6 @@ public class LinearShiftType implements ShiftTypeState {
 // Skew ------------------------------------------------------------------------
 
 public class SkewShiftType implements ShiftTypeState {
-  // TODO doc
   public float xSkew, ySkew;
   public float xSign, ySign;
 
@@ -138,6 +158,15 @@ public class SkewShiftType implements ShiftTypeState {
 
   public int calculateShiftOffset(int x, int y, int shift, boolean horizontal) {
     return horizontal ? x + shift + (int)(xSign * xSkew * y) : y + shift + (int)(ySign * ySkew * x);
+  }
+
+  public String stringifyStep() {
+    String step = "-skew";
+    if (xSkew > 0.0)
+      step += "-x=" + (isPositiveX() ? "" : "-") + xSkew;
+    if (ySkew > 0.0)
+      step += "-y=" + (isPositiveY() ? "" : "-") + ySkew;
+    return step;
   }
 
   // Setters
@@ -194,6 +223,10 @@ public class ShiftTypeManager {
     // Handle out of bounds index
     state = shiftType < shiftTypes.length ? shiftType : 0;
   }
+
+  public boolean isDefaultType() { return state == TYPE_DEFAULT; }
+
+  public String stringifyStep() { return shiftTypes[state].stringifyStep(); }
 
   // Config Setters
 

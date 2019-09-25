@@ -2,70 +2,80 @@
 // Globals, logic, and event handlers related to confirming, resetting, and
 // recording sketch steps
 // =============================================================================
+import java.util.ArrayList;
 
-// Globals =====================================================================
+// Manager =====================================================================
 
-// TODO: step manager
-// Store shift values and which channels were shifted/swapped. Will be appended
-// to default save filename 
-String sketchSteps;
+public class StepManager {
+  // Store string representation of info about each step
+  ArrayList<String> sketchSteps;
+  // References to manager objects for generating step strings
+  ChannelManager channelManager;
+  ShiftManager xShiftManager, yShiftManager;
+  ShiftTypeManager shiftTypeManager;
+  ImgManager imgManager;
 
-// Use resulting image as the source for next iteration upon confirming step
-boolean recursiveIteration = true;
+  public StepManager(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager, ImgManager imgManager) {
+    sketchSteps = new ArrayList<String>();
+    this.channelManager = channelManager;
+    this.xShiftManager = xShiftManager;
+    this.yShiftManager = yShiftManager;
+    this.shiftTypeManager = shiftTypeManager;
+    this.imgManager = imgManager;
+  }
 
-// Helper Methods ==============================================================
+  public String stringifyStep() {
+    String step = "";
+    step += channelManager.stringifyStep();
+    step += xShiftManager.stringifyStep() + yShiftManager.stringifyStep();
+    step += shiftTypeManager.stringifyStep();
+    if (imgManager.recursiveIteration)
+      step += "-rec";
+    return step;
+  }
 
-// Sketch State ----------------------------------------------------------------
+  public void commitStep(String step) {
+    sketchSteps.add(step);
+  }
 
-/**
- * Returns true if source and target channels match and x/y shift are both 0
- */
-boolean noChangesInCurrentStep() {
-  return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero();
-}
+  public void commitCurrentStep() {
+    commitStep(stringifyStep());
+  }
 
-// Recording Steps -------------------------------------------------------------
+  /**
+   * Returns true if source and target channels match and x/y shift are both 0
+   * and we're using the default shift type
+   */
+  public boolean noChangesInCurrentStep() {
+    return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero() && shiftTypeManager.isDefaultType();
+  }
 
-// TODO handle shift type configs as well
-/**
- * Returns a string representation of a channel shift step.
- * @param horizontalShift Amount channel was shifted horizontally
- * @param verticalShift Amount channel was shifted vertically
- * @param sourceChannel Channel from the source image (Index into CHANNELS)
- * @param targetChannel Channel from the target image (Index into CHANNELS)
- * @param recursiveIteration Whether this was a recursive iteration or not
- * @return String representation of the sketch step. The general format is:
- * "s{RGB}-t{RGB}-x{int}-y{int}{-rec}"
- * If source and target channels are the same, a single RGB channel will be
- * listed instead of "s{RGB}-t{RGB}".
- */
-String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, int targetChannel, boolean recursiveIteration) {
-  String step = "";
-  // Only show what channel was shifted if not swapped
-  if (sourceChannel == targetChannel)
-    step += CHANNELS[sourceChannel];
-  else
-    step += "s" + CHANNELS[sourceChannel] + "t" + CHANNELS[targetChannel];
-  step += "-x" + horizontalShift;
-  step += "-y" + verticalShift;
-  if (recursiveIteration)
-    step += "-rec";
-  return step;
-}
+  /** 
+   * Returns a string representation of the sketch steps so far. Each step is
+   * separated by an underscore 
+   * 
+   * @param includeCurrent If true, append the current step as well
+   * @return String representation of the sketch steps
+   */
+  public String stepsToString(boolean includeCurrent) { 
+    String steps = "";
+    if (sketchSteps.size() > 0)
+      steps += "_" + String.join("_", sketchSteps); 
+    if (includeCurrent)
+      steps += "_" + stringifyStep();
+    return steps; 
+  }
 
-/**
- * Returns a string representation of the current sketch step
- */
-String stringifyCurrentStep() {
-  // TODO: delegate stringify parts to manager classes
-  return stringifyStep(xShiftManager.shiftAmount, yShiftManager.shiftAmount, channelManager.sourceChannel, channelManager.targetChannel, recursiveIteration);
-}
+  /** 
+   * Returns a string representation of the sketch steps so far. Each step is
+   * separated by an underscore. If changes were made in the current step,
+   * append it to the resulting string
+   * 
+   * @return String representation of the sketch steps
+   */
+  public String stepsToString() { return stepsToString(!noChangesInCurrentStep()); }
 
-/**
- * Update sketchSteps using globals
- */
-void updateSteps() {
-  sketchSteps += "_" + stringifyCurrentStep();
+  public void resetSteps() { sketchSteps.clear(); }
 }
 
 // Event Handlers ==============================================================
@@ -95,19 +105,11 @@ public void confirmBtn_click(GButton source, GEvent event) {
   // Display preview
   showPreview();
   // Update sketch steps
-  updateSteps();
-  // Update targetImg to match preview
-  imgManager.copyPreviewToTarget();
-  // If recursive, sourceImg.pixels = targetImg.pixels
-  if (recursiveIteration)
-    imgManager.copyTargetPixelsToSource();
+  stepManager.commitCurrentStep();
+  // Confirm changes from previewImg and update sourceImg if the recursive
+  // iteration box is checked
+  imgManager.confirmStep();
   // Reset shift values and UI
   resetShift();
 } 
-
-// Recursive Checkbox ----------------------------------------------------------
-
-public void recursiveCheckbox_click(GCheckbox source, GEvent event) {
-  recursiveIteration = source.isSelected();
-}
 
