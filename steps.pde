@@ -4,15 +4,8 @@
 // =============================================================================
 import java.util.ArrayList;
 
-// Globals =====================================================================
-
-// TODO: move to manager?
-// Use resulting image as the source for next iteration upon confirming step
-boolean recursiveIteration = true;
-
 // Manager =====================================================================
 
-// TODO doc, implement
 public class StepManager {
   // Store string representation of info about each step
   ArrayList<String> sketchSteps;
@@ -20,22 +13,23 @@ public class StepManager {
   ChannelManager channelManager;
   ShiftManager xShiftManager, yShiftManager;
   ShiftTypeManager shiftTypeManager;
+  ImgManager imgManager;
 
-  public StepManager(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager) {
+  public StepManager(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager, ImgManager imgManager) {
     sketchSteps = new ArrayList<String>();
     this.channelManager = channelManager;
     this.xShiftManager = xShiftManager;
     this.yShiftManager = yShiftManager;
     this.shiftTypeManager = shiftTypeManager;
+    this.imgManager = imgManager;
   }
 
-  // TODO recursiveIteration move to manager?
   public String stringifyStep() {
     String step = "";
     step += channelManager.stringifyStep();
     step += xShiftManager.stringifyStep() + yShiftManager.stringifyStep();
     step += shiftTypeManager.stringifyStep();
-    if (recursiveIteration)
+    if (imgManager.recursiveIteration)
       step += "-rec";
     return step;
   }
@@ -112,18 +106,10 @@ public void confirmBtn_click(GButton source, GEvent event) {
   showPreview();
   // Update sketch steps
   stepManager.commitCurrentStep();
-  // Update targetImg to match preview
-  imgManager.copyPreviewToTarget();
-  // If recursive, sourceImg.pixels = targetImg.pixels
-  if (recursiveIteration)
-    imgManager.copyTargetPixelsToSource();
+  // Confirm changes from previewImg and update sourceImg if the recursive
+  // iteration box is checked
+  imgManager.confirmStep();
   // Reset shift values and UI
   resetShift();
 } 
-
-// Recursive Checkbox ----------------------------------------------------------
-
-public void recursiveCheckbox_click(GCheckbox source, GEvent event) {
-  recursiveIteration = source.isSelected();
-}
 

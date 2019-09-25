@@ -13,9 +13,12 @@ public class ImgManager {
   public PImage sourceImg, targetImg, previewImg;
   // Width/height vars for easy access
   public int imgWidth, imgHeight;
+  // Use resulting image as the source for next iteration upon confirming step
+  public boolean recursiveIteration;
 
   public ImgManager() {
     imgWidth = imgHeight = 0;
+    recursiveIteration = true;
   }
 
   // Getter/Setter
@@ -32,6 +35,17 @@ public class ImgManager {
     // Update width/height vars
     imgWidth = sourceImg.width;
     imgHeight = sourceImg.height;
+  }
+
+  public void toggleRecursiveIteration(boolean recursive) { recursiveIteration = recursive; }
+
+  // Confirm Current Step
+  public void confirmStep() {
+    // Update targetImg to match preview
+    copyPreviewToTarget();
+    // If recursive, sourceImg.pixels = targetImg.pixels
+    if (recursiveIteration)
+      copyTargetPixelsToSource();
   }
 
   // Image Utility Methods
@@ -62,3 +76,12 @@ public class ImgManager {
   }
 
 }
+
+// Event Handlers ==============================================================
+
+// Recursive Checkbox ----------------------------------------------------------
+
+public void recursiveCheckbox_click(GCheckbox source, GEvent event) {
+  imgManager.toggleRecursiveIteration(source.isSelected());
+}
+

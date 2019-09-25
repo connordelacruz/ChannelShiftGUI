@@ -84,7 +84,7 @@ void setup() {
   yShiftManager = new ShiftManager(false);
   shiftTypeManager = new ShiftTypeManager();
   randomizeManager = new RandomizeManager();
-  stepManager = new StepManager(xShiftManager, yShiftManager, channelManager, shiftTypeManager);
+  stepManager = new StepManager(xShiftManager, yShiftManager, channelManager, shiftTypeManager, imgManager);
   windowManager = new WindowManager();
   // Load image (initializes global PImage objects)
   loadImageFile(defaultImgPath, defaultImgName);
