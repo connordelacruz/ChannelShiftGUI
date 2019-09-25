@@ -28,7 +28,7 @@ GPanel advancedOptionsPanel;
 GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
 // Per-Type configs
-GPanel defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel;
+GPanel defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel;
 // Default (just a label)
 GLabel defaultShiftConfigLabel;
 // Multiply
@@ -46,6 +46,8 @@ GLabel xSkewLabel, ySkewLabel;
 GTextField xSkewInput, ySkewInput;
 GTabManager skewTabManager;
 GCheckbox xSkewNegativeCheckbox, ySkewNegativeCheckbox;
+// X*Y
+GCheckbox multXCheckbox, multYCheckbox;
 
 // Keep track of shift type config panels w/ indices matching globals
 GPanel[] shiftTypeConfigPanels;
@@ -227,6 +229,12 @@ int SKEW_CONFIG_CHECKBOX_TOP_Y = SKEW_CONFIG_INPUT_TOP_Y + SKEW_CONFIG_INPUT_HEI
 int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_CHECKBOX_TOP_Y + SKEW_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
 int SKEW_CONFIG_INPUT_BOTTOM_Y = SKEW_CONFIG_LABEL_BOTTOM_Y + SKEW_CONFIG_LABEL_HEIGHT;
 int SKEW_CONFIG_CHECKBOX_BOTTOM_Y = SKEW_CONFIG_INPUT_BOTTOM_Y + SKEW_CONFIG_INPUT_HEIGHT;
+// X*Y Mult Shift Type Panel ---------------------------------------------------
+int XYMULT_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
+int XYMULT_CONFIG_CHECKBOX_HEIGHT = 20;
+int XYMULT_CONFIG_CHECKBOX_X = 0;
+int XYMULT_CONFIG_CHECKBOX_TOP_Y = PANEL_Y_START;
+int XYMULT_CONFIG_CHECKBOX_BOTTOM_Y = XYMULT_CONFIG_CHECKBOX_TOP_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -542,6 +550,7 @@ public void createAdvancedOptionsPanel() {
   createMultiplyShiftTypePanel();
   createLinearShiftTypePanel();
   createSkewShiftTypePanel();
+  createXYMultShiftTypePanel();
 }
 
 // Helpers
@@ -683,6 +692,21 @@ public void createSkewShiftTypePanel() {
   skewTabManager.addControls(xSkewInput, ySkewInput);
   // Add to advanced options
   advancedOptionsPanel.addControl(skewShiftTypePanel);
+}
+
+public void createXYMultShiftTypePanel() {
+  xyMultShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(xyMultShiftTypePanel, TYPE_XYMULT);
+  // Dimension Checkboxes
+  multXCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_CHECKBOX_TOP_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "x shift + (x*y/height)");
+  multXCheckbox.setSelected(true);
+  multXCheckbox.addEventHandler(this, "multXCheckbox_click");
+  xyMultShiftTypePanel.addControl(multXCheckbox);
+  multYCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_CHECKBOX_BOTTOM_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "y shift + (y*x/width)");
+  multYCheckbox.addEventHandler(this, "multYCheckbox_click");
+  xyMultShiftTypePanel.addControl(multYCheckbox);
+  // Add to advanced options
+  advancedOptionsPanel.addControl(xyMultShiftTypePanel);
 }
 
 // Load/Save Panel -------------------------------------------------------------

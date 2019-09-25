@@ -5,12 +5,14 @@
 // Constants ===================================================================
 
 // Names of different shift types
-String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear", "Skew"};
+// TODO update names (Multiply -> Scale? X*Y -> Multiply Dimensions?)
+String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear", "Skew", "X*Y"};
 // Indexes
 int TYPE_DEFAULT = 0;
 int TYPE_MULTIPLY = 1;
 int TYPE_LINEAR = 2;
 int TYPE_SKEW = 3;
+int TYPE_XYMULT = 4;
 // Total # of shift types
 int TOTAL_SHIFT_TYPES = SHIFT_TYPES.length;
 
@@ -196,6 +198,44 @@ public class SkewShiftType implements ShiftTypeState {
   public boolean isPositive(boolean horizontal) { return horizontal ? isPositiveX() : isPositiveY(); }
 }
 
+// TODO NAME -------------------------------------------------------------------
+
+public class XYMultShiftType implements ShiftTypeState {
+  public boolean multX, multY;
+  // TODO negative coeff
+
+  public XYMultShiftType(boolean multX, boolean multY) {
+    this.multX = multX;
+    this.multY = multY;
+  }
+  public XYMultShiftType() {
+    // TODO: defaults?
+    this(true, false);
+  }
+
+  // TODO tweak calculation and figure out results
+  // TODO make stuff configurable, try dimension * shift instead of x*y?
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
+    if (horizontal)
+      return x + shift + (multX ? (int)(x*y / height) : 0);
+    else
+      return y + shift + (multY ? (int)(y*x / width) : 0);
+  }
+
+  public String stringifyStep() {
+    // TODO name
+    String step = "-xymult";
+    // TODO config details
+    return step;
+  }
+
+  // Setters
+  public void setMultX(boolean multiply) { multX = multiply; }
+  public void setMultY(boolean multiply) { multY = multiply; }
+
+  // TODO Getters
+}
+
 // Manager ---------------------------------------------------------------------
 
 public class ShiftTypeManager {
@@ -211,6 +251,7 @@ public class ShiftTypeManager {
     shiftTypes[TYPE_MULTIPLY] = new MultiplyShiftType();
     shiftTypes[TYPE_LINEAR] = new LinearShiftType();
     shiftTypes[TYPE_SKEW] = new SkewShiftType();
+    shiftTypes[TYPE_XYMULT] = new XYMultShiftType();
     // Start w/ default
     state = TYPE_DEFAULT;
   }
@@ -270,6 +311,15 @@ public class ShiftTypeManager {
   }
   public boolean skew_isPositive(boolean horizontal) {
     return ((SkewShiftType)shiftTypes[TYPE_SKEW]).isPositive(horizontal);
+  }
+
+  // X*Y
+  // TODO getters
+  public void xymult_setMultX(boolean multiply) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultX(multiply);
+  }
+  public void xymult_setMultY(boolean multiply) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultY(multiply);
   }
 
 }
@@ -399,6 +449,18 @@ public void ySkewInput_change(GTextField source, GEvent event) {
 
 public void ySkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
   shiftTypeManager.skew_setSign(!source.isSelected(), false);
+  showPreview();
+}
+
+// X*Y Configs -----------------------------------------------------------------
+
+public void multXCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setMultX(source.isSelected());
+  showPreview();
+}
+
+public void multYCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setMultY(source.isSelected());
   showPreview();
 }
 
