@@ -44,10 +44,10 @@ public class StepManager {
 
   /**
    * Returns true if source and target channels match and x/y shift are both 0
+   * and we're using the default shift type
    */
   public boolean noChangesInCurrentStep() {
-    // TODO && shiftType is default
-    return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero();
+    return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero() && shiftTypeManager.isDefaultType();
   }
 
   /** 

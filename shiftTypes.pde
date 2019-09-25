@@ -224,6 +224,8 @@ public class ShiftTypeManager {
     state = shiftType < shiftTypes.length ? shiftType : 0;
   }
 
+  public boolean isDefaultType() { return state == TYPE_DEFAULT; }
+
   public String stringifyStep() { return shiftTypes[state].stringifyStep(); }
 
   // Config Setters
