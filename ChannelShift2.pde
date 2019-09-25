@@ -15,10 +15,10 @@ ImgManager imgManager;
 ChannelManager channelManager;
 ShiftManager xShiftManager, yShiftManager;
 RandomizeManager randomizeManager;
-// Sketch step manager
-StepManager stepManager;
 // Advanced option managers
 ShiftTypeManager shiftTypeManager;
+// Sketch step manager
+StepManager stepManager;
 // Interface managers
 WindowManager windowManager;
 
@@ -82,9 +82,9 @@ void setup() {
   channelManager = new ChannelManager();
   xShiftManager = new ShiftManager(true);
   yShiftManager = new ShiftManager(false);
-  randomizeManager = new RandomizeManager();
   shiftTypeManager = new ShiftTypeManager();
-  stepManager = new StepManager();
+  randomizeManager = new RandomizeManager();
+  stepManager = new StepManager(xShiftManager, yShiftManager, channelManager, shiftTypeManager);
   windowManager = new WindowManager();
   // Load image (initializes global PImage objects)
   loadImageFile(defaultImgPath, defaultImgName);

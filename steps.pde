@@ -16,14 +16,21 @@ boolean recursiveIteration = true;
 public class StepManager {
   // Store string representation of info about each step
   ArrayList<String> sketchSteps;
-  // TODO pointers to managers?
+  // References to manager objects for generating step strings
+  ChannelManager channelManager;
+  ShiftManager xShiftManager, yShiftManager;
+  ShiftTypeManager shiftTypeManager;
 
-  public StepManager() {
+  public StepManager(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager) {
     sketchSteps = new ArrayList<String>();
+    this.channelManager = channelManager;
+    this.xShiftManager = xShiftManager;
+    this.yShiftManager = yShiftManager;
+    this.shiftTypeManager = shiftTypeManager;
   }
 
   // TODO recursiveIteration move to manager?
-  public String stringifyStep(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager, boolean recursiveIteration) {
+  public String stringifyStep() {
     String step = "";
     step += channelManager.stringifyStep();
     step += xShiftManager.stringifyStep() + yShiftManager.stringifyStep();
@@ -33,68 +40,48 @@ public class StepManager {
     return step;
   }
 
-  // TODO store current stringified step in local so it doesn't have to be passed?
   public void commitStep(String step) {
     sketchSteps.add(step);
   }
 
-  public void commitCurrentStep(ShiftManager xShiftManager, ShiftManager yShiftManager, ChannelManager channelManager, ShiftTypeManager shiftTypeManager, boolean recursiveIteration) {
-    commitStep(stringifyStep(xShiftManager, yShiftManager, channelManager, shiftTypeManager, recursiveIteration));
+  public void commitCurrentStep() {
+    commitStep(stringifyStep());
   }
 
-  public String stepsToString() { return String.join("_", sketchSteps); }
+  /**
+   * Returns true if source and target channels match and x/y shift are both 0
+   */
+  public boolean noChangesInCurrentStep() {
+    // TODO && shiftType is default
+    return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero();
+  }
+
+  /** 
+   * Returns a string representation of the sketch steps so far. Each step is
+   * separated by an underscore 
+   * 
+   * @param includeCurrent If true, append the current step as well
+   * @return String representation of the sketch steps
+   */
+  public String stepsToString(boolean includeCurrent) { 
+    String steps = "";
+    if (sketchSteps.size() > 0)
+      steps += "_" + String.join("_", sketchSteps); 
+    if (includeCurrent)
+      steps += "_" + stringifyStep();
+    return steps; 
+  }
+
+  /** 
+   * Returns a string representation of the sketch steps so far. Each step is
+   * separated by an underscore. If changes were made in the current step,
+   * append it to the resulting string
+   * 
+   * @return String representation of the sketch steps
+   */
+  public String stepsToString() { return stepsToString(!noChangesInCurrentStep()); }
 
   public void resetSteps() { sketchSteps.clear(); }
-
-  // TODO return index of most recent step
-}
-
-// Helper Methods ==============================================================
-
-// Sketch State ----------------------------------------------------------------
-
-/**
- * Returns true if source and target channels match and x/y shift are both 0
- */
-boolean noChangesInCurrentStep() {
-  return channelManager.channelsMatch() && xShiftManager.shiftIsZero() && yShiftManager.shiftIsZero();
-}
-
-// Recording Steps -------------------------------------------------------------
-
-// TODO REMOVE
-/**
- * Returns a string representation of a channel shift step.
- * @param horizontalShift Amount channel was shifted horizontally
- * @param verticalShift Amount channel was shifted vertically
- * @param sourceChannel Channel from the source image (Index into CHANNELS)
- * @param targetChannel Channel from the target image (Index into CHANNELS)
- * @param recursiveIteration Whether this was a recursive iteration or not
- * @return String representation of the sketch step. The general format is:
- * "s{RGB}-t{RGB}-x{int}-y{int}{-rec}"
- * If source and target channels are the same, a single RGB channel will be
- * listed instead of "s{RGB}-t{RGB}".
- */
-String stringifyStep(int horizontalShift, int verticalShift, int sourceChannel, int targetChannel, boolean recursiveIteration) {
-  String step = "";
-  // Only show what channel was shifted if not swapped
-  if (sourceChannel == targetChannel)
-    step += CHANNELS[sourceChannel];
-  else
-    step += "s" + CHANNELS[sourceChannel] + "t" + CHANNELS[targetChannel];
-  step += "-x" + horizontalShift;
-  step += "-y" + verticalShift;
-  if (recursiveIteration)
-    step += "-rec";
-  return step;
-}
-
-/**
- * Returns a string representation of the current sketch step
- */
-String stringifyCurrentStep() {
-  // TODO: remove and just use manager?
-  return stepManager.stringifyStep(xShiftManager, yShiftManager, channelManager, shiftTypeManager, recursiveIteration);
 }
 
 // Event Handlers ==============================================================
@@ -124,7 +111,7 @@ public void confirmBtn_click(GButton source, GEvent event) {
   // Display preview
   showPreview();
   // Update sketch steps
-  stepManager.commitCurrentStep(xShiftManager, yShiftManager, channelManager, shiftTypeManager, recursiveIteration);
+  stepManager.commitCurrentStep();
   // Update targetImg to match preview
   imgManager.copyPreviewToTarget();
   // If recursive, sourceImg.pixels = targetImg.pixels

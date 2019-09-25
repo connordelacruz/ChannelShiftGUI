@@ -71,12 +71,8 @@ void loadImageFile(String path, String name) {
  * (depending on OS)
  */
 String defaultOutputFilename() {
-  // TODO move sketch steps/current step logic to steps.pde?
-  String filename = imgFile + "_" + stepManager.stepsToString();
-  // Append current step (unless nothing's changed)
-  if (!noChangesInCurrentStep())
-    // TODO call manager directly?
-    filename += "_" + stringifyCurrentStep();
+  // Append steps to file name
+  String filename = imgFile + stepManager.stepsToString();
   // Max filename of 255 characters
   filename = truncateString(filename, 255 - outputImgExt.length());
   return filename + outputImgExt;
