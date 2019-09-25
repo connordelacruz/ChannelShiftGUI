@@ -47,7 +47,9 @@ GTextField xSkewInput, ySkewInput;
 GTabManager skewTabManager;
 GCheckbox xSkewNegativeCheckbox, ySkewNegativeCheckbox;
 // X*Y
+GLabel multXLabel, multYLabel;
 GCheckbox multXCheckbox, multYCheckbox;
+GCheckbox multXNegativeCheckbox, multYNegativeCheckbox;
 
 // Keep track of shift type config panels w/ indices matching globals
 GPanel[] shiftTypeConfigPanels;
@@ -230,11 +232,20 @@ int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_CHECKBOX_TOP_Y + SKEW_CONFIG_CHECKB
 int SKEW_CONFIG_INPUT_BOTTOM_Y = SKEW_CONFIG_LABEL_BOTTOM_Y + SKEW_CONFIG_LABEL_HEIGHT;
 int SKEW_CONFIG_CHECKBOX_BOTTOM_Y = SKEW_CONFIG_INPUT_BOTTOM_Y + SKEW_CONFIG_INPUT_HEIGHT;
 // X*Y Mult Shift Type Panel ---------------------------------------------------
+int XYMULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH;
+int XYMULT_CONFIG_LABEL_HEIGHT = 20;
 int XYMULT_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
 int XYMULT_CONFIG_CHECKBOX_HEIGHT = 20;
+int XYMULT_CONFIG_LABEL_X = 0;
 int XYMULT_CONFIG_CHECKBOX_X = 0;
-int XYMULT_CONFIG_CHECKBOX_TOP_Y = PANEL_Y_START;
-int XYMULT_CONFIG_CHECKBOX_BOTTOM_Y = XYMULT_CONFIG_CHECKBOX_TOP_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+// X Multiply
+int XYMULT_CONFIG_X_LABEL_Y = PANEL_Y_START;
+int XYMULT_CONFIG_XMULT_CHECKBOX_Y = XYMULT_CONFIG_X_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
+int XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_XMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+// Y Multiply
+int XYMULT_CONFIG_Y_LABEL_Y = XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
+int XYMULT_CONFIG_YMULT_CHECKBOX_Y = XYMULT_CONFIG_Y_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
+int XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_YMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -697,14 +708,27 @@ public void createSkewShiftTypePanel() {
 public void createXYMultShiftTypePanel() {
   xyMultShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
   setupShiftTypePanel(xyMultShiftTypePanel, TYPE_XYMULT);
-  // Dimension Checkboxes
-  multXCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_CHECKBOX_TOP_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "x shift + (x*y/height)");
+  // X Mult
+  multXLabel = new GLabel(controlsWindow, XYMULT_CONFIG_LABEL_X, XYMULT_CONFIG_X_LABEL_Y, XYMULT_CONFIG_LABEL_WIDTH, XYMULT_CONFIG_LABEL_HEIGHT, "X Shift");
+  setupGeneralLabel(multXLabel);
+  xyMultShiftTypePanel.addControl(multXLabel);
+  multXCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_XMULT_CHECKBOX_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "x shift + (x*y/height)");
   multXCheckbox.setSelected(true);
   multXCheckbox.addEventHandler(this, "multXCheckbox_click");
   xyMultShiftTypePanel.addControl(multXCheckbox);
-  multYCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_CHECKBOX_BOTTOM_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "y shift + (y*x/width)");
+  multXNegativeCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "Negative X Coefficient");
+  multXNegativeCheckbox.addEventHandler(this, "multXNegativeCheckbox_click");
+  xyMultShiftTypePanel.addControl(multXNegativeCheckbox);
+  // Y Mult
+  multYLabel = new GLabel(controlsWindow, XYMULT_CONFIG_LABEL_X, XYMULT_CONFIG_Y_LABEL_Y, XYMULT_CONFIG_LABEL_WIDTH, XYMULT_CONFIG_LABEL_HEIGHT, "Y Shift");
+  setupGeneralLabel(multYLabel);
+  xyMultShiftTypePanel.addControl(multYLabel);
+  multYCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_YMULT_CHECKBOX_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "y shift + (y*x/width)");
   multYCheckbox.addEventHandler(this, "multYCheckbox_click");
   xyMultShiftTypePanel.addControl(multYCheckbox);
+  multYNegativeCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "Negative Y Coefficient");
+  multYNegativeCheckbox.addEventHandler(this, "multYNegativeCheckbox_click");
+  xyMultShiftTypePanel.addControl(multYNegativeCheckbox);
   // Add to advanced options
   advancedOptionsPanel.addControl(xyMultShiftTypePanel);
 }

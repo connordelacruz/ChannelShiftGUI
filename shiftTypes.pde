@@ -202,28 +202,30 @@ public class SkewShiftType implements ShiftTypeState {
 
 public class XYMultShiftType implements ShiftTypeState {
   public boolean multX, multY;
-  // TODO negative coeff
+  public float xSign, ySign;
 
-  public XYMultShiftType(boolean multX, boolean multY) {
+  // TODO coeff
+  public XYMultShiftType(boolean multX, boolean xPositive, boolean multY, boolean yPositive) {
     this.multX = multX;
     this.multY = multY;
+    this.xSign = xPositive ? 1 : -1;
+    this.ySign = yPositive ? 1 : -1;
   }
   public XYMultShiftType() {
     // TODO: defaults?
-    this(true, false);
+    this(true, true, false, true);
   }
 
-  // TODO tweak calculation and figure out results
   // TODO make stuff configurable, try dimension * shift instead of x*y?
+  // TODO flip divisor? (w/o dividing by 0)
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     if (horizontal)
-      return x + shift + (multX ? (int)(x*y / height) : 0);
+      return x + shift + (multX ? (int)(xSign*x*y / height) : 0);
     else
-      return y + shift + (multY ? (int)(y*x / width) : 0);
+      return y + shift + (multY ? (int)(ySign*y*x / width) : 0);
   }
 
   public String stringifyStep() {
-    // TODO name
     String step = "-xymult";
     // TODO config details
     return step;
@@ -232,6 +234,8 @@ public class XYMultShiftType implements ShiftTypeState {
   // Setters
   public void setMultX(boolean multiply) { multX = multiply; }
   public void setMultY(boolean multiply) { multY = multiply; }
+  public void setXSign(boolean positive) { xSign = positive ? 1 : -1; }
+  public void setYSign(boolean positive) { ySign = positive ? 1 : -1; }
 
   // TODO Getters
 }
@@ -320,6 +324,12 @@ public class ShiftTypeManager {
   }
   public void xymult_setMultY(boolean multiply) {
     ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultY(multiply);
+  }
+  public void xymult_setXSign(boolean positive) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setXSign(positive);
+  }
+  public void xymult_setYSign(boolean positive) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setYSign(positive);
   }
 
 }
@@ -459,8 +469,18 @@ public void multXCheckbox_click(GCheckbox source, GEvent event) {
   showPreview();
 }
 
+public void multXNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setXSign(!source.isSelected());
+  showPreview();
+}
+
 public void multYCheckbox_click(GCheckbox source, GEvent event) {
   shiftTypeManager.xymult_setMultY(source.isSelected());
+  showPreview();
+}
+
+public void multYNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setYSign(!source.isSelected());
   showPreview();
 }
 
