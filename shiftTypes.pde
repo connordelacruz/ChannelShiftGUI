@@ -198,13 +198,12 @@ public class SkewShiftType implements ShiftTypeState {
   public boolean isPositive(boolean horizontal) { return horizontal ? isPositiveX() : isPositiveY(); }
 }
 
-// TODO NAME -------------------------------------------------------------------
+// X*Y -------------------------------------------------------------------------
 
 public class XYMultShiftType implements ShiftTypeState {
   public boolean multX, multY;
   public float xSign, ySign;
 
-  // TODO coeff
   public XYMultShiftType(boolean multX, boolean xPositive, boolean multY, boolean yPositive) {
     this.multX = multX;
     this.multY = multY;
@@ -212,11 +211,9 @@ public class XYMultShiftType implements ShiftTypeState {
     this.ySign = yPositive ? 1 : -1;
   }
   public XYMultShiftType() {
-    // TODO: defaults?
     this(true, true, false, true);
   }
 
-  // TODO make stuff configurable, try dimension * shift instead of x*y?
   // TODO flip divisor? (w/o dividing by 0)
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     if (horizontal)
@@ -227,7 +224,10 @@ public class XYMultShiftType implements ShiftTypeState {
 
   public String stringifyStep() {
     String step = "-xymult";
-    // TODO config details
+    if (multX)
+      step += (isPositiveX() ? "+" : "-") + "x";
+    if (multY)
+      step += (isPositiveY() ? "+" : "-") + "y";
     return step;
   }
 
@@ -238,6 +238,8 @@ public class XYMultShiftType implements ShiftTypeState {
   public void setYSign(boolean positive) { ySign = positive ? 1 : -1; }
 
   // TODO Getters
+  public boolean isPositiveX() { return xSign > 0.0; }
+  public boolean isPositiveY() { return ySign > 0.0; }
 }
 
 // Manager ---------------------------------------------------------------------
@@ -414,7 +416,6 @@ public void linearCoeffInput_change(GTextField source, GEvent event) {
   }
 }
 
-// TODO FIXME sometimes reverts even when checkbox isn't checked
 public void linearNegativeCoeffCheckbox_click(GCheckbox source, GEvent event) {
   shiftTypeManager.linear_setCoefficientSign(!source.isSelected());
   showPreview();
