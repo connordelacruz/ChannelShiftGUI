@@ -5,11 +5,10 @@
 // Constants ===================================================================
 
 // Names of different shift types
-// TODO update names (Multiply -> Scale? X*Y -> Multiply Dimensions?)
-String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear", "Skew", "X*Y"};
+String[] SHIFT_TYPES = new String[]{"Default", "Scale", "Linear", "Skew", "X*Y Multiply"};
 // Indexes
 int TYPE_DEFAULT = 0;
-int TYPE_MULTIPLY = 1;
+int TYPE_SCALE = 1;
 int TYPE_LINEAR = 2;
 int TYPE_SKEW = 3;
 int TYPE_XYMULT = 4;
@@ -41,19 +40,19 @@ public class DefaultShiftType implements ShiftTypeState {
   }
 }
 
-// Multiply --------------------------------------------------------------------
+// Scale -----------------------------------------------------------------------
 
-public class MultiplyShiftType implements ShiftTypeState {
+public class ScaleShiftType implements ShiftTypeState {
   // Multiplier values specific to this shift type
   public float xMultiplier, yMultiplier;
   // TODO negative multipliers?
 
-  public MultiplyShiftType(float xMult, float yMult) {
+  public ScaleShiftType(float xMult, float yMult) {
     xMultiplier = xMult;
     yMultiplier = yMult;
   }
 
-  public MultiplyShiftType() {
+  public ScaleShiftType() {
     // Arbitrarily using 2 in the event that this doesn't get set
     this(2.0, 2.0);
   }
@@ -254,7 +253,7 @@ public class ShiftTypeManager {
     shiftTypes = new ShiftTypeState[TOTAL_SHIFT_TYPES];
     // Initialize state objects
     shiftTypes[TYPE_DEFAULT] = new DefaultShiftType();
-    shiftTypes[TYPE_MULTIPLY] = new MultiplyShiftType();
+    shiftTypes[TYPE_SCALE] = new ScaleShiftType();
     shiftTypes[TYPE_LINEAR] = new LinearShiftType();
     shiftTypes[TYPE_SKEW] = new SkewShiftType();
     shiftTypes[TYPE_XYMULT] = new XYMultShiftType();
@@ -277,12 +276,12 @@ public class ShiftTypeManager {
 
   // Config Setters
 
-  // Multiply
-  public void multiply_setMultiplier(float val, boolean horizontal) {
-    ((MultiplyShiftType)shiftTypes[TYPE_MULTIPLY]).setMultiplier(val, horizontal);
+  // Scale
+  public void scale_setMultiplier(float val, boolean horizontal) {
+    ((ScaleShiftType)shiftTypes[TYPE_SCALE]).setMultiplier(val, horizontal);
   }
-  public float multiply_getMultiplier(boolean horizontal) {
-    return ((MultiplyShiftType)shiftTypes[TYPE_MULTIPLY]).getMultiplier(horizontal);
+  public float scale_getMultiplier(boolean horizontal) {
+    return ((ScaleShiftType)shiftTypes[TYPE_SCALE]).getMultiplier(horizontal);
   }
 
   // Linear
@@ -350,7 +349,7 @@ public void shiftTypeSelect_change(GDropList source, GEvent event) {
   showPreview();
 }
 
-// Multiply Configs ------------------------------------------------------------
+// Scale Configs ---------------------------------------------------------------
 
 void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
   switch(event) {
@@ -361,13 +360,13 @@ void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizo
       // Sanitize and update manager
       float val = sanitizeFloatInputValue(source);
       if (val > -1.0) {
-        shiftTypeManager.multiply_setMultiplier(val, horizontal);
+        shiftTypeManager.scale_setMultiplier(val, horizontal);
         showPreview();
       } 
       // Update input text to match sanitized input 
       // Also reverts input text in the event that it was not a valid numeric
       // value after parsing
-      source.setText("" + shiftTypeManager.multiply_getMultiplier(horizontal));
+      source.setText("" + shiftTypeManager.scale_getMultiplier(horizontal));
       break;
     default:
       break;

@@ -28,7 +28,7 @@ GPanel advancedOptionsPanel;
 GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
 // Per-Type configs
-GPanel defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel;
+GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel;
 // Default (just a label)
 GLabel defaultShiftConfigLabel;
 // Multiply
@@ -182,17 +182,17 @@ int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
 int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
 int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_PANEL_HEIGHT - PANEL_Y_START;
-// Multiply Shift Type Panel ---------------------------------------------------
-int MULTIPLY_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
-int MULTIPLY_CONFIG_LABEL_HEIGHT = 20;
-int MULTIPLY_CONFIG_INPUT_WIDTH = MULTIPLY_CONFIG_LABEL_WIDTH;
-int MULTIPLY_CONFIG_INPUT_HEIGHT = 20;
-int MULTIPLY_CONFIG_LABEL_X = X_MARGIN;
-int MULTIPLY_CONFIG_INPUT_X = X_MARGIN;
-int MULTIPLY_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
-int MULTIPLY_CONFIG_INPUT_TOP_Y = MULTIPLY_CONFIG_LABEL_TOP_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
-int MULTIPLY_CONFIG_LABEL_BOTTOM_Y = MULTIPLY_CONFIG_INPUT_TOP_Y + MULTIPLY_CONFIG_INPUT_HEIGHT + Y_MARGIN;
-int MULTIPLY_CONFIG_INPUT_BOTTOM_Y = MULTIPLY_CONFIG_LABEL_BOTTOM_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
+// Scale Shift Type Panel ------------------------------------------------------
+int SCALE_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int SCALE_CONFIG_LABEL_HEIGHT = 20;
+int SCALE_CONFIG_INPUT_WIDTH = SCALE_CONFIG_LABEL_WIDTH;
+int SCALE_CONFIG_INPUT_HEIGHT = 20;
+int SCALE_CONFIG_LABEL_X = X_MARGIN;
+int SCALE_CONFIG_INPUT_X = X_MARGIN;
+int SCALE_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
+int SCALE_CONFIG_INPUT_TOP_Y = SCALE_CONFIG_LABEL_TOP_Y + SCALE_CONFIG_LABEL_HEIGHT;
+int SCALE_CONFIG_LABEL_BOTTOM_Y = SCALE_CONFIG_INPUT_TOP_Y + SCALE_CONFIG_INPUT_HEIGHT + Y_MARGIN;
+int SCALE_CONFIG_INPUT_BOTTOM_Y = SCALE_CONFIG_LABEL_BOTTOM_Y + SCALE_CONFIG_LABEL_HEIGHT;
 // Linear Shift Type Panel -----------------------------------------------------
 // TODO extract common w/ multiply to type_config_ general vars
 // Toggles
@@ -558,7 +558,7 @@ public void createAdvancedOptionsPanel() {
   shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
   // Add type config panels and add them to shiftTypeConfigPanels
   createDefaultShiftTypePanel();
-  createMultiplyShiftTypePanel();
+  createScaleShiftTypePanel();
   createLinearShiftTypePanel();
   createSkewShiftTypePanel();
   createXYMultShiftTypePanel();
@@ -605,33 +605,33 @@ public void createDefaultShiftTypePanel() {
   advancedOptionsPanel.addControl(defaultShiftTypePanel);
 }
 
-public void createMultiplyShiftTypePanel() {
-  multiplyShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
-  setupShiftTypePanel(multiplyShiftTypePanel, TYPE_MULTIPLY);
+public void createScaleShiftTypePanel() {
+  scaleShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(scaleShiftTypePanel, TYPE_SCALE);
   // TODO: merge common
   // X Multiplier
-  xMultiplierLabel = new GLabel(controlsWindow, MULTIPLY_CONFIG_LABEL_X, MULTIPLY_CONFIG_LABEL_TOP_Y, MULTIPLY_CONFIG_LABEL_WIDTH, MULTIPLY_CONFIG_LABEL_HEIGHT);
+  xMultiplierLabel = new GLabel(controlsWindow, SCALE_CONFIG_LABEL_X, SCALE_CONFIG_LABEL_TOP_Y, SCALE_CONFIG_LABEL_WIDTH, SCALE_CONFIG_LABEL_HEIGHT);
   xMultiplierLabel.setText("Horizontal Shift Multiplier:");
   setupGeneralLabel(xMultiplierLabel);
-  multiplyShiftTypePanel.addControl(xMultiplierLabel);
-  xMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_TOP_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
+  scaleShiftTypePanel.addControl(xMultiplierLabel);
+  xMultiplierInput = new GTextField(controlsWindow, SCALE_CONFIG_INPUT_X, SCALE_CONFIG_INPUT_TOP_Y, SCALE_CONFIG_INPUT_WIDTH, SCALE_CONFIG_INPUT_HEIGHT);
   xMultiplierInput.setText("2.0"); // TODO: pull default from manager
   xMultiplierInput.addEventHandler(this, "xMultiplierInput_change");
-  multiplyShiftTypePanel.addControl(xMultiplierInput);
+  scaleShiftTypePanel.addControl(xMultiplierInput);
   // Y Multiplier
-  yMultiplierLabel = new GLabel(controlsWindow, MULTIPLY_CONFIG_LABEL_X, MULTIPLY_CONFIG_LABEL_BOTTOM_Y, MULTIPLY_CONFIG_LABEL_WIDTH, MULTIPLY_CONFIG_LABEL_HEIGHT);
+  yMultiplierLabel = new GLabel(controlsWindow, SCALE_CONFIG_LABEL_X, SCALE_CONFIG_LABEL_BOTTOM_Y, SCALE_CONFIG_LABEL_WIDTH, SCALE_CONFIG_LABEL_HEIGHT);
   yMultiplierLabel.setText("Vertical Shift Multiplier:");
   setupGeneralLabel(yMultiplierLabel);
-  multiplyShiftTypePanel.addControl(yMultiplierLabel);
-  yMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_BOTTOM_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
+  scaleShiftTypePanel.addControl(yMultiplierLabel);
+  yMultiplierInput = new GTextField(controlsWindow, SCALE_CONFIG_INPUT_X, SCALE_CONFIG_INPUT_BOTTOM_Y, SCALE_CONFIG_INPUT_WIDTH, SCALE_CONFIG_INPUT_HEIGHT);
   yMultiplierInput.setText("2.0"); // TODO: pull default from manager
   yMultiplierInput.addEventHandler(this, "yMultiplierInput_change");
-  multiplyShiftTypePanel.addControl(yMultiplierInput);
+  scaleShiftTypePanel.addControl(yMultiplierInput);
   // Tab manager for inputs
   multiplierTabManager = new GTabManager();
   multiplierTabManager.addControls(xMultiplierInput, yMultiplierInput);
   // Add to advanced options
-  advancedOptionsPanel.addControl(multiplyShiftTypePanel);
+  advancedOptionsPanel.addControl(scaleShiftTypePanel);
 }
 
 public void createLinearShiftTypePanel() {
