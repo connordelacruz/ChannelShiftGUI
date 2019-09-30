@@ -27,28 +27,32 @@ int mod(int x, int n) {
  * @param maxLength Max length string should have before getting truncated
  * @param ellipsis If true, append "..." to the end. 3 extra characters will be
  * removed to ensure the output is the desired max length
+ * @param hash If true, append the string's hash code to the end. Additional
+ * characters will be removed to ensure the output is the desired max length
  * @return Truncated string
  */
-String truncateString(String s, int maxLength, boolean ellipsis) {
+String truncateString(String s, int maxLength, boolean ellipsis, boolean hash) {
   if (s.length() > maxLength) {
-    if (ellipsis)
-      s = s.substring(0, maxLength - 3) + "...";
-    else
-      s = s.substring(0, maxLength);
+    String suffix = "";
+    if (ellipsis) 
+      suffix += "...";
+    if (hash) 
+      suffix += s.hashCode();
+    s = s.substring(0, maxLength - suffix.length()) + suffix;
   }
   return s;
 }
 
 /** 
  * Truncate a string if it's longer than the specified length. If truncated,
- * "..." will be appended to the end. 3 extra characters will be removed to
- * ensure the output is the desired max length
+ * "..." and the string's hash code will be appended to the end. Extra
+ * characters will be removed to ensure the output is the desired max length
  * @param s String to truncate
  * @param maxLength Max length string should have before getting truncated
  * @return Truncated string
  */
 String truncateString(String s, int maxLength) {
-  return truncateString(s, maxLength, true);
+  return truncateString(s, maxLength, true, true);
 }
 
 

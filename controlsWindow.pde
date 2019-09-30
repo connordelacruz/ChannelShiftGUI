@@ -28,7 +28,7 @@ GPanel advancedOptionsPanel;
 GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
 // Per-Type configs
-GPanel defaultShiftTypePanel, multiplyShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel;
+GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel;
 // Default (just a label)
 GLabel defaultShiftConfigLabel;
 // Multiply
@@ -46,6 +46,10 @@ GLabel xSkewLabel, ySkewLabel;
 GTextField xSkewInput, ySkewInput;
 GTabManager skewTabManager;
 GCheckbox xSkewNegativeCheckbox, ySkewNegativeCheckbox;
+// X*Y
+GLabel multXLabel, multYLabel;
+GCheckbox multXCheckbox, multYCheckbox;
+GCheckbox multXNegativeCheckbox, multYNegativeCheckbox;
 
 // Keep track of shift type config panels w/ indices matching globals
 GPanel[] shiftTypeConfigPanels;
@@ -178,17 +182,17 @@ int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
 int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
 int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_PANEL_HEIGHT - PANEL_Y_START;
-// Multiply Shift Type Panel ---------------------------------------------------
-int MULTIPLY_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
-int MULTIPLY_CONFIG_LABEL_HEIGHT = 20;
-int MULTIPLY_CONFIG_INPUT_WIDTH = MULTIPLY_CONFIG_LABEL_WIDTH;
-int MULTIPLY_CONFIG_INPUT_HEIGHT = 20;
-int MULTIPLY_CONFIG_LABEL_X = X_MARGIN;
-int MULTIPLY_CONFIG_INPUT_X = X_MARGIN;
-int MULTIPLY_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
-int MULTIPLY_CONFIG_INPUT_TOP_Y = MULTIPLY_CONFIG_LABEL_TOP_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
-int MULTIPLY_CONFIG_LABEL_BOTTOM_Y = MULTIPLY_CONFIG_INPUT_TOP_Y + MULTIPLY_CONFIG_INPUT_HEIGHT + Y_MARGIN;
-int MULTIPLY_CONFIG_INPUT_BOTTOM_Y = MULTIPLY_CONFIG_LABEL_BOTTOM_Y + MULTIPLY_CONFIG_LABEL_HEIGHT;
+// Scale Shift Type Panel ------------------------------------------------------
+int SCALE_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int SCALE_CONFIG_LABEL_HEIGHT = 20;
+int SCALE_CONFIG_INPUT_WIDTH = SCALE_CONFIG_LABEL_WIDTH;
+int SCALE_CONFIG_INPUT_HEIGHT = 20;
+int SCALE_CONFIG_LABEL_X = X_MARGIN;
+int SCALE_CONFIG_INPUT_X = X_MARGIN;
+int SCALE_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
+int SCALE_CONFIG_INPUT_TOP_Y = SCALE_CONFIG_LABEL_TOP_Y + SCALE_CONFIG_LABEL_HEIGHT;
+int SCALE_CONFIG_LABEL_BOTTOM_Y = SCALE_CONFIG_INPUT_TOP_Y + SCALE_CONFIG_INPUT_HEIGHT + Y_MARGIN;
+int SCALE_CONFIG_INPUT_BOTTOM_Y = SCALE_CONFIG_LABEL_BOTTOM_Y + SCALE_CONFIG_LABEL_HEIGHT;
 // Linear Shift Type Panel -----------------------------------------------------
 // TODO extract common w/ multiply to type_config_ general vars
 // Toggles
@@ -227,6 +231,21 @@ int SKEW_CONFIG_CHECKBOX_TOP_Y = SKEW_CONFIG_INPUT_TOP_Y + SKEW_CONFIG_INPUT_HEI
 int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_CHECKBOX_TOP_Y + SKEW_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
 int SKEW_CONFIG_INPUT_BOTTOM_Y = SKEW_CONFIG_LABEL_BOTTOM_Y + SKEW_CONFIG_LABEL_HEIGHT;
 int SKEW_CONFIG_CHECKBOX_BOTTOM_Y = SKEW_CONFIG_INPUT_BOTTOM_Y + SKEW_CONFIG_INPUT_HEIGHT;
+// X*Y Mult Shift Type Panel ---------------------------------------------------
+int XYMULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH;
+int XYMULT_CONFIG_LABEL_HEIGHT = 20;
+int XYMULT_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
+int XYMULT_CONFIG_CHECKBOX_HEIGHT = 20;
+int XYMULT_CONFIG_LABEL_X = 0;
+int XYMULT_CONFIG_CHECKBOX_X = 0;
+// X Multiply
+int XYMULT_CONFIG_X_LABEL_Y = PANEL_Y_START;
+int XYMULT_CONFIG_XMULT_CHECKBOX_Y = XYMULT_CONFIG_X_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
+int XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_XMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+// Y Multiply
+int XYMULT_CONFIG_Y_LABEL_Y = XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
+int XYMULT_CONFIG_YMULT_CHECKBOX_Y = XYMULT_CONFIG_Y_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
+int XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_YMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -539,9 +558,10 @@ public void createAdvancedOptionsPanel() {
   shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
   // Add type config panels and add them to shiftTypeConfigPanels
   createDefaultShiftTypePanel();
-  createMultiplyShiftTypePanel();
+  createScaleShiftTypePanel();
   createLinearShiftTypePanel();
   createSkewShiftTypePanel();
+  createXYMultShiftTypePanel();
 }
 
 // Helpers
@@ -585,33 +605,33 @@ public void createDefaultShiftTypePanel() {
   advancedOptionsPanel.addControl(defaultShiftTypePanel);
 }
 
-public void createMultiplyShiftTypePanel() {
-  multiplyShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
-  setupShiftTypePanel(multiplyShiftTypePanel, TYPE_MULTIPLY);
+public void createScaleShiftTypePanel() {
+  scaleShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(scaleShiftTypePanel, TYPE_SCALE);
   // TODO: merge common
   // X Multiplier
-  xMultiplierLabel = new GLabel(controlsWindow, MULTIPLY_CONFIG_LABEL_X, MULTIPLY_CONFIG_LABEL_TOP_Y, MULTIPLY_CONFIG_LABEL_WIDTH, MULTIPLY_CONFIG_LABEL_HEIGHT);
+  xMultiplierLabel = new GLabel(controlsWindow, SCALE_CONFIG_LABEL_X, SCALE_CONFIG_LABEL_TOP_Y, SCALE_CONFIG_LABEL_WIDTH, SCALE_CONFIG_LABEL_HEIGHT);
   xMultiplierLabel.setText("Horizontal Shift Multiplier:");
   setupGeneralLabel(xMultiplierLabel);
-  multiplyShiftTypePanel.addControl(xMultiplierLabel);
-  xMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_TOP_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
+  scaleShiftTypePanel.addControl(xMultiplierLabel);
+  xMultiplierInput = new GTextField(controlsWindow, SCALE_CONFIG_INPUT_X, SCALE_CONFIG_INPUT_TOP_Y, SCALE_CONFIG_INPUT_WIDTH, SCALE_CONFIG_INPUT_HEIGHT);
   xMultiplierInput.setText("2.0"); // TODO: pull default from manager
   xMultiplierInput.addEventHandler(this, "xMultiplierInput_change");
-  multiplyShiftTypePanel.addControl(xMultiplierInput);
+  scaleShiftTypePanel.addControl(xMultiplierInput);
   // Y Multiplier
-  yMultiplierLabel = new GLabel(controlsWindow, MULTIPLY_CONFIG_LABEL_X, MULTIPLY_CONFIG_LABEL_BOTTOM_Y, MULTIPLY_CONFIG_LABEL_WIDTH, MULTIPLY_CONFIG_LABEL_HEIGHT);
+  yMultiplierLabel = new GLabel(controlsWindow, SCALE_CONFIG_LABEL_X, SCALE_CONFIG_LABEL_BOTTOM_Y, SCALE_CONFIG_LABEL_WIDTH, SCALE_CONFIG_LABEL_HEIGHT);
   yMultiplierLabel.setText("Vertical Shift Multiplier:");
   setupGeneralLabel(yMultiplierLabel);
-  multiplyShiftTypePanel.addControl(yMultiplierLabel);
-  yMultiplierInput = new GTextField(controlsWindow, MULTIPLY_CONFIG_INPUT_X, MULTIPLY_CONFIG_INPUT_BOTTOM_Y, MULTIPLY_CONFIG_INPUT_WIDTH, MULTIPLY_CONFIG_INPUT_HEIGHT);
+  scaleShiftTypePanel.addControl(yMultiplierLabel);
+  yMultiplierInput = new GTextField(controlsWindow, SCALE_CONFIG_INPUT_X, SCALE_CONFIG_INPUT_BOTTOM_Y, SCALE_CONFIG_INPUT_WIDTH, SCALE_CONFIG_INPUT_HEIGHT);
   yMultiplierInput.setText("2.0"); // TODO: pull default from manager
   yMultiplierInput.addEventHandler(this, "yMultiplierInput_change");
-  multiplyShiftTypePanel.addControl(yMultiplierInput);
+  scaleShiftTypePanel.addControl(yMultiplierInput);
   // Tab manager for inputs
   multiplierTabManager = new GTabManager();
   multiplierTabManager.addControls(xMultiplierInput, yMultiplierInput);
   // Add to advanced options
-  advancedOptionsPanel.addControl(multiplyShiftTypePanel);
+  advancedOptionsPanel.addControl(scaleShiftTypePanel);
 }
 
 public void createLinearShiftTypePanel() {
@@ -683,6 +703,34 @@ public void createSkewShiftTypePanel() {
   skewTabManager.addControls(xSkewInput, ySkewInput);
   // Add to advanced options
   advancedOptionsPanel.addControl(skewShiftTypePanel);
+}
+
+public void createXYMultShiftTypePanel() {
+  xyMultShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(xyMultShiftTypePanel, TYPE_XYMULT);
+  // X Mult
+  multXLabel = new GLabel(controlsWindow, XYMULT_CONFIG_LABEL_X, XYMULT_CONFIG_X_LABEL_Y, XYMULT_CONFIG_LABEL_WIDTH, XYMULT_CONFIG_LABEL_HEIGHT, "X Shift");
+  setupGeneralLabel(multXLabel);
+  xyMultShiftTypePanel.addControl(multXLabel);
+  multXCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_XMULT_CHECKBOX_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "x shift + (x*y/height)");
+  multXCheckbox.setSelected(true);
+  multXCheckbox.addEventHandler(this, "multXCheckbox_click");
+  xyMultShiftTypePanel.addControl(multXCheckbox);
+  multXNegativeCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "Negative X Coefficient");
+  multXNegativeCheckbox.addEventHandler(this, "multXNegativeCheckbox_click");
+  xyMultShiftTypePanel.addControl(multXNegativeCheckbox);
+  // Y Mult
+  multYLabel = new GLabel(controlsWindow, XYMULT_CONFIG_LABEL_X, XYMULT_CONFIG_Y_LABEL_Y, XYMULT_CONFIG_LABEL_WIDTH, XYMULT_CONFIG_LABEL_HEIGHT, "Y Shift");
+  setupGeneralLabel(multYLabel);
+  xyMultShiftTypePanel.addControl(multYLabel);
+  multYCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_YMULT_CHECKBOX_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "y shift + (y*x/width)");
+  multYCheckbox.addEventHandler(this, "multYCheckbox_click");
+  xyMultShiftTypePanel.addControl(multYCheckbox);
+  multYNegativeCheckbox = new GCheckbox(controlsWindow, XYMULT_CONFIG_CHECKBOX_X, XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y, XYMULT_CONFIG_CHECKBOX_WIDTH, XYMULT_CONFIG_CHECKBOX_HEIGHT, "Negative Y Coefficient");
+  multYNegativeCheckbox.addEventHandler(this, "multYNegativeCheckbox_click");
+  xyMultShiftTypePanel.addControl(multYNegativeCheckbox);
+  // Add to advanced options
+  advancedOptionsPanel.addControl(xyMultShiftTypePanel);
 }
 
 // Load/Save Panel -------------------------------------------------------------

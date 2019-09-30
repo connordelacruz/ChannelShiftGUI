@@ -5,12 +5,13 @@
 // Constants ===================================================================
 
 // Names of different shift types
-String[] SHIFT_TYPES = new String[]{"Default", "Multiply", "Linear", "Skew"};
+String[] SHIFT_TYPES = new String[]{"Default", "Scale", "Linear", "Skew", "X*Y Multiply"};
 // Indexes
 int TYPE_DEFAULT = 0;
-int TYPE_MULTIPLY = 1;
+int TYPE_SCALE = 1;
 int TYPE_LINEAR = 2;
 int TYPE_SKEW = 3;
+int TYPE_XYMULT = 4;
 // Total # of shift types
 int TOTAL_SHIFT_TYPES = SHIFT_TYPES.length;
 
@@ -39,19 +40,19 @@ public class DefaultShiftType implements ShiftTypeState {
   }
 }
 
-// Multiply --------------------------------------------------------------------
+// Scale -----------------------------------------------------------------------
 
-public class MultiplyShiftType implements ShiftTypeState {
+public class ScaleShiftType implements ShiftTypeState {
   // Multiplier values specific to this shift type
   public float xMultiplier, yMultiplier;
   // TODO negative multipliers?
 
-  public MultiplyShiftType(float xMult, float yMult) {
+  public ScaleShiftType(float xMult, float yMult) {
     xMultiplier = xMult;
     yMultiplier = yMult;
   }
 
-  public MultiplyShiftType() {
+  public ScaleShiftType() {
     // Arbitrarily using 2 in the event that this doesn't get set
     this(2.0, 2.0);
   }
@@ -196,6 +197,52 @@ public class SkewShiftType implements ShiftTypeState {
   public boolean isPositive(boolean horizontal) { return horizontal ? isPositiveX() : isPositiveY(); }
 }
 
+// X*Y -------------------------------------------------------------------------
+
+public class XYMultShiftType implements ShiftTypeState {
+  public boolean multX, multY;
+  public float xSign, ySign;
+
+  public XYMultShiftType(boolean multX, boolean xPositive, boolean multY, boolean yPositive) {
+    this.multX = multX;
+    this.multY = multY;
+    this.xSign = xPositive ? 1 : -1;
+    this.ySign = yPositive ? 1 : -1;
+  }
+  public XYMultShiftType() {
+    this(true, true, false, true);
+  }
+
+  // TODO flip divisor? (w/o dividing by 0)
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
+    if (horizontal)
+      return x + shift + (multX ? (int)(xSign*x*y / height) : 0);
+    else
+      return y + shift + (multY ? (int)(ySign*y*x / width) : 0);
+  }
+
+  public String stringifyStep() {
+    String step = "-xymult";
+    if (multX)
+      step += (isPositiveX() ? "+" : "-") + "x";
+    if (multY)
+      step += (isPositiveY() ? "+" : "-") + "y";
+    return step;
+  }
+
+  // Setters
+  public void setMultX(boolean multiply) { multX = multiply; }
+  public void setMultY(boolean multiply) { multY = multiply; }
+  public void setXSign(boolean positive) { xSign = positive ? 1 : -1; }
+  public void setYSign(boolean positive) { ySign = positive ? 1 : -1; }
+
+  // Getters
+  public boolean multX() { return multX; }
+  public boolean multY() { return multY; }
+  public boolean isPositiveX() { return xSign > 0.0; }
+  public boolean isPositiveY() { return ySign > 0.0; }
+}
+
 // Manager ---------------------------------------------------------------------
 
 public class ShiftTypeManager {
@@ -208,9 +255,10 @@ public class ShiftTypeManager {
     shiftTypes = new ShiftTypeState[TOTAL_SHIFT_TYPES];
     // Initialize state objects
     shiftTypes[TYPE_DEFAULT] = new DefaultShiftType();
-    shiftTypes[TYPE_MULTIPLY] = new MultiplyShiftType();
+    shiftTypes[TYPE_SCALE] = new ScaleShiftType();
     shiftTypes[TYPE_LINEAR] = new LinearShiftType();
     shiftTypes[TYPE_SKEW] = new SkewShiftType();
+    shiftTypes[TYPE_XYMULT] = new XYMultShiftType();
     // Start w/ default
     state = TYPE_DEFAULT;
   }
@@ -230,12 +278,12 @@ public class ShiftTypeManager {
 
   // Config Setters
 
-  // Multiply
-  public void multiply_setMultiplier(float val, boolean horizontal) {
-    ((MultiplyShiftType)shiftTypes[TYPE_MULTIPLY]).setMultiplier(val, horizontal);
+  // Scale
+  public void scale_setMultiplier(float val, boolean horizontal) {
+    ((ScaleShiftType)shiftTypes[TYPE_SCALE]).setMultiplier(val, horizontal);
   }
-  public float multiply_getMultiplier(boolean horizontal) {
-    return ((MultiplyShiftType)shiftTypes[TYPE_MULTIPLY]).getMultiplier(horizontal);
+  public float scale_getMultiplier(boolean horizontal) {
+    return ((ScaleShiftType)shiftTypes[TYPE_SCALE]).getMultiplier(horizontal);
   }
 
   // Linear
@@ -272,6 +320,32 @@ public class ShiftTypeManager {
     return ((SkewShiftType)shiftTypes[TYPE_SKEW]).isPositive(horizontal);
   }
 
+  // X*Y
+  public void xymult_setMultX(boolean multiply) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultX(multiply);
+  }
+  public boolean xymult_multX() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).multX();
+  }
+  public void xymult_setMultY(boolean multiply) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultY(multiply);
+  }
+  public boolean xymult_multY() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).multY();
+  }
+  public void xymult_setXSign(boolean positive) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setXSign(positive);
+  }
+  public boolean xymult_isPositiveX() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveX();
+  }
+  public void xymult_setYSign(boolean positive) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setYSign(positive);
+  }
+  public boolean xymult_isPositiveY() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveY();
+  }
+
 }
 
 
@@ -288,7 +362,7 @@ public void shiftTypeSelect_change(GDropList source, GEvent event) {
   showPreview();
 }
 
-// Multiply Configs ------------------------------------------------------------
+// Scale Configs ---------------------------------------------------------------
 
 void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
   switch(event) {
@@ -299,13 +373,13 @@ void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizo
       // Sanitize and update manager
       float val = sanitizeFloatInputValue(source);
       if (val > -1.0) {
-        shiftTypeManager.multiply_setMultiplier(val, horizontal);
+        shiftTypeManager.scale_setMultiplier(val, horizontal);
         showPreview();
       } 
       // Update input text to match sanitized input 
       // Also reverts input text in the event that it was not a valid numeric
       // value after parsing
-      source.setText("" + shiftTypeManager.multiply_getMultiplier(horizontal));
+      source.setText("" + shiftTypeManager.scale_getMultiplier(horizontal));
       break;
     default:
       break;
@@ -354,7 +428,6 @@ public void linearCoeffInput_change(GTextField source, GEvent event) {
   }
 }
 
-// TODO FIXME sometimes reverts even when checkbox isn't checked
 public void linearNegativeCoeffCheckbox_click(GCheckbox source, GEvent event) {
   shiftTypeManager.linear_setCoefficientSign(!source.isSelected());
   showPreview();
@@ -399,6 +472,28 @@ public void ySkewInput_change(GTextField source, GEvent event) {
 
 public void ySkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
   shiftTypeManager.skew_setSign(!source.isSelected(), false);
+  showPreview();
+}
+
+// X*Y Configs -----------------------------------------------------------------
+
+public void multXCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setMultX(source.isSelected());
+  showPreview();
+}
+
+public void multXNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setXSign(!source.isSelected());
+  showPreview();
+}
+
+public void multYCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setMultY(source.isSelected());
+  showPreview();
+}
+
+public void multYNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setYSign(!source.isSelected());
   showPreview();
 }
 
