@@ -236,7 +236,9 @@ public class XYMultShiftType implements ShiftTypeState {
   public void setXSign(boolean positive) { xSign = positive ? 1 : -1; }
   public void setYSign(boolean positive) { ySign = positive ? 1 : -1; }
 
-  // TODO Getters
+  // Getters
+  public boolean multX() { return multX; }
+  public boolean multY() { return multY; }
   public boolean isPositiveX() { return xSign > 0.0; }
   public boolean isPositiveY() { return ySign > 0.0; }
 }
@@ -319,18 +321,29 @@ public class ShiftTypeManager {
   }
 
   // X*Y
-  // TODO getters
   public void xymult_setMultX(boolean multiply) {
     ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultX(multiply);
+  }
+  public boolean xymult_multX() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).multX();
   }
   public void xymult_setMultY(boolean multiply) {
     ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultY(multiply);
   }
+  public boolean xymult_multY() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).multY();
+  }
   public void xymult_setXSign(boolean positive) {
     ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setXSign(positive);
   }
+  public boolean xymult_isPositiveX() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveX();
+  }
   public void xymult_setYSign(boolean positive) {
     ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setYSign(positive);
+  }
+  public boolean xymult_isPositiveY() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveY();
   }
 
 }
