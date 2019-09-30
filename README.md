@@ -55,10 +55,6 @@ The **Randomize Options** panel is used to randomize the current step.
 By default, all options are randomized. You can uncheck the boxes of any options
 you do not want to randomize.
 
-**Note:** If **Target Channel** is unchecked, but **Source Channel** is checked,
-the selected target channel will be set to match the selected source channel
-when the randomize button is clicked (i.e. the channels will not be swapped).
-
 #### Set Random Shift Threshold
 
 The **Max Horizontal/Vertical Shift %** inputs can be used to put a limit on the

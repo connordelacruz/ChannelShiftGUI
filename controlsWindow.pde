@@ -15,6 +15,7 @@ ChannelOption targR, targG, targB;
 // Keep track of toggles in global w/ index corresponding to channel
 ChannelOption[] targToggles;
 // Randomize Button/Toggles ----------------------------------------------------
+// TODO checkbox for swapping channels
 GPanel randomizePanel, randomizeCheckboxPanel;
 GButton randomizeBtn; 
 GCheckbox randSrcCheckbox, randTargCheckbox, 
