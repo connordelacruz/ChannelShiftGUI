@@ -1,5 +1,5 @@
 // =============================================================================
-// Globals, logic, and event handlers related to shift type variations
+// Globals, logic, and event handlers related to advanced shift type options
 // =============================================================================
 
 // Constants ===================================================================

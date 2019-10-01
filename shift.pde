@@ -2,8 +2,6 @@
 // Globals, logic, and event handlers related to channel shift values
 // =============================================================================
 
-// TODO rename file? Or rename shiftTypes for consistency?
-
 // Globals =====================================================================
 
 // Set to true if a slider was changed. Window mouse event listener checks this
