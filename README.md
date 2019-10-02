@@ -1,4 +1,4 @@
-# Channel Shift
+# RGB Channel Shift Tool
 
 ## Overview
 
