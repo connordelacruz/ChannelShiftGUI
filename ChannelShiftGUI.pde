@@ -5,7 +5,7 @@ import g4p_controls.*;
 // Input File ------------------------------------------------------------------
 // Default image to load on start
 String defaultImgName = "test";
-String defaultImgPath = "source/" + defaultImgName + ".jpg";
+String defaultImgPath = "demo/" + defaultImgName + ".jpg";
 
 // Globals =====================================================================
 

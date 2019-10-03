@@ -2,7 +2,7 @@
 
 ## Overview
 
-**TODO:** Overview of channel shifting, example images
+**TODO:** Overview of channel shifting, example images for shift types
 
 
 ## Installation
@@ -16,10 +16,6 @@ additional setup is required.
 ## Controls
 
 ![GUI](screenshots/gui.png)
-
-**TODO:** 
-
-- Advanced Options panel + shift types
 
 ### Color Channels
 
@@ -97,4 +93,8 @@ Result** button. This will bring up the system "Save As" dialog.
 To load a source image, click the **Load Image** button and select the desired
 image file. Note that this will clear the current result, so be sure to save it
 before loading if you don't want to lose your work.
+
+### Advanced Options
+
+**TODO:** Advanced Options panel + shift types (examples)
 
