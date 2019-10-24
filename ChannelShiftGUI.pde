@@ -4,7 +4,7 @@ import g4p_controls.*;
 
 // Input File ------------------------------------------------------------------
 // Default image to load on start
-String defaultImgName = "test";
+String defaultImgName = "test1";
 String defaultImgPath = "demo/" + defaultImgName + ".jpg";
 
 // Globals =====================================================================
@@ -30,7 +30,6 @@ String INDENT = "   ";
 
 // Channel Shift ---------------------------------------------------------------
 
-// TODO move this to its own file? Or to shift.pde? Even tho it relies on shift type?
 /**
  * Shift and swap color channels
  * @param sourceImg The base PImage object to be channel shifted
