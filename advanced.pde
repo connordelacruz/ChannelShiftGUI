@@ -5,7 +5,7 @@
 // Constants ===================================================================
 
 // Names of different shift types
-String[] SHIFT_TYPES = new String[]{"Default", "Scale", "Linear", "Skew", "X*Y Multiply"};
+String[] SHIFT_TYPES = new String[]{"Default", "Scale", "Linear", "Skew", "XY Multiply"};
 // Indexes
 int TYPE_DEFAULT = 0;
 int TYPE_SCALE = 1;

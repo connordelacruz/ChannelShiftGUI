@@ -5,6 +5,39 @@
 **TODO:** Overview of channel shifting, example images for shift types
 
 
+## Features
+
+**TODO:** Make controls section just about UI, explain features here
+
+### Swap Color Channels
+
+**TODO**
+
+### Shift Color Channels
+
+**TODO**
+
+### Experimental Shift Types
+
+**TODO**
+
+#### Linear
+
+![Linear shift type](samples/linear.png)
+
+#### Scale
+
+![Scale shift type](samples/scale.png)
+
+#### Skew
+
+![Skew shift type](samples/skew.png)
+
+#### XY Multiply
+
+![XY Multiply shift type](samples/xy-mult.png)
+
+
 ## Installation
 
 This sketch requires [Processing 3+](https://processing.org/download/) (tested
