@@ -19,7 +19,7 @@
 
 ### Experimental Shift Types
 
-**TODO**
+**TODO:** Examples are too big...
 
 #### Linear
 
