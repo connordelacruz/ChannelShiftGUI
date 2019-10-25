@@ -62,7 +62,7 @@ public class ScaleShiftType implements ShiftTypeState {
   }
 
   public String stringifyStep() {
-    return "-mult-x" + xMultiplier + "y" + yMultiplier;
+    return "-scale-x" + xMultiplier + "y" + yMultiplier;
   }
 
   // Set multipliers
