@@ -1,8 +1,27 @@
 # RGB Channel Shift Tool
 
+This Processing sketch provides a GUI interface for datamoshing images by
+manipulating RGB color channels.
+
 ## Overview
 
-**TODO:** Overview of channel shifting, example images for shift types
+The basic features of this tool allow you to shift color channels vertically and
+horizontally, as well as swap color channels with each other:
+
+![Basic Showcase](samples/basic-showcase.png)
+
+It also includes experimental shift types that modify how pixels are shifted,
+which can be combined for interesting effects:
+
+![Advanced Showcase](samples/advanced-showcase.png)
+
+
+## Installation
+
+This sketch requires [Processing 3+](https://processing.org/download/) (tested
+using Processing 3.5). It uses the [G4P GUI
+library](http://www.lagers.org.uk/g4p/), which is included in this repo, so no
+additional setup is required.
 
 
 ## Features
@@ -14,6 +33,10 @@
 **TODO**
 
 ### Shift Color Channels
+
+**TODO**
+
+### Randomization
 
 **TODO**
 
@@ -36,14 +59,6 @@
 #### XY Multiply
 
 ![XY Multiply shift type](samples/xy-mult.png)
-
-
-## Installation
-
-This sketch requires [Processing 3+](https://processing.org/download/) (tested
-using Processing 3.5). It uses the [G4P GUI
-library](http://www.lagers.org.uk/g4p/), which is included in this repo, so no
-additional setup is required.
 
 
 ## Controls
