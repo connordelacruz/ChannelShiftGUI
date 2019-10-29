@@ -27,10 +27,10 @@ manipulating RGB color channels.
     * [Load a New Source Image](#load-a-new-source-image)
     * [Advanced Options](#advanced-options)
 * [Experimental Shift Types](#experimental-shift-types-1)
-        * [Linear](#linear)
-        * [Scale](#scale)
-        * [Skew](#skew)
-        * [XY Multiply](#xy-multiply)
+    * [Linear](#linear)
+    * [Scale](#scale)
+    * [Skew](#skew)
+    * [XY Multiply](#xy-multiply)
 
 <!-- vim-markdown-toc -->
 
@@ -166,19 +166,19 @@ before loading if you don't want to lose your work.
 
 **TODO:** Explain options for each
 
-#### Linear
+### Linear
 
 ![Linear shift type](samples/linear.png)
 
-#### Scale
+### Scale
 
 ![Scale shift type](samples/scale.png)
 
-#### Skew
+### Skew
 
 ![Skew shift type](samples/skew.png)
 
-#### XY Multiply
+### XY Multiply
 
 ![XY Multiply shift type](samples/xy-mult.png)
 
