@@ -3,6 +3,37 @@
 This Processing sketch provides a GUI interface for datamoshing images by
 manipulating RGB color channels.
 
+
+<!-- vim-markdown-toc GFM -->
+
+* [Overview](#overview)
+* [Installation](#installation)
+* [Features](#features)
+    * [Swap Color Channels](#swap-color-channels)
+    * [Shift Color Channels](#shift-color-channels)
+    * [Randomization](#randomization)
+    * [Experimental Shift Types](#experimental-shift-types)
+* [Controls](#controls)
+    * [Color Channels](#color-channels)
+        * [Source Channel](#source-channel)
+        * [Target Channel](#target-channel)
+    * [Horizontal/Vertical Shift](#horizontalvertical-shift)
+    * [Randomize Options](#randomize-options)
+        * [Toggle Randomization Options](#toggle-randomization-options)
+        * [Set Random Shift Threshold](#set-random-shift-threshold)
+    * [Confirm Step](#confirm-step)
+    * [Reset Step](#reset-step)
+    * [Save Current Result](#save-current-result)
+    * [Load a New Source Image](#load-a-new-source-image)
+    * [Advanced Options](#advanced-options)
+* [Experimental Shift Types](#experimental-shift-types-1)
+        * [Linear](#linear)
+        * [Scale](#scale)
+        * [Skew](#skew)
+        * [XY Multiply](#xy-multiply)
+
+<!-- vim-markdown-toc -->
+
 ## Overview
 
 The basic features of this tool allow you to shift color channels vertically and
@@ -42,23 +73,7 @@ additional setup is required.
 
 ### Experimental Shift Types
 
-**TODO:** Examples are too big...
-
-#### Linear
-
-![Linear shift type](samples/linear.png)
-
-#### Scale
-
-![Scale shift type](samples/scale.png)
-
-#### Skew
-
-![Skew shift type](samples/skew.png)
-
-#### XY Multiply
-
-![XY Multiply shift type](samples/xy-mult.png)
+**TODO:** Brielfly explain and link to section on bottom
 
 
 ## Controls
@@ -144,5 +159,27 @@ before loading if you don't want to lose your work.
 
 ### Advanced Options
 
-**TODO:** Advanced Options panel + shift types (examples)
+**TODO:** Advanced Options panel
+
+
+## Experimental Shift Types
+
+**TODO:** Explain options for each
+
+#### Linear
+
+![Linear shift type](samples/linear.png)
+
+#### Scale
+
+![Scale shift type](samples/scale.png)
+
+#### Skew
+
+![Skew shift type](samples/skew.png)
+
+#### XY Multiply
+
+![XY Multiply shift type](samples/xy-mult.png)
+
 
