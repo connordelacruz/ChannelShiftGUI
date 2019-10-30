@@ -28,10 +28,20 @@ manipulating RGB color channels.
     * [Load a New Source Image](#load-a-new-source-image)
     * [Advanced Options](#advanced-options)
 * [Experimental Shift Types](#experimental-shift-types-1)
-    * [Linear](#linear)
     * [Scale](#scale)
+        * [Options](#options)
+        * [Shift Calculation](#shift-calculation)
+    * [Linear](#linear)
+        * [Options](#options-1)
+        * [Shift Calculation](#shift-calculation-1)
+            * [y=mx+b](#ymxb)
+            * [x=my+b](#xmyb)
     * [Skew](#skew)
+        * [Options](#options-2)
+        * [Shift Calculation](#shift-calculation-2)
     * [XY Multiply](#xy-multiply)
+        * [Options](#options-3)
+        * [Shift Calculation](#shift-calculation-3)
 
 <!-- vim-markdown-toc -->
 
@@ -83,8 +93,7 @@ max threshold for vertical and horizontal shift amounts.
 By default, horizontal and vertical shifts translate the color channel along the
 x and y axes, respectively. You can also select experimental shift types with
 their own advanced options that modify how each pixel is shifted based on a
-number of conditions. (Kind of hard to explain succinctly, but basically it's a
-bunch of neat effects)
+number of conditions in addition to the horizontal/vertical shift amounts. 
 
 For explanations and examples of each type, see [Experimental Shift
 Types](#experimental-shift-types-1).
@@ -172,27 +181,183 @@ before loading if you don't want to lose your work.
 
 ### Advanced Options
 
-**TODO:** Advanced Options panel
+The advanced options panel allows you to select the shift type and has
+configurations specific to each one. The default shift type has no advanced
+options, but selecting an experimental shift type from the dropdown will show
+its specific settings in this panel. See the following section for details on
+each experimental shift type.
 
 
 ## Experimental Shift Types
 
-**TODO:** Explain options for each
-
-### Linear
-
-![Linear shift type](samples/linear.png)
+The following section describes the different experimental shift types in the
+**Advanced Options** panel, as well as the way each pixel's horizontal and
+vertical shift is calculated.
 
 ### Scale
 
 ![Scale shift type](samples/scale.png)
 
+Scales the width and length of the channel by the specified multiplier.
+Multipliers greater than 1.0 shrink the image dimension and create a tiling
+effect. Multipliers less than 1.0 scale the image dimension up.
+
+#### Options
+
+- **Horizontal Shift Multiplier:** Value to multiply the width by
+- **Vertical Shift Multiplier:** Value to multiply the height by
+
+#### Shift Calculation
+
+```
+(coordinate * multiplier) + shift
+```
+
+Where:
+
+- `coordinate`: x if horizontal, y if vertical
+- `multiplier`: the configured horizontal/vertical shift multiplier
+- `shift`: the horizontal/vertical shift amount
+
+
+### Linear
+
+![Linear shift type](samples/linear.png)
+
+Uses a linear equation to calculate shift offset.
+
+#### Options
+
+- **Equation Type:** select whether the linear equation format is y=mx+b or
+  x=my+b
+- **Slope (m):** the slope of the linear equation
+- **Negative Slope:** if checked, multiply slope (m) by -1
+
+#### Shift Calculation
+
+Calculations for x/y offset are determined by solving the equation for x/y,
+respectively.
+
+##### y=mx+b
+
+**Horizontal Offset:**
+
+```
+x + (int)((y - shift) / (mSign * m))
+```
+
+**Vertical Offset:**
+
+```
+y + (int)((mSign * m) * x + shift)
+```
+
+Where:
+
+- `x` and `y`: the coordinates of the pixel
+- `shift`: the horizontal/vertical shift amount
+- `m`: the configured slope
+- `mSign`: 1 if positive slope, -1 if negative slope
+
+##### x=my+b
+
+**Horizontal Offset:**
+
+```
+x + (int)((mSign * m) * y + shift)
+```
+
+**Vertical Offset:**
+
+```
+y + (int)((x - shift) / (mSign * m))
+```
+
+Where:
+
+- `x` and `y`: the coordinates of the pixel
+- `shift`: the horizontal/vertical shift amount
+- `m`: the configured slope
+- `mSign`: 1 if positive slope, -1 if negative slope
+
+
 ### Skew
 
 ![Skew shift type](samples/skew.png)
 
+Skew/shear the channel.
+
+#### Options
+
+- **Horizontal/Vertical Skew:** the amount to skew along the x/y axis
+- **Negative X/Y Skew:** if checked, invert the skew direction along the
+  corresponding axis
+
+#### Shift Calculation
+
+**Horizontal Offset:**
+
+```
+x + shift + (int)(xSign * xSkew * y)
+```
+
+**Vertical Offset:**
+
+```
+y + shift + (int)(ySign * ySkew * x)
+```
+
+Where:
+
+- `x` and `y`: the coordinates of the pixel
+- `shift`: the horizontal/vertical shift amount
+- `xSkew` and `ySkew`: the horizontal and vertical skew amounts, respectively
+- `xSign` and `ySign`: 1 if positive skew, -1 if negative for the corresponding
+  dimension
+
 ### XY Multiply
 
 ![XY Multiply shift type](samples/xy-mult.png)
+
+Multiply the x/y coordinates of a pixel and divide it by the corresponding
+dimension, so the shift modifier becomes more drastic for one dimension as the
+other dimension increases. (Kind of a weird one, leads to some cool results.
+Recommend playing around with different configurations)
+
+#### Options
+
+- **x shift + (x*y/height):** if checked, add x\*y/height to horizontal shift
+- **y shift + (y*x/width):** if checked, add y\*x/width to vertical shift
+- **Negative X/Y Coefficient:** if checked, multiply the corresponding
+  coordinate's shift modifier by -1
+
+#### Shift Calculation
+
+**Horizontal Offset:**
+
+If **x shift + (x*y/height):** is checked:
+
+```
+x + shift + (int)(xSign*x*y / height)
+```
+
+(otherwise it's just `x + shift`)
+
+**Vertical Offset:**
+
+If **y shift + (y*x/width):** is checked:
+
+```
+y + shift + (int)(ySign*y*x / width)
+```
+
+(otherwise it's just `y + shift`)
+
+Where:
+
+- `x` and `y`: the coordinates of the pixel
+- `shift`: the horizontal/vertical shift amount
+- `xSign` and `ySign`: 1 if positive coefficient, -1 if negative for the
+  corresponding dimension
 
 
