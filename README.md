@@ -11,6 +11,7 @@ manipulating RGB color channels.
 * [Features](#features)
     * [Swap Color Channels](#swap-color-channels)
     * [Shift Color Channels](#shift-color-channels)
+    * [Recursive Iterations](#recursive-iterations)
     * [Randomization](#randomization)
     * [Experimental Shift Types](#experimental-shift-types)
 * [Controls](#controls)
@@ -57,24 +58,36 @@ additional setup is required.
 
 ## Features
 
-**TODO:** Make controls section just about UI, explain features here
-
 ### Swap Color Channels
 
-**TODO**
+Swap the selected channel from the source image with the selected channel from
+the target image.
 
 ### Shift Color Channels
 
-**TODO**
+Shift the selected source image channel horizontally and/or vertically on the
+target image.
+
+### Recursive Iterations
+
+Use the target image as the source for subsequent iterations.
 
 ### Randomization
 
-**TODO**
+Target channel, source channel, horizontal shift, and vertical shift can all be
+randomized. You can select/deselect which options to randomize, as well as set a
+max threshold for vertical and horizontal shift amounts.
 
 ### Experimental Shift Types
 
-**TODO:** Brielfly explain and link to section on bottom
+By default, horizontal and vertical shifts translate the color channel along the
+x and y axes, respectively. You can also select experimental shift types with
+their own advanced options that modify how each pixel is shifted based on a
+number of conditions. (Kind of hard to explain succinctly, but basically it's a
+bunch of neat effects)
 
+For explanations and examples of each type, see [Experimental Shift
+Types](#experimental-shift-types-1).
 
 ## Controls
 
