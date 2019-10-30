@@ -71,16 +71,10 @@ public class ChannelManager {
 
   // Randomize channels
   public void randomize(boolean source, boolean target) {
-    if (source) {
+    if (source) 
       sourceChannel = int(random(3));
-      // Set target to match source if we're not randomizing it
-      if (!target) {
-        targetChannel = sourceChannel;
-      }
-    }
-    if (target) {
-      targetChannel = int(random(3));
-    }
+    if (target) 
+      targetChannel = int(random(3));   
   }
 
 }

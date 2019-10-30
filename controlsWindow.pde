@@ -15,6 +15,7 @@ ChannelOption targR, targG, targB;
 // Keep track of toggles in global w/ index corresponding to channel
 ChannelOption[] targToggles;
 // Randomize Button/Toggles ----------------------------------------------------
+// TODO checkbox for swapping channels
 GPanel randomizePanel, randomizeCheckboxPanel;
 GButton randomizeBtn; 
 GCheckbox randSrcCheckbox, randTargCheckbox, 
@@ -32,6 +33,7 @@ GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShi
 // Default (just a label)
 GLabel defaultShiftConfigLabel;
 // Multiply
+// TODO RENAME TO SCALE
 GLabel xMultiplierLabel, yMultiplierLabel;
 GTextField xMultiplierInput, yMultiplierInput;
 GTabManager multiplierTabManager;
@@ -655,7 +657,7 @@ public void createLinearShiftTypePanel() {
   linearShiftTypePanel.addControl(linearXEquals);
   // Equation Coefficient
   linearCoeffLabel = new GLabel(controlsWindow, LINEAR_CONFIG_LABEL_X, LINEAR_CONFIG_LABEL_Y, LINEAR_CONFIG_LABEL_WIDTH, LINEAR_CONFIG_LABEL_HEIGHT);
-  linearCoeffLabel.setText("Coefficient (m):");
+  linearCoeffLabel.setText("Slope (m):");
   setupGeneralLabel(linearCoeffLabel);
   linearShiftTypePanel.addControl(linearCoeffLabel);
   linearCoeffInput = new GTextField(controlsWindow, LINEAR_CONFIG_INPUT_X, LINEAR_CONFIG_INPUT_Y, LINEAR_CONFIG_INPUT_WIDTH, LINEAR_CONFIG_INPUT_HEIGHT);
@@ -663,7 +665,7 @@ public void createLinearShiftTypePanel() {
   linearCoeffInput.addEventHandler(this, "linearCoeffInput_change");
   linearShiftTypePanel.addControl(linearCoeffInput);
   // Coefficient Sign
-  linearNegativeCoeffCheckbox = new GCheckbox(controlsWindow, LINEAR_CONFIG_CHECKBOX_X, LINEAR_CONFIG_CHECKBOX_Y, LINEAR_CONFIG_CHECKBOX_WIDTH, LINEAR_CONFIG_CHECKBOX_HEIGHT, "Negative Coefficient");
+  linearNegativeCoeffCheckbox = new GCheckbox(controlsWindow, LINEAR_CONFIG_CHECKBOX_X, LINEAR_CONFIG_CHECKBOX_Y, LINEAR_CONFIG_CHECKBOX_WIDTH, LINEAR_CONFIG_CHECKBOX_HEIGHT, "Negative Slope");
   linearNegativeCoeffCheckbox.addEventHandler(this, "linearNegativeCoeffCheckbox_click");
   linearShiftTypePanel.addControl(linearNegativeCoeffCheckbox);
   // Add to advanced options
