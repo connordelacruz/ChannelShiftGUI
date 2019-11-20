@@ -61,9 +61,16 @@ which can be combined for interesting effects:
 ## Installation
 
 This sketch requires [Processing 3+](https://processing.org/download/) (tested
-using Processing 3.5). It uses the [G4P GUI
-library](http://www.lagers.org.uk/g4p/), which is included in this repo, so no
-additional setup is required.
+using Processing 3.5). 
+
+After installing Processing 3, clone the repo:
+
+```
+git clone https://github.com/connordelacruz/ChannelShiftGUI.git
+```
+
+This sketch uses the [G4P GUI library](http://www.lagers.org.uk/g4p/), which is
+included in this repo, so no additional setup is required.
 
 
 ## Features
