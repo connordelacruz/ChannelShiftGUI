@@ -50,12 +50,12 @@ manipulating RGB color channels.
 The basic features of this tool allow you to shift color channels vertically and
 horizontally, as well as swap color channels with each other:
 
-![Basic Showcase](samples/basic-showcase.png)
+![Basic Showcase](../assets/samples/basic-showcase.png?raw=true)
 
 It also includes experimental shift types that modify how pixels are shifted,
 which can be combined for interesting effects:
 
-![Advanced Showcase](samples/advanced-showcase.png)
+![Advanced Showcase](../assets/samples/advanced-showcase.png?raw=true)
 
 
 ## Installation
@@ -107,7 +107,7 @@ Types](#experimental-shift-types-1).
 
 ## Controls
 
-![GUI](screenshots/gui.png)
+![GUI](../assets/screenshots/gui.png?raw=true)
 
 ### Color Channels
 
@@ -203,7 +203,7 @@ vertical shift is calculated.
 
 ### Scale
 
-![Scale shift type](samples/scale.png)
+![Scale shift type](../assets/samples/scale.png?raw=true)
 
 Scales the width and length of the channel by the specified multiplier.
 Multipliers greater than 1.0 shrink the image dimension and create a tiling
@@ -229,7 +229,7 @@ Where:
 
 ### Linear
 
-![Linear shift type](samples/linear.png)
+![Linear shift type](../assets/samples/linear.png?raw=true)
 
 Uses a linear equation to calculate shift offset.
 
@@ -290,7 +290,7 @@ Where:
 
 ### Skew
 
-![Skew shift type](samples/skew.png)
+![Skew shift type](../assets/samples/skew.png?raw=true)
 
 Skew/shear the channel.
 
@@ -324,7 +324,7 @@ Where:
 
 ### XY Multiply
 
-![XY Multiply shift type](samples/xy-mult.png)
+![XY Multiply shift type](../assets/samples/xy-mult.png?raw=true)
 
 Multiply the x/y coordinates of a pixel and divide it by the corresponding
 dimension, so the shift modifier becomes more drastic for one dimension as the
