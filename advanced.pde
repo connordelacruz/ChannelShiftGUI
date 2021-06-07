@@ -45,7 +45,6 @@ public class DefaultShiftType implements ShiftTypeState {
 public class ScaleShiftType implements ShiftTypeState {
   // Multiplier values specific to this shift type
   public float xMultiplier, yMultiplier;
-  // TODO negative multipliers?
 
   public ScaleShiftType(float xMult, float yMult) {
     xMultiplier = xMult;

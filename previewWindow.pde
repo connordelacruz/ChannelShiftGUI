@@ -18,7 +18,7 @@ public class WindowManager {
 
   public WindowManager() {
     width = height = 0;
-    maxWindowSize = 600;
+    maxWindowSize = 800;
     previewImgUpdated = true;
   }
 
