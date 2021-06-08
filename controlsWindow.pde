@@ -29,7 +29,7 @@ GPanel advancedOptionsPanel;
 GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
 // Per-Type configs
-GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel;
+GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel, noiseShiftTypePanel;
 // Default (just a label)
 GLabel defaultShiftConfigLabel;
 // Multiply
@@ -564,6 +564,7 @@ public void createAdvancedOptionsPanel() {
   createLinearShiftTypePanel();
   createSkewShiftTypePanel();
   createXYMultShiftTypePanel();
+  createNoiseShiftTypePanel();
 }
 
 // Helpers
@@ -590,7 +591,7 @@ public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
   shiftTypeConfigPanels[shiftTypeIndex] = panel;
 }
 
-// Shift Type Panels
+// Shift Type Panels ===========================================================
 
 public void createDefaultShiftTypePanel() {
   defaultShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
@@ -734,6 +735,16 @@ public void createXYMultShiftTypePanel() {
   // Add to advanced options
   advancedOptionsPanel.addControl(xyMultShiftTypePanel);
 }
+
+public void createNoiseShiftTypePanel() {
+  // TODO
+  noiseShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
+  setupShiftTypePanel(noiseShiftTypePanel, TYPE_NOISE);
+  // Add to advanced options
+  advancedOptionsPanel.addControl(noiseShiftTypePanel);
+}
+
+// Bottom Panels ===============================================================
 
 // Load/Save Panel -------------------------------------------------------------
 

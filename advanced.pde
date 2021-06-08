@@ -2,21 +2,22 @@
 // Globals, logic, and event handlers related to advanced shift type options
 // =============================================================================
 
-// Constants ===================================================================
+// CONSTANTS ===================================================================
 
 // Names of different shift types
-String[] SHIFT_TYPES = new String[]{"Default", "Scale", "Linear", "Skew", "XY Multiply"};
+String[] SHIFT_TYPES = new String[]{"Default", "Scale", "Linear", "Skew", "XY Multiply", "Noise"};
 // Indexes
 int TYPE_DEFAULT = 0;
 int TYPE_SCALE = 1;
 int TYPE_LINEAR = 2;
 int TYPE_SKEW = 3;
 int TYPE_XYMULT = 4;
+int TYPE_NOISE = 5;
 // Total # of shift types
 int TOTAL_SHIFT_TYPES = SHIFT_TYPES.length;
 
 
-// Manager/State Classes =======================================================
+// SHIFT TYPES =================================================================
 
 // Shift Type Interface --------------------------------------------------------
 
@@ -212,7 +213,6 @@ public class XYMultShiftType implements ShiftTypeState {
     this(true, true, false, true);
   }
 
-  // TODO flip divisor? (w/o dividing by 0)
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     if (horizontal)
       return x + shift + (multX ? (int)(xSign*x*y / height) : 0);
@@ -242,7 +242,53 @@ public class XYMultShiftType implements ShiftTypeState {
   public boolean isPositiveY() { return ySign > 0.0; }
 }
 
-// Manager ---------------------------------------------------------------------
+// Noise -----------------------------------------------------------------------
+
+public class NoiseShiftType implements ShiftTypeState {
+  public float xNoiseStart, yNoiseStart;
+  public float xNoiseIncrement, yNoiseIncrement;
+  public float noiseMultiplier;
+
+  // TODO: noiseSeed??
+  public NoiseShiftType(float xNoiseStart, float yNoiseStart, float xNoiseIncrement, float yNoiseIncrement, float noiseMultiplier) {
+    this.xNoiseStart = xNoiseStart;
+    this.yNoiseStart = yNoiseStart;
+    this.xNoiseIncrement = xNoiseIncrement;
+    this.yNoiseIncrement = yNoiseIncrement;
+    this.noiseMultiplier = noiseMultiplier;
+  }
+
+  public NoiseShiftType() {
+    this(0.01, 0.01, 0.01, 0.01, 20.0);
+  }
+
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
+    float xNoise = xNoiseStart + (xNoiseIncrement * x);
+    float yNoise = yNoiseStart + (yNoiseIncrement * y);
+    return (horizontal ? x : y) + shift + (int)(noiseMultiplier * noise(xNoise, yNoise));
+  }
+
+  public String stringifyStep() {
+    String step = "-noise-";
+    // TODO FINISH
+    return step;
+  }
+  
+  // Setters
+  public void setXNoiseStart(float val) { xNoiseStart = val; }
+  public void setYNoiseStart(float val) { yNoiseStart = val; }
+  public void setXNoiseIncrement(float val) { xNoiseIncrement = val; }
+  public void setYNoiseIncrement(float val) { yNoiseIncrement = val; }
+  public void setNoiseMultiplier(float val) { noiseMultiplier = val; }
+  // Getters
+  public float getXNoiseStart() { return xNoiseStart; }
+  public float getYNoiseStart() { return yNoiseStart; }
+  public float getXNoiseIncrement() { return xNoiseIncrement; }
+  public float getYNoiseIncrement() { return yNoiseIncrement; }
+  public float getNoiseMultiplier() { return noiseMultiplier; }
+}
+
+// Manager =====================================================================
 
 public class ShiftTypeManager {
   // Array of state objects
@@ -258,6 +304,7 @@ public class ShiftTypeManager {
     shiftTypes[TYPE_LINEAR] = new LinearShiftType();
     shiftTypes[TYPE_SKEW] = new SkewShiftType();
     shiftTypes[TYPE_XYMULT] = new XYMultShiftType();
+    shiftTypes[TYPE_NOISE] = new NoiseShiftType();
     // Start w/ default
     state = TYPE_DEFAULT;
   }
@@ -343,6 +390,38 @@ public class ShiftTypeManager {
   }
   public boolean xymult_isPositiveY() {
     return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveY();
+  }
+
+  // Noise
+  public void noise_setXNoiseStart(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setXNoiseStart(val);
+  }
+  public float noise_xNoiseStart() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getXNoiseStart();
+  }
+  public void noise_setYNoiseStart(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setYNoiseStart(val);
+  }
+  public float noise_yNoiseStart() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getYNoiseStart();
+  }
+  public void noise_setXNoiseIncrement(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setXNoiseIncrement(val);
+  }
+  public float noise_xNoiseIncrement() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getXNoiseIncrement();
+  }
+  public void noise_setYNoiseIncrement(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setYNoiseIncrement(val);
+  }
+  public float noise_yNoiseIncrement() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getYNoiseIncrement();
+  }
+  public void noise_setNoiseMultiplier(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setNoiseMultiplier(val);
+  }
+  public float noise_noiseMultiplier() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getNoiseMultiplier();
   }
 
 }
@@ -495,4 +574,7 @@ public void multYNegativeCheckbox_click(GCheckbox source, GEvent event) {
   shiftTypeManager.xymult_setYSign(!source.isSelected());
   showPreview();
 }
+
+// Noise Configs ---------------------------------------------------------------
+// TODO Configs
 
