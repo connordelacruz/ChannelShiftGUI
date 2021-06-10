@@ -576,5 +576,97 @@ public void multYNegativeCheckbox_click(GCheckbox source, GEvent event) {
 }
 
 // Noise Configs ---------------------------------------------------------------
-// TODO Configs
 
+// Noise Start
+
+void noiseStartInputEventHandler(GTextField source, GEvent event, boolean isX) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val >= 0.0) {
+        if (isX)
+          shiftTypeManager.noise_setXNoiseStart(val);
+        else
+          shiftTypeManager.noise_setYNoiseStart(val);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + (isX ? shiftTypeManager.noise_xNoiseStart() : shiftTypeManager.noise_yNoiseStart()));
+      break;
+    default:
+      break;
+  }
+}
+
+public void xNoiseStartInput_change(GTextField source, GEvent event) {
+  noiseStartInputEventHandler(source, event, true);
+}
+
+public void yNoiseStartInput_change(GTextField source, GEvent event) {
+  noiseStartInputEventHandler(source, event, false);
+}
+
+// Noise Increment
+
+void noiseIncrementInputEventHandler(GTextField source, GEvent event, boolean isX) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val >= 0.0) {
+        if (isX)
+          shiftTypeManager.noise_setXNoiseIncrement(val);
+        else
+          shiftTypeManager.noise_setYNoiseIncrement(val);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + (isX ? shiftTypeManager.noise_xNoiseIncrement() : shiftTypeManager.noise_yNoiseIncrement()));
+      break;
+    default:
+      break;
+  }
+}
+
+public void xNoiseIncrementInput_change(GTextField source, GEvent event) {
+  noiseIncrementInputEventHandler(source, event, true);
+}
+
+public void yNoiseIncrementInput_change(GTextField source, GEvent event) {
+  noiseIncrementInputEventHandler(source, event, false);
+}
+
+// Noise Multiplier
+
+public void noiseMultiplierInput_change(GTextField source, GEvent event) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val >= 0.0) {
+        shiftTypeManager.noise_setNoiseMultiplier(val);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + shiftTypeManager.noise_noiseMultiplier());
+      break;
+    default:
+      break;
+  }
+}

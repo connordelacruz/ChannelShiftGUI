@@ -1,7 +1,10 @@
-// G4P Variable Declarations ===================================================
+// =============================================================================
+// G4P Variable Declarations
+// =============================================================================
 
-// Window ----------------------------------------------------------------------
+// WINDOW ======================================================================
 GWindow controlsWindow;
+// CHANNELS ====================================================================
 // Source Toggle ---------------------------------------------------------------
 GPanel srcChannelPanel;
 GToggleGroup srcChannelToggle; 
@@ -14,7 +17,7 @@ GToggleGroup targChannelToggle;
 ChannelOption targR, targG, targB; 
 // Keep track of toggles in global w/ index corresponding to channel
 ChannelOption[] targToggles;
-// Randomize Button/Toggles ----------------------------------------------------
+// RANDOMIZE ===================================================================
 // TODO checkbox for swapping channels
 GPanel randomizePanel, randomizeCheckboxPanel;
 GButton randomizeBtn; 
@@ -22,7 +25,7 @@ GCheckbox randSrcCheckbox, randTargCheckbox,
           randXShiftCheckbox, randYShiftCheckbox;
 GTextField randXMaxInput, randYMaxInput;
 GLabel randXMaxLabel, randYMaxLabel;
-// Advanced Options ------------------------------------------------------------
+// ADVANCED OPTIONS ============================================================
 // TODO randomize/reset buttons? add a randomize method to interface and call it on current state
 GPanel advancedOptionsPanel;
 // Type Select
@@ -30,31 +33,43 @@ GDropList shiftTypeSelect;
 GLabel shiftTypeLabel;
 // Per-Type configs
 GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel, noiseShiftTypePanel;
-// Default (just a label)
+// Keep track of shift type config panels w/ indices matching globals
+GPanel[] shiftTypeConfigPanels;
+// Default (just a label) ------------------------------------------------------
 GLabel defaultShiftConfigLabel;
-// Multiply
+// Multiply --------------------------------------------------------------------
 // TODO RENAME TO SCALE
 GLabel xMultiplierLabel, yMultiplierLabel;
 GTextField xMultiplierInput, yMultiplierInput;
 GTabManager multiplierTabManager;
-// Linear
+// Linear ----------------------------------------------------------------------
 GLabel linearCoeffLabel;
 GTextField linearCoeffInput;
 GToggleGroup linearEqTypeToggle;
 GOption linearYEquals, linearXEquals;
 GCheckbox linearNegativeCoeffCheckbox;
-// Skew
+// Skew ------------------------------------------------------------------------
 GLabel xSkewLabel, ySkewLabel;
 GTextField xSkewInput, ySkewInput;
 GTabManager skewTabManager;
 GCheckbox xSkewNegativeCheckbox, ySkewNegativeCheckbox;
-// X*Y
+// X*Y -------------------------------------------------------------------------
 GLabel multXLabel, multYLabel;
 GCheckbox multXCheckbox, multYCheckbox;
 GCheckbox multXNegativeCheckbox, multYNegativeCheckbox;
-
-// Keep track of shift type config panels w/ indices matching globals
-GPanel[] shiftTypeConfigPanels;
+// Noise -----------------------------------------------------------------------
+// Start
+GLabel xNoiseStartLabel, yNoiseStartLabel;
+GTextField xNoiseStartInput, yNoiseStartInput;
+// Increment
+GLabel xNoiseIncrementLabel, yNoiseIncrementLabel;
+GTextField xNoiseIncrementInput, yNoiseIncrementInput;
+// Multiplier
+GLabel noiseMultiplierLabel;
+GTextField noiseMultiplierInput;
+// Tab MGMT
+GTabManager noiseTabManager;
+// SHIFT =======================================================================
 // X Slider --------------------------------------------------------------------
 GPanel xShiftPanel;
 GSlider xSlider; 
@@ -67,6 +82,7 @@ GSlider ySlider;
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
 GTextField ySliderInput;
+// BOTTOM ======================================================================
 // Reset/Confirm Buttons -------------------------------------------------------
 GPanel resetConfirmPanel;
 GButton resetBtn, confirmBtn; 
@@ -77,7 +93,9 @@ GButton loadBtn;
 GButton saveBtn; 
 
 
-// Globals =====================================================================
+// =============================================================================
+// Globals
+// =============================================================================
 
 // Positioning -----------------------------------------------------------------
 // Start positioning at 10px to add some padding
@@ -249,6 +267,28 @@ int XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_XMULT_CHECKBOX_Y + XYMULT
 int XYMULT_CONFIG_Y_LABEL_Y = XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
 int XYMULT_CONFIG_YMULT_CHECKBOX_Y = XYMULT_CONFIG_Y_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
 int XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_YMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+// Noise -----------------------------------------------------------------------
+// Common Label/Input Values
+int NOISE_CONFIG_LABEL_FULL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int NOISE_CONFIG_LABEL_HALF_WIDTH = (TYPE_PANEL_WIDTH / 2) - X_MARGINS;
+int NOISE_CONFIG_LABEL_HEIGHT = 20;
+int NOISE_CONFIG_INPUT_FULL_WIDTH = NOISE_CONFIG_LABEL_FULL_WIDTH;
+int NOISE_CONFIG_INPUT_HALF_WIDTH = NOISE_CONFIG_LABEL_HALF_WIDTH;
+int NOISE_CONFIG_INPUT_HEIGHT = NOISE_CONFIG_LABEL_HEIGHT;
+int NOISE_CONFIG_LABEL_LEFT_X = X_MARGIN;
+int NOISE_CONFIG_LABEL_RIGHT_X = NOISE_CONFIG_LABEL_LEFT_X + NOISE_CONFIG_LABEL_HALF_WIDTH + X_MARGINS;
+int NOISE_CONFIG_INPUT_LEFT_X = X_MARGIN;
+int NOISE_CONFIG_INPUT_RIGHT_X = NOISE_CONFIG_INPUT_LEFT_X + NOISE_CONFIG_INPUT_HALF_WIDTH + X_MARGINS;
+// Noise Start Y
+int NOISE_CONFIG_LABEL_START_Y = PANEL_Y_START;
+int NOISE_CONFIG_INPUT_START_Y = NOISE_CONFIG_LABEL_START_Y + NOISE_CONFIG_LABEL_HEIGHT;
+// Noise Increment Y
+int NOISE_CONFIG_LABEL_INCREMENT_Y = NOISE_CONFIG_INPUT_START_Y + NOISE_CONFIG_LABEL_HEIGHT + Y_MARGIN;
+int NOISE_CONFIG_INPUT_INCREMENT_Y = NOISE_CONFIG_LABEL_INCREMENT_Y + NOISE_CONFIG_LABEL_HEIGHT;
+// Noise Multiplier Y
+int NOISE_CONFIG_LABEL_MULTIPLIER_Y = NOISE_CONFIG_INPUT_INCREMENT_Y + NOISE_CONFIG_LABEL_HEIGHT + Y_MARGIN;
+int NOISE_CONFIG_INPUT_MULTIPLIER_Y = NOISE_CONFIG_LABEL_MULTIPLIER_Y + NOISE_CONFIG_LABEL_HEIGHT;
+
 // Sliders ---------------------------------------------------------------------
 // General
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -741,9 +781,62 @@ public void createXYMultShiftTypePanel() {
 }
 
 public void createNoiseShiftTypePanel() {
-  // TODO
   noiseShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
   setupShiftTypePanel(noiseShiftTypePanel, TYPE_NOISE);
+  // X Noise Start
+  xNoiseStartLabel = new GLabel(controlsWindow, NOISE_CONFIG_LABEL_LEFT_X, NOISE_CONFIG_LABEL_START_Y, NOISE_CONFIG_LABEL_HALF_WIDTH, NOISE_CONFIG_LABEL_HEIGHT);
+  xNoiseStartLabel.setText("X Start:");
+  setupGeneralLabel(xNoiseStartLabel);
+  noiseShiftTypePanel.addControl(xNoiseStartLabel);
+  xNoiseStartInput = new GTextField(controlsWindow, NOISE_CONFIG_INPUT_LEFT_X, NOISE_CONFIG_INPUT_START_Y, NOISE_CONFIG_INPUT_HALF_WIDTH, NOISE_CONFIG_INPUT_HEIGHT);
+  xNoiseStartInput.setText("0.01"); // TODO pull from manager
+  xNoiseStartInput.addEventHandler(this, "xNoiseStartInput_change");
+  noiseShiftTypePanel.addControl(xNoiseStartInput);
+  // Y Noise Start
+  yNoiseStartLabel = new GLabel(controlsWindow, NOISE_CONFIG_LABEL_RIGHT_X, NOISE_CONFIG_LABEL_START_Y, NOISE_CONFIG_LABEL_HALF_WIDTH, NOISE_CONFIG_LABEL_HEIGHT);
+  yNoiseStartLabel.setText("Y Start:");
+  setupGeneralLabel(yNoiseStartLabel);
+  noiseShiftTypePanel.addControl(yNoiseStartLabel);
+  yNoiseStartInput = new GTextField(controlsWindow, NOISE_CONFIG_INPUT_RIGHT_X, NOISE_CONFIG_INPUT_START_Y, NOISE_CONFIG_INPUT_HALF_WIDTH, NOISE_CONFIG_INPUT_HEIGHT);
+  yNoiseStartInput.setText("0.01"); // TODO pull from manager
+  yNoiseStartInput.addEventHandler(this, "yNoiseStartInput_change");
+  noiseShiftTypePanel.addControl(yNoiseStartInput);
+  // X Noise Increment
+  xNoiseIncrementLabel = new GLabel(controlsWindow, NOISE_CONFIG_LABEL_LEFT_X, NOISE_CONFIG_LABEL_INCREMENT_Y, NOISE_CONFIG_LABEL_HALF_WIDTH, NOISE_CONFIG_LABEL_HEIGHT);
+  xNoiseIncrementLabel.setText("X Step:");
+  setupGeneralLabel(xNoiseIncrementLabel);
+  noiseShiftTypePanel.addControl(xNoiseIncrementLabel);
+  xNoiseIncrementInput = new GTextField(controlsWindow, NOISE_CONFIG_INPUT_LEFT_X, NOISE_CONFIG_INPUT_INCREMENT_Y, NOISE_CONFIG_INPUT_HALF_WIDTH, NOISE_CONFIG_INPUT_HEIGHT);
+  xNoiseIncrementInput.setText("0.01"); // TODO pull from manager
+  xNoiseIncrementInput.addEventHandler(this, "xNoiseIncrementInput_change");
+  noiseShiftTypePanel.addControl(xNoiseIncrementInput);
+  // Y Noise Increment
+  yNoiseIncrementLabel = new GLabel(controlsWindow, NOISE_CONFIG_LABEL_RIGHT_X, NOISE_CONFIG_LABEL_INCREMENT_Y, NOISE_CONFIG_LABEL_HALF_WIDTH, NOISE_CONFIG_LABEL_HEIGHT);
+  yNoiseIncrementLabel.setText("Y Step:");
+  setupGeneralLabel(yNoiseIncrementLabel);
+  noiseShiftTypePanel.addControl(yNoiseIncrementLabel);
+  yNoiseIncrementInput = new GTextField(controlsWindow, NOISE_CONFIG_INPUT_RIGHT_X, NOISE_CONFIG_INPUT_INCREMENT_Y, NOISE_CONFIG_INPUT_HALF_WIDTH, NOISE_CONFIG_INPUT_HEIGHT);
+  yNoiseIncrementInput.setText("0.01"); // TODO pull from manager
+  yNoiseIncrementInput.addEventHandler(this, "yNoiseIncrementInput_change");
+  noiseShiftTypePanel.addControl(yNoiseIncrementInput);
+  // Noise Multiplier
+  noiseMultiplierLabel = new GLabel(controlsWindow, NOISE_CONFIG_LABEL_LEFT_X, NOISE_CONFIG_LABEL_MULTIPLIER_Y, NOISE_CONFIG_LABEL_FULL_WIDTH, NOISE_CONFIG_LABEL_HEIGHT);
+  noiseMultiplierLabel.setText("Noise Multiplier:");
+  setupGeneralLabel(noiseMultiplierLabel);
+  noiseShiftTypePanel.addControl(noiseMultiplierLabel);
+  noiseMultiplierInput = new GTextField(controlsWindow, NOISE_CONFIG_INPUT_LEFT_X, NOISE_CONFIG_INPUT_MULTIPLIER_Y, NOISE_CONFIG_INPUT_FULL_WIDTH, NOISE_CONFIG_INPUT_HEIGHT);
+  noiseMultiplierInput.setText("20.0"); // TODO pull from manager
+  noiseMultiplierInput.addEventHandler(this, "noiseMultiplierInput_change");
+  noiseShiftTypePanel.addControl(noiseMultiplierInput);
+
+  // Tab manager for inputs
+  noiseTabManager = new GTabManager();
+  noiseTabManager.addControls(
+      xNoiseStartInput, yNoiseStartInput,
+      xNoiseIncrementInput, yNoiseIncrementInput,
+      noiseMultiplierInput
+      );
+
   // Add to advanced options
   advancedOptionsPanel.addControl(noiseShiftTypePanel);
 }
