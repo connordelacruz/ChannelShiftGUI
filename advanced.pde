@@ -269,8 +269,7 @@ public class NoiseShiftType implements ShiftTypeState {
   }
 
   public String stringifyStep() {
-    String step = "-noise-";
-    // TODO FINISH
+    String step = "-noise-x" + xNoiseStart + "+" + xNoiseIncrement + "-y" + yNoiseStart + "+" + yNoiseIncrement + "mult" + noiseMultiplier;
     return step;
   }
   
