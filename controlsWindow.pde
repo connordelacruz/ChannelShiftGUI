@@ -25,6 +25,7 @@ GCheckbox randSrcCheckbox, randTargCheckbox,
           randXShiftCheckbox, randYShiftCheckbox;
 GTextField randXMaxInput, randYMaxInput;
 GLabel randXMaxLabel, randYMaxLabel;
+GTabManager randMaxTabManager;
 // ADVANCED OPTIONS ============================================================
 // TODO randomize/reset buttons? add a randomize method to interface and call it on current state
 GPanel advancedOptionsPanel;
@@ -142,24 +143,24 @@ int RAND_PANEL_Y = Y_START;
 // Fill rest of window (minus right margin)
 int RAND_PANEL_WIDTH = WINDOW_MAIN_WIDTH - RAND_PANEL_X - X_MARGIN;
 // Randomize Checkboxes + Panel
-int RAND_CHECKBOX_PANEL_X = 0; 
+int RAND_CHECKBOX_PANEL_X = X_MARGIN; 
 int RAND_CHECKBOX_PANEL_Y = PANEL_Y_START;
-int RAND_CHECKBOX_PANEL_WIDTH = RAND_PANEL_WIDTH;
+int RAND_CHECKBOX_PANEL_WIDTH = RAND_PANEL_WIDTH - X_MARGINS;
 // Half of panel width, 2 checkboxes per row
-int RAND_CHECKBOX_WIDTH = RAND_CHECKBOX_PANEL_WIDTH / 2;
+int RAND_CHECKBOX_WIDTH = (RAND_CHECKBOX_PANEL_WIDTH / 2) - X_MARGINS;
 int RAND_CHECKBOX_HEIGHT = 30;
 // Checkbox positioning
 int RAND_CHECKBOX_LEFT_X = 0;
-int RAND_CHECKBOX_RIGHT_X = RAND_CHECKBOX_WIDTH;
+int RAND_CHECKBOX_RIGHT_X = RAND_CHECKBOX_LEFT_X + RAND_CHECKBOX_WIDTH + X_MARGINS;
 int RAND_CHECKBOX_TOP_Y = 0;
 int RAND_CHECKBOX_BOTTOM_Y = RAND_CHECKBOX_HEIGHT;
 int RAND_CHECKBOX_PANEL_HEIGHT = 2 * RAND_CHECKBOX_HEIGHT; 
 // Max Shift Inputs
 // Labels are full width for text alignment
-int RAND_MAX_LABEL_WIDTH = RAND_CHECKBOX_WIDTH;
+int RAND_MAX_LABEL_WIDTH = RAND_PANEL_WIDTH / 2;
 int RAND_MAX_LABEL_HEIGHT = 20;
 // Inputs have margins (so they don't overlap)
-int RAND_MAX_INPUT_WIDTH = RAND_CHECKBOX_WIDTH - X_MARGINS;
+int RAND_MAX_INPUT_WIDTH = RAND_MAX_LABEL_WIDTH - X_MARGINS;
 int RAND_MAX_INPUT_HEIGHT = 20;
 int RAND_MAX_TOTAL_HEIGHT = RAND_MAX_LABEL_HEIGHT + RAND_MAX_INPUT_HEIGHT + Y_MARGIN;
 int RAND_MAX_LABEL_Y = RAND_CHECKBOX_PANEL_Y + RAND_CHECKBOX_PANEL_HEIGHT;
@@ -584,6 +585,10 @@ public void createRandomizePanel() {
   randYMaxInput.setText("100");
   randYMaxInput.addEventHandler(this, "randYMaxInput_change");
   randomizePanel.addControl(randYMaxInput);
+
+  // Tab manager for text inputs
+  randMaxTabManager = new GTabManager();
+  randMaxTabManager.addControls(randXMaxInput, randYMaxInput);
 }
 
 // Shift Type Panel ------------------------------------------------------------
