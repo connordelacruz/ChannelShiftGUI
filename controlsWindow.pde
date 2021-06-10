@@ -93,8 +93,9 @@ int X_MARGINS = 2 * X_MARGIN;
 // Panel labels are ~20, add this so children don't overlap
 int PANEL_Y_START = 20;
 // Window ----------------------------------------------------------------------
-int WINDOW_X = 10;
-int WINDOW_Y = 10;
+// x/y to be set when creating window
+int WINDOW_X = 0;
+int WINDOW_Y = 0;
 int WINDOW_HEIGHT = 475;
 // The main sketch section
 int WINDOW_MAIN_WIDTH = 650;
@@ -305,6 +306,9 @@ public void createGUI(){
   G4P.setMouseOverEnabled(false);
   surface.setTitle("Sketch Window");
   // Controls window 
+  // displayWidth doesn't seem to work when declared at the top level, so defining x and y here
+  WINDOW_X = (displayWidth / 2) - (WINDOW_WIDTH + 50);
+  WINDOW_Y = (displayHeight / 2) - (WINDOW_HEIGHT / 2);
   controlsWindow = GWindow.getWindow(this, "Channel Shift", WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
   controlsWindow.noLoop();
   controlsWindow.setActionOnClose(G4P.KEEP_OPEN);

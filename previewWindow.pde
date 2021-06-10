@@ -29,6 +29,7 @@ public class WindowManager {
     width = dimensions[0];
     height = dimensions[1];
     surface.setSize(width, height);
+    surface.setLocation((displayWidth / 2) + 50, (displayHeight / 2) - (height / 2));
   }
 
   public void previewImgUpdated(boolean wasUpdated) {
