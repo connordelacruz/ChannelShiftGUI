@@ -98,6 +98,7 @@ GButton saveBtn;
 // Globals
 // =============================================================================
 
+// COMMON ======================================================================
 // Positioning -----------------------------------------------------------------
 // Start positioning at 10px to add some padding
 int X_START = 10;
@@ -111,7 +112,7 @@ int X_MARGINS = 2 * X_MARGIN;
 // Panels ----------------------------------------------------------------------
 // Panel labels are ~20, add this so children don't overlap
 int PANEL_Y_START = 20;
-// Window ----------------------------------------------------------------------
+// WINDOW ======================================================================
 // x/y to be set when creating window
 int WINDOW_X = 0;
 int WINDOW_Y = 0;
@@ -122,27 +123,29 @@ int WINDOW_MAIN_WIDTH = 650;
 int WINDOW_ADV_WIDTH = 200;
 // Total width
 int WINDOW_WIDTH = WINDOW_MAIN_WIDTH + WINDOW_ADV_WIDTH;
-// Toggles ---------------------------------------------------------------------
-// General
+// CHANNELS ====================================================================
+// TODO make parent panel
+// General ---------------------------------------------------------------------
 int CHANNEL_TOGGLE_WIDTH = 150;
 int CHANNEL_TOGGLE_HEIGHT = 25;
 int CHANNEL_PANEL_HEIGHT = 3 * CHANNEL_TOGGLE_HEIGHT + PANEL_Y_START;
 int R_CHANNEL_Y = PANEL_Y_START;
 int G_CHANNEL_Y = PANEL_Y_START + CHANNEL_TOGGLE_HEIGHT;
 int B_CHANNEL_Y = PANEL_Y_START + 2 * CHANNEL_TOGGLE_HEIGHT;
-// Source
+// Source ----------------------------------------------------------------------
 int SRC_CHANNEL_X = X_START;
 int SRC_CHANNEL_Y = Y_START;
-// Target
+// Target ----------------------------------------------------------------------
 int TARG_CHANNEL_X = SRC_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
 int TARG_CHANNEL_Y = Y_START;
-// Randomize Button/Toggles ----------------------------------------------------
+// RANDOMIZE ===================================================================
+// Panel -----------------------------------------------------------------------
 // End of target channel panel + margins
 int RAND_PANEL_X = TARG_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
 int RAND_PANEL_Y = Y_START;
 // Fill rest of window (minus right margin)
 int RAND_PANEL_WIDTH = WINDOW_MAIN_WIDTH - RAND_PANEL_X - X_MARGIN;
-// Randomize Checkboxes + Panel
+// Randomize Checkboxes + Panel ------------------------------------------------
 int RAND_CHECKBOX_PANEL_X = X_MARGIN; 
 int RAND_CHECKBOX_PANEL_Y = PANEL_Y_START;
 int RAND_CHECKBOX_PANEL_WIDTH = RAND_PANEL_WIDTH - X_MARGINS;
@@ -155,7 +158,7 @@ int RAND_CHECKBOX_RIGHT_X = RAND_CHECKBOX_LEFT_X + RAND_CHECKBOX_WIDTH + X_MARGI
 int RAND_CHECKBOX_TOP_Y = 0;
 int RAND_CHECKBOX_BOTTOM_Y = RAND_CHECKBOX_HEIGHT;
 int RAND_CHECKBOX_PANEL_HEIGHT = 2 * RAND_CHECKBOX_HEIGHT; 
-// Max Shift Inputs
+// Max Shift Inputs ------------------------------------------------------------
 // Labels are full width for text alignment
 int RAND_MAX_LABEL_WIDTH = RAND_PANEL_WIDTH / 2;
 int RAND_MAX_LABEL_HEIGHT = 20;
@@ -170,35 +173,37 @@ int RAND_MAX_LABEL_LEFT_X = 0;
 int RAND_MAX_INPUT_LEFT_X = X_MARGIN;
 int RAND_MAX_LABEL_RIGHT_X = RAND_MAX_LABEL_WIDTH;
 int RAND_MAX_INPUT_RIGHT_X = RAND_MAX_INPUT_LEFT_X + RAND_MAX_INPUT_WIDTH + X_MARGINS;
-// Randomize Button
+// Randomize Button ------------------------------------------------------------
 int RAND_BTN_WIDTH = RAND_PANEL_WIDTH;
 int RAND_BTN_HEIGHT = 30;
 int RAND_BTN_X = 0;
 int RAND_BTN_Y = RAND_MAX_LABEL_Y + RAND_MAX_TOTAL_HEIGHT;
 int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
-// Shift Type Select -----------------------------------------------------------
-// Panel
+// SHIFT TYPE SELECT ===========================================================
+// Panel -----------------------------------------------------------------------
 int ADV_OPTS_PANEL_X = WINDOW_MAIN_WIDTH + X_MARGIN;
 int ADV_OPTS_PANEL_Y = Y_START;
 int ADV_OPTS_PANEL_WIDTH = WINDOW_ADV_WIDTH - X_MARGINS;
 int ADV_OPTS_PANEL_HEIGHT = WINDOW_HEIGHT - (2 * Y_MARGIN);
-// Label
+// Label -----------------------------------------------------------------------
 int TYPE_LABEL_X = X_MARGIN;
 int TYPE_LABEL_Y = PANEL_Y_START;
 int TYPE_LABEL_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
 int TYPE_LABEL_HEIGHT = 20;
-// Dropdown
+// Dropdown --------------------------------------------------------------------
 int TYPE_SELECT_X = X_MARGIN;
 int TYPE_SELECT_Y = TYPE_LABEL_Y + TYPE_LABEL_HEIGHT;
 int TYPE_SELECT_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
 int TYPE_SELECT_HEIGHT = 100; 
 int TYPE_SELECT_MAX_ITEMS = 4;
 int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
-// Common shift type configs
+// ADVANCED ====================================================================
+// Panel -----------------------------------------------------------------------
 int TYPE_PANEL_X = 0;
 int TYPE_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
 int TYPE_PANEL_WIDTH = ADV_OPTS_PANEL_WIDTH;
 int TYPE_PANEL_HEIGHT = ADV_OPTS_PANEL_HEIGHT - TYPE_PANEL_Y;
+// SHIFT TYPES =================================================================
 // Default Shift Type Panel ----------------------------------------------------
 int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
 int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
@@ -290,8 +295,8 @@ int NOISE_CONFIG_INPUT_INCREMENT_Y = NOISE_CONFIG_LABEL_INCREMENT_Y + NOISE_CONF
 int NOISE_CONFIG_LABEL_MULTIPLIER_Y = NOISE_CONFIG_INPUT_INCREMENT_Y + NOISE_CONFIG_LABEL_HEIGHT + Y_MARGIN;
 int NOISE_CONFIG_INPUT_MULTIPLIER_Y = NOISE_CONFIG_LABEL_MULTIPLIER_Y + NOISE_CONFIG_LABEL_HEIGHT;
 
-// Sliders ---------------------------------------------------------------------
-// General
+// SHIFT SLIDERS ===============================================================
+// General ---------------------------------------------------------------------
 int SLIDER_TOGGLE_WIDTH = 75;
 int SLIDER_INPUT_WIDTH = 75;
 int SLIDER_INPUT_HEIGHT = 20;
@@ -308,13 +313,13 @@ int SLIDER_Y = PANEL_Y_START;
 int SLIDER_TOGGLE_X = SLIDER_X + SLIDER_WIDTH;
 int SLIDER_PERCENT_TOGGLE_Y = PANEL_Y_START;
 int SLIDER_PIXELS_TOGGLE_Y = SLIDER_PERCENT_TOGGLE_Y + SLIDER_TOGGLE_HEIGHT;
-// Horizontal Shift
+// Horizontal Shift ------------------------------------------------------------
 int X_SLIDER_PANEL_X = X_START; 
 int X_SLIDER_PANEL_Y = RAND_PANEL_Y + RAND_PANEL_HEIGHT + Y_MARGIN; 
-// Vertical Shift
+// Vertical Shift --------------------------------------------------------------
 int Y_SLIDER_PANEL_X = X_START; 
 int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
-// Load/Save Buttons -----------------------------------------------------------
+// LOAD/SAVE BUTTONS ===========================================================
 int LOAD_SAVE_PANEL_X = X_START;
 int LOAD_SAVE_PANEL_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
 int LOAD_SAVE_PANEL_WIDTH = WINDOW_MAIN_WIDTH / 2 - X_MARGINS;
@@ -324,7 +329,7 @@ int LOAD_BTN_X = 0;
 int LOAD_BTN_Y = 0;
 int SAVE_BTN_X = 0;
 int SAVE_BTN_Y = LOAD_BTN_Y + LOAD_SAVE_BTN_HEIGHT + Y_MARGIN;
-// Reset/Confirm Buttons -------------------------------------------------------
+// RESET/CONFIRM BUTTONS =======================================================
 int RESET_CONFIRM_PANEL_X = LOAD_SAVE_PANEL_X + LOAD_SAVE_PANEL_WIDTH + X_MARGINS;
 int RESET_CONFIRM_PANEL_Y = LOAD_SAVE_PANEL_Y;
 int RESET_CONFIRM_PANEL_WIDTH = LOAD_SAVE_PANEL_WIDTH;
@@ -339,7 +344,11 @@ int RECURSIVE_CHECKBOX_X = 0;
 int RECURSIVE_CHECKBOX_Y = CONFIRM_BTN_Y + RESET_CONFIRM_BTN_HEIGHT;
 
 
-// Initialization ==============================================================
+// =============================================================================
+// Create GUI
+// =============================================================================
+
+// WINDOW ======================================================================
 
 public void createGUI(){
   G4P.messagesEnabled(false);
@@ -416,7 +425,7 @@ public void togglePanelVisibility(GPanel panel, boolean show) {
   panel.setVisible(show);
 }
 
-// Channel Toggle Panels -------------------------------------------------------
+// CHANNEL TOGGLE PANELS =======================================================
 
 public void createChannelPanel(GPanel channelPanel, GToggleGroup channelToggle, ChannelOption R, ChannelOption G, ChannelOption B, boolean src) {
   // Configure options
@@ -464,7 +473,7 @@ public void createTargChannelPanel() {
 }
 
 
-// Channel Shift Panels --------------------------------------------------------
+// CHANNEL SHIFT PANELS ========================================================
 
 /**
  * Common setup for channel shift slider panels. GUI objects must be
@@ -534,7 +543,7 @@ public void createYShiftPanel() {
   createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderInput, "ySliderInput_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
 }
 
-// Randomize/Reset Button Panel ------------------------------------------------
+// RANDOMIZE/RESET BUTTON PANEL ================================================
 
 // TODO: extract common?
 public void createRandomizePanel() {
@@ -591,7 +600,7 @@ public void createRandomizePanel() {
   randMaxTabManager.addControls(randXMaxInput, randYMaxInput);
 }
 
-// Shift Type Panel ------------------------------------------------------------
+// SHIFT TYPE PANEL ============================================================
 
 // Advanced options panel
 public void createAdvancedOptionsPanel() {
@@ -640,7 +649,7 @@ public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
   shiftTypeConfigPanels[shiftTypeIndex] = panel;
 }
 
-// Shift Type Panels ===========================================================
+// SHIFT TYPE PANELS ===========================================================
 
 public void createDefaultShiftTypePanel() {
   defaultShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
@@ -846,7 +855,7 @@ public void createNoiseShiftTypePanel() {
   advancedOptionsPanel.addControl(noiseShiftTypePanel);
 }
 
-// Bottom Panels ===============================================================
+// BOTTOM PANELS ===============================================================
 
 // Load/Save Panel -------------------------------------------------------------
 
