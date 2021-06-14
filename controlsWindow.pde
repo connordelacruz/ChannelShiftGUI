@@ -345,10 +345,44 @@ int RECURSIVE_CHECKBOX_Y = CONFIRM_BTN_Y + RESET_CONFIRM_BTN_HEIGHT;
 
 
 // =============================================================================
-// Create GUI
+// COMMON SETUP HELPERS
 // =============================================================================
 
-// WINDOW ======================================================================
+// General Configs -------------------------------------------------------------
+
+// Common panel formatting
+public void setupGeneralPanel(GPanel panel) {
+  panel.setTextBold();
+  panel.setCollapsible(false);
+  panel.setDraggable(false);
+}
+// Common panel formatting w/ colorscheme
+public void setupGeneralPanel(GPanel panel, int colorScheme) {
+  setupGeneralPanel(panel);
+  panel.setLocalColorScheme(colorScheme);
+  panel.setOpaque(true);
+}
+
+// Common label formatting
+public void setupGeneralLabel(GLabel label) {
+  label.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
+  label.setTextBold();
+}
+
+// General Utilities -----------------------------------------------------------
+
+// Show/hide a panel (w/ collapse)
+public void togglePanelVisibility(GPanel panel, boolean show) {
+  panel.setCollapsed(!show);
+  panel.setVisible(show);
+}
+
+
+// =============================================================================
+// WINDOW 
+// =============================================================================
+
+// Setup -----------------------------------------------------------------------
 
 public void createGUI(){
   G4P.messagesEnabled(false);
@@ -384,48 +418,15 @@ public void createGUI(){
   controlsWindow.loop();
 }
 
-// Event Handlers ==============================================================
-
-// Controls Window -------------------------------------------------------------
+// Event Handlers --------------------------------------------------------------
 
 synchronized public void controlsWindow_draw(PApplet appc, GWinData data) { 
   appc.background(230);
 } 
 
-
-// Helpers =====================================================================
-
-// General Configs -------------------------------------------------------------
-// TODO extended class that uses these defaults?
-
-// Common panel formatting
-public void setupGeneralPanel(GPanel panel) {
-  panel.setTextBold();
-  panel.setCollapsible(false);
-  panel.setDraggable(false);
-}
-// Common panel formatting w/ colorscheme
-public void setupGeneralPanel(GPanel panel, int colorScheme) {
-  setupGeneralPanel(panel);
-  panel.setLocalColorScheme(colorScheme);
-  panel.setOpaque(true);
-}
-
-// Common label formatting
-public void setupGeneralLabel(GLabel label) {
-  label.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
-  label.setTextBold();
-}
-
-// General Utilities -----------------------------------------------------------
-
-// Show/hide a panel (w/ collapse)
-public void togglePanelVisibility(GPanel panel, boolean show) {
-  panel.setCollapsed(!show);
-  panel.setVisible(show);
-}
-
-// CHANNEL TOGGLE PANELS =======================================================
+// =============================================================================
+// CHANNEL TOGGLE PANELS
+// =============================================================================
 
 public void createChannelPanel(GPanel channelPanel, GToggleGroup channelToggle, ChannelOption R, ChannelOption G, ChannelOption B, boolean src) {
   // Configure options
@@ -473,7 +474,9 @@ public void createTargChannelPanel() {
 }
 
 
-// CHANNEL SHIFT PANELS ========================================================
+// =============================================================================
+// CHANNEL SHIFT PANELS 
+// =============================================================================
 
 /**
  * Common setup for channel shift slider panels. GUI objects must be
@@ -543,9 +546,10 @@ public void createYShiftPanel() {
   createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderInput, "ySliderInput_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
 }
 
-// RANDOMIZE/RESET BUTTON PANEL ================================================
+// =============================================================================
+// RANDOMIZE PANEL
+// =============================================================================
 
-// TODO: extract common?
 public void createRandomizePanel() {
   randomizePanel = new GPanel(controlsWindow, RAND_PANEL_X, RAND_PANEL_Y, RAND_PANEL_WIDTH, RAND_PANEL_HEIGHT, "Randomize Options");
   setupGeneralPanel(randomizePanel, GCScheme.CYAN_SCHEME);
@@ -600,9 +604,66 @@ public void createRandomizePanel() {
   randMaxTabManager.addControls(randXMaxInput, randYMaxInput);
 }
 
-// SHIFT TYPE PANEL ============================================================
 
-// Advanced options panel
+// =============================================================================
+// LOAD/SAVE/RESET/CONFIRM PANEL
+// =============================================================================
+
+// Load/Save Panel -------------------------------------------------------------
+
+public void createLoadSavePanel() {
+  loadSavePanel = new GPanel(controlsWindow, LOAD_SAVE_PANEL_X, LOAD_SAVE_PANEL_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_PANEL_HEIGHT);
+  setupGeneralPanel(loadSavePanel);
+  loadSavePanel.setOpaque(false);
+  // Load button
+  loadBtn = new GButton(controlsWindow, LOAD_BTN_X, LOAD_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
+  loadBtn.setText("Load Image");
+  loadBtn.setTextBold();
+  loadBtn.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
+  loadBtn.addEventHandler(this, "loadBtn_click");
+  loadSavePanel.addControl(loadBtn);
+  // Save button 
+  saveBtn = new GButton(controlsWindow, SAVE_BTN_X, SAVE_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
+  saveBtn.setText("Save Result");
+  saveBtn.setTextBold();
+  saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
+  saveBtn.addEventHandler(this, "saveBtn_click");
+  loadSavePanel.addControl(saveBtn);
+}
+
+// Preview/Confirm Panel -------------------------------------------------------
+
+public void createResetConfirmPanel() {
+  resetConfirmPanel = new GPanel(controlsWindow, RESET_CONFIRM_PANEL_X, RESET_CONFIRM_PANEL_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_PANEL_HEIGHT);
+  setupGeneralPanel(resetConfirmPanel);
+  resetConfirmPanel.setOpaque(false);
+  // Reset Button
+  resetBtn = new GButton(controlsWindow, RESET_BTN_X, RESET_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
+  resetBtn.setText("Reset Step");
+  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
+  resetBtn.addEventHandler(this, "resetBtn_click");
+  resetConfirmPanel.addControl(resetBtn);
+  // Confirm Button 
+  confirmBtn = new GButton(controlsWindow, CONFIRM_BTN_X, CONFIRM_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
+  confirmBtn.setText("Confirm Step");
+  confirmBtn.addEventHandler(this, "confirmBtn_click");
+  resetConfirmPanel.addControl(confirmBtn);
+  // Recursive checkbox
+  recursiveCheckbox = new GCheckbox(controlsWindow, RECURSIVE_CHECKBOX_X, RECURSIVE_CHECKBOX_Y, RESET_CONFIRM_PANEL_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
+  recursiveCheckbox.setSelected(true);
+  recursiveCheckbox.setText("Recursive", GAlign.CENTER, GAlign.MIDDLE);
+  recursiveCheckbox.setOpaque(true);
+  recursiveCheckbox.addEventHandler(this, "recursiveCheckbox_click");
+  resetConfirmPanel.addControl(recursiveCheckbox);
+}
+
+
+// =============================================================================
+// ADVANCED OPTIONS PANEL
+// =============================================================================
+
+// Setup -----------------------------------------------------------------------
+
 public void createAdvancedOptionsPanel() {
   advancedOptionsPanel = new GPanel(controlsWindow, ADV_OPTS_PANEL_X, ADV_OPTS_PANEL_Y, ADV_OPTS_PANEL_WIDTH, ADV_OPTS_PANEL_HEIGHT, "Advanced Options");
   setupGeneralPanel(advancedOptionsPanel, GCScheme.PURPLE_SCHEME);
@@ -625,7 +686,7 @@ public void createAdvancedOptionsPanel() {
   createNoiseShiftTypePanel();
 }
 
-// Helpers
+// Helpers ---------------------------------------------------------------------
 
 public void hideShiftTypePanel(GPanel panel) {
   togglePanelVisibility(panel, false);
@@ -638,7 +699,18 @@ public void showShiftTypePanel(GPanel panel) {
   togglePanelVisibility(panel, true);
 }
 
-// Type config panels (called above)
+// Event Handlers --------------------------------------------------------------
+
+public void shiftTypeSelect_change(GDropList source, GEvent event) {
+  // Hide previously selected panel
+  hideShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
+  shiftTypeManager.setShiftType(source.getSelectedIndex());
+  // Show newly selected panel
+  showShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
+  showPreview();
+}
+
+// Type config panels (called above) -------------------------------------------
 
 public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
   setupGeneralPanel(panel);
@@ -649,7 +721,13 @@ public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
   shiftTypeConfigPanels[shiftTypeIndex] = panel;
 }
 
-// SHIFT TYPE PANELS ===========================================================
+// =============================================================================
+// SHIFT TYPE CONFIGS 
+// =============================================================================
+
+// Default =====================================================================
+
+// Setup -----------------------------------------------------------------------
 
 public void createDefaultShiftTypePanel() {
   defaultShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
@@ -665,6 +743,11 @@ public void createDefaultShiftTypePanel() {
   // Add to advanced options
   advancedOptionsPanel.addControl(defaultShiftTypePanel);
 }
+
+
+// Scale =======================================================================
+
+// Setup -----------------------------------------------------------------------
 
 public void createScaleShiftTypePanel() {
   scaleShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
@@ -694,6 +777,43 @@ public void createScaleShiftTypePanel() {
   // Add to advanced options
   advancedOptionsPanel.addControl(scaleShiftTypePanel);
 }
+
+// Event Handlers --------------------------------------------------------------
+
+void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val > -1.0) {
+        shiftTypeManager.scale_setMultiplier(val, horizontal);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + shiftTypeManager.scale_getMultiplier(horizontal));
+      break;
+    default:
+      break;
+  }
+}
+
+public void xMultiplierInput_change(GTextField source, GEvent event) {
+  multiplierInputEventHandler(source, event, true);
+}
+
+public void yMultiplierInput_change(GTextField source, GEvent event) {
+  multiplierInputEventHandler(source, event, false);
+}
+
+
+// Linear ======================================================================
+
+// Setup -----------------------------------------------------------------------
 
 public void createLinearShiftTypePanel() {
   linearShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
@@ -731,6 +851,50 @@ public void createLinearShiftTypePanel() {
   advancedOptionsPanel.addControl(linearShiftTypePanel);
 }
 
+// Event Handlers --------------------------------------------------------------
+
+public void linearYEquals_clicked(GOption source, GEvent event) {
+  shiftTypeManager.linear_setEquationType(true);
+  showPreview();
+}
+
+public void linearXEquals_clicked(GOption source, GEvent event) {
+  shiftTypeManager.linear_setEquationType(false);
+  showPreview();
+}
+
+public void linearCoeffInput_change(GTextField source, GEvent event) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val > -1.0) {
+        shiftTypeManager.linear_setCoefficient(val);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + shiftTypeManager.linear_getCoefficient());
+      break;
+    default:
+      break;
+  }
+}
+
+public void linearNegativeCoeffCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.linear_setCoefficientSign(!source.isSelected());
+  showPreview();
+}
+
+
+// Skew ========================================================================
+
+// Setup -----------------------------------------------------------------------
+
 public void createSkewShiftTypePanel() {
   skewShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
   setupShiftTypePanel(skewShiftTypePanel, TYPE_SKEW);
@@ -766,6 +930,53 @@ public void createSkewShiftTypePanel() {
   advancedOptionsPanel.addControl(skewShiftTypePanel);
 }
 
+// Event Handlers --------------------------------------------------------------
+
+void skewInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val > -1.0) {
+        shiftTypeManager.skew_setSkew(val, horizontal);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + shiftTypeManager.skew_getSkew(horizontal));
+      break;
+    default:
+      break;
+  }
+}
+
+public void xSkewInput_change(GTextField source, GEvent event) {
+  skewInputEventHandler(source, event, true);
+}
+
+public void xSkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.skew_setSign(!source.isSelected(), true);
+  showPreview();
+}
+
+public void ySkewInput_change(GTextField source, GEvent event) {
+  skewInputEventHandler(source, event, false);
+}
+
+public void ySkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.skew_setSign(!source.isSelected(), false);
+  showPreview();
+}
+
+
+// X*Y =========================================================================
+
+// Setup -----------------------------------------------------------------------
+
 public void createXYMultShiftTypePanel() {
   xyMultShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
   setupShiftTypePanel(xyMultShiftTypePanel, TYPE_XYMULT);
@@ -793,6 +1004,33 @@ public void createXYMultShiftTypePanel() {
   // Add to advanced options
   advancedOptionsPanel.addControl(xyMultShiftTypePanel);
 }
+
+// Event Handlers --------------------------------------------------------------
+
+public void multXCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setMultX(source.isSelected());
+  showPreview();
+}
+
+public void multXNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setXSign(!source.isSelected());
+  showPreview();
+}
+
+public void multYCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setMultY(source.isSelected());
+  showPreview();
+}
+
+public void multYNegativeCheckbox_click(GCheckbox source, GEvent event) {
+  shiftTypeManager.xymult_setYSign(!source.isSelected());
+  showPreview();
+}
+
+
+// Noise =======================================================================
+
+// Setup -----------------------------------------------------------------------
 
 public void createNoiseShiftTypePanel() {
   noiseShiftTypePanel = new GPanel(controlsWindow, TYPE_PANEL_X, TYPE_PANEL_Y, TYPE_PANEL_WIDTH, TYPE_PANEL_HEIGHT);
@@ -855,53 +1093,99 @@ public void createNoiseShiftTypePanel() {
   advancedOptionsPanel.addControl(noiseShiftTypePanel);
 }
 
-// BOTTOM PANELS ===============================================================
+// Event Handlers --------------------------------------------------------------
 
-// Load/Save Panel -------------------------------------------------------------
+// Noise Start
 
-public void createLoadSavePanel() {
-  loadSavePanel = new GPanel(controlsWindow, LOAD_SAVE_PANEL_X, LOAD_SAVE_PANEL_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_PANEL_HEIGHT);
-  setupGeneralPanel(loadSavePanel);
-  loadSavePanel.setOpaque(false);
-  // Load button
-  loadBtn = new GButton(controlsWindow, LOAD_BTN_X, LOAD_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
-  loadBtn.setText("Load Image");
-  loadBtn.setTextBold();
-  loadBtn.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
-  loadBtn.addEventHandler(this, "loadBtn_click");
-  loadSavePanel.addControl(loadBtn);
-  // Save button 
-  saveBtn = new GButton(controlsWindow, SAVE_BTN_X, SAVE_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
-  saveBtn.setText("Save Result");
-  saveBtn.setTextBold();
-  saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  saveBtn.addEventHandler(this, "saveBtn_click");
-  loadSavePanel.addControl(saveBtn);
+void noiseStartInputEventHandler(GTextField source, GEvent event, boolean isX) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val >= 0.0) {
+        if (isX)
+          shiftTypeManager.noise_setXNoiseStart(val);
+        else
+          shiftTypeManager.noise_setYNoiseStart(val);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + (isX ? shiftTypeManager.noise_xNoiseStart() : shiftTypeManager.noise_yNoiseStart()));
+      break;
+    default:
+      break;
+  }
 }
 
-// Preview/Confirm Panel -------------------------------------------------------
+public void xNoiseStartInput_change(GTextField source, GEvent event) {
+  noiseStartInputEventHandler(source, event, true);
+}
 
-public void createResetConfirmPanel() {
-  resetConfirmPanel = new GPanel(controlsWindow, RESET_CONFIRM_PANEL_X, RESET_CONFIRM_PANEL_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_PANEL_HEIGHT);
-  setupGeneralPanel(resetConfirmPanel);
-  resetConfirmPanel.setOpaque(false);
-  // Reset Button
-  resetBtn = new GButton(controlsWindow, RESET_BTN_X, RESET_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
-  resetBtn.setText("Reset Step");
-  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
-  resetBtn.addEventHandler(this, "resetBtn_click");
-  resetConfirmPanel.addControl(resetBtn);
-  // Confirm Button 
-  confirmBtn = new GButton(controlsWindow, CONFIRM_BTN_X, CONFIRM_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
-  confirmBtn.setText("Confirm Step");
-  confirmBtn.addEventHandler(this, "confirmBtn_click");
-  resetConfirmPanel.addControl(confirmBtn);
-  // Recursive checkbox
-  recursiveCheckbox = new GCheckbox(controlsWindow, RECURSIVE_CHECKBOX_X, RECURSIVE_CHECKBOX_Y, RESET_CONFIRM_PANEL_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
-  recursiveCheckbox.setSelected(true);
-  recursiveCheckbox.setText("Recursive", GAlign.CENTER, GAlign.MIDDLE);
-  recursiveCheckbox.setOpaque(true);
-  recursiveCheckbox.addEventHandler(this, "recursiveCheckbox_click");
-  resetConfirmPanel.addControl(recursiveCheckbox);
+public void yNoiseStartInput_change(GTextField source, GEvent event) {
+  noiseStartInputEventHandler(source, event, false);
+}
+
+// Noise Increment
+
+void noiseIncrementInputEventHandler(GTextField source, GEvent event, boolean isX) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val >= 0.0) {
+        if (isX)
+          shiftTypeManager.noise_setXNoiseIncrement(val);
+        else
+          shiftTypeManager.noise_setYNoiseIncrement(val);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + (isX ? shiftTypeManager.noise_xNoiseIncrement() : shiftTypeManager.noise_yNoiseIncrement()));
+      break;
+    default:
+      break;
+  }
+}
+
+public void xNoiseIncrementInput_change(GTextField source, GEvent event) {
+  noiseIncrementInputEventHandler(source, event, true);
+}
+
+public void yNoiseIncrementInput_change(GTextField source, GEvent event) {
+  noiseIncrementInputEventHandler(source, event, false);
+}
+
+// Noise Multiplier
+
+public void noiseMultiplierInput_change(GTextField source, GEvent event) {
+  switch(event) {
+    case ENTERED:
+      // Unfocus on enter, then do same actions as LOST_FOCUS case
+      source.setFocus(false);
+    case LOST_FOCUS:
+      // Sanitize and update manager
+      float val = sanitizeFloatInputValue(source);
+      if (val >= 0.0) {
+        shiftTypeManager.noise_setNoiseMultiplier(val);
+        showPreview();
+      } 
+      // Update input text to match sanitized input 
+      // Also reverts input text in the event that it was not a valid numeric
+      // value after parsing
+      source.setText("" + shiftTypeManager.noise_noiseMultiplier());
+      break;
+    default:
+      break;
+  }
 }
 

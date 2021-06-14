@@ -53,19 +53,17 @@ void shiftChannel(PImage sourceImg, PImage targetImg, int xShift, int yShift, in
     for (int x = 0; x < targetImg.width; x++) {
       int yOffset = mod(shiftTypeManager.calculateShiftOffset(x, y, targetImg.width, targetImg.height, yShift, false), targetImg.height);
       int xOffset = mod(shiftTypeManager.calculateShiftOffset(x, y, targetImg.width, targetImg.height, xShift, true), targetImg.width);
-
       // Get source pixel and its RGB vals
       int sourceIndex = yOffset * sourceImg.width + xOffset;
       color sourcePixel = sourcePixels[sourceIndex];
       float[] sourceRGB = new float[]{ red(sourcePixel), green(sourcePixel), blue(sourcePixel) };
-
       // Get target pixel and its RGB vals
       int targetIndex = y * targetImg.width + x;
       color targetPixel = targetPixels[targetIndex];
       float[] targetRGB = new float[]{ red(targetPixel), green(targetPixel), blue(targetPixel) };
-
       // Swap source channel w/ target channel
       targetRGB[targetChannel] = sourceRGB[sourceChannel];
+      // TODO !!! targetRGB[sourceChannel] = sourceRGB[targetChannel] ???
       targetPixels[targetIndex] = color(targetRGB[0], targetRGB[1], targetRGB[2]);
     }
   }
