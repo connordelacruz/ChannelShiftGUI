@@ -2,25 +2,26 @@
 // Globals, logic, and event handlers related to advanced shift type options
 // =============================================================================
 
-// Constants ===================================================================
-
+// GLOBALS =====================================================================
 // Names of different shift types
-String[] SHIFT_TYPES = new String[]{"Default", "Scale", "Linear", "Skew", "XY Multiply"};
+String[] SHIFT_TYPES = new String[]{"Default", "Scale", "Linear", "Skew", "XY Multiply", "Noise"};
 // Indexes
 int TYPE_DEFAULT = 0;
 int TYPE_SCALE = 1;
 int TYPE_LINEAR = 2;
 int TYPE_SKEW = 3;
 int TYPE_XYMULT = 4;
+int TYPE_NOISE = 5;
 // Total # of shift types
 int TOTAL_SHIFT_TYPES = SHIFT_TYPES.length;
 
 
-// Manager/State Classes =======================================================
+// SHIFT TYPES =================================================================
 
 // Shift Type Interface --------------------------------------------------------
 
 public interface ShiftTypeState {
+  // TODO add public String typeName
   // Calculate offset for this shift type
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal);
   // String representation of this step
@@ -45,7 +46,6 @@ public class DefaultShiftType implements ShiftTypeState {
 public class ScaleShiftType implements ShiftTypeState {
   // Multiplier values specific to this shift type
   public float xMultiplier, yMultiplier;
-  // TODO negative multipliers?
 
   public ScaleShiftType(float xMult, float yMult) {
     xMultiplier = xMult;
@@ -213,7 +213,6 @@ public class XYMultShiftType implements ShiftTypeState {
     this(true, true, false, true);
   }
 
-  // TODO flip divisor? (w/o dividing by 0)
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     if (horizontal)
       return x + shift + (multX ? (int)(xSign*x*y / height) : 0);
@@ -243,7 +242,52 @@ public class XYMultShiftType implements ShiftTypeState {
   public boolean isPositiveY() { return ySign > 0.0; }
 }
 
-// Manager ---------------------------------------------------------------------
+// Noise -----------------------------------------------------------------------
+
+public class NoiseShiftType implements ShiftTypeState {
+  public float xNoiseStart, yNoiseStart;
+  public float xNoiseIncrement, yNoiseIncrement;
+  public float noiseMultiplier;
+
+  // TODO: noiseSeed??
+  public NoiseShiftType(float xNoiseStart, float yNoiseStart, float xNoiseIncrement, float yNoiseIncrement, float noiseMultiplier) {
+    this.xNoiseStart = xNoiseStart;
+    this.yNoiseStart = yNoiseStart;
+    this.xNoiseIncrement = xNoiseIncrement;
+    this.yNoiseIncrement = yNoiseIncrement;
+    this.noiseMultiplier = noiseMultiplier;
+  }
+
+  public NoiseShiftType() {
+    this(0.01, 0.01, 0.01, 0.01, 20.0);
+  }
+
+  public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
+    float xNoise = xNoiseStart + (xNoiseIncrement * x);
+    float yNoise = yNoiseStart + (yNoiseIncrement * y);
+    return (horizontal ? x : y) + shift + (int)(noiseMultiplier * noise(xNoise, yNoise));
+  }
+
+  public String stringifyStep() {
+    String step = "-noise-x" + xNoiseStart + "+" + xNoiseIncrement + "-y" + yNoiseStart + "+" + yNoiseIncrement + "mult" + noiseMultiplier;
+    return step;
+  }
+  
+  // Setters
+  public void setXNoiseStart(float val) { xNoiseStart = val; }
+  public void setYNoiseStart(float val) { yNoiseStart = val; }
+  public void setXNoiseIncrement(float val) { xNoiseIncrement = val; }
+  public void setYNoiseIncrement(float val) { yNoiseIncrement = val; }
+  public void setNoiseMultiplier(float val) { noiseMultiplier = val; }
+  // Getters
+  public float getXNoiseStart() { return xNoiseStart; }
+  public float getYNoiseStart() { return yNoiseStart; }
+  public float getXNoiseIncrement() { return xNoiseIncrement; }
+  public float getYNoiseIncrement() { return yNoiseIncrement; }
+  public float getNoiseMultiplier() { return noiseMultiplier; }
+}
+
+// Manager =====================================================================
 
 public class ShiftTypeManager {
   // Array of state objects
@@ -259,6 +303,7 @@ public class ShiftTypeManager {
     shiftTypes[TYPE_LINEAR] = new LinearShiftType();
     shiftTypes[TYPE_SKEW] = new SkewShiftType();
     shiftTypes[TYPE_XYMULT] = new XYMultShiftType();
+    shiftTypes[TYPE_NOISE] = new NoiseShiftType();
     // Start w/ default
     state = TYPE_DEFAULT;
   }
@@ -346,154 +391,37 @@ public class ShiftTypeManager {
     return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveY();
   }
 
-}
-
-
-// Event Handlers ==============================================================
-
-// Shift Type ------------------------------------------------------------------
-
-public void shiftTypeSelect_change(GDropList source, GEvent event) {
-  // Hide previously selected panel
-  hideShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
-  shiftTypeManager.setShiftType(source.getSelectedIndex());
-  // Show newly selected panel
-  showShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
-  showPreview();
-}
-
-// Scale Configs ---------------------------------------------------------------
-
-void multiplierInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
-  switch(event) {
-    case ENTERED:
-      // Unfocus on enter, then do same actions as LOST_FOCUS case
-      source.setFocus(false);
-    case LOST_FOCUS:
-      // Sanitize and update manager
-      float val = sanitizeFloatInputValue(source);
-      if (val > -1.0) {
-        shiftTypeManager.scale_setMultiplier(val, horizontal);
-        showPreview();
-      } 
-      // Update input text to match sanitized input 
-      // Also reverts input text in the event that it was not a valid numeric
-      // value after parsing
-      source.setText("" + shiftTypeManager.scale_getMultiplier(horizontal));
-      break;
-    default:
-      break;
+  // Noise
+  public void noise_setXNoiseStart(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setXNoiseStart(val);
   }
-}
-
-public void xMultiplierInput_change(GTextField source, GEvent event) {
-  multiplierInputEventHandler(source, event, true);
-}
-
-public void yMultiplierInput_change(GTextField source, GEvent event) {
-  multiplierInputEventHandler(source, event, false);
-}
-
-// Linear Configs --------------------------------------------------------------
-
-public void linearYEquals_clicked(GOption source, GEvent event) {
-  shiftTypeManager.linear_setEquationType(true);
-  showPreview();
-}
-
-public void linearXEquals_clicked(GOption source, GEvent event) {
-  shiftTypeManager.linear_setEquationType(false);
-  showPreview();
-}
-
-public void linearCoeffInput_change(GTextField source, GEvent event) {
-  switch(event) {
-    case ENTERED:
-      // Unfocus on enter, then do same actions as LOST_FOCUS case
-      source.setFocus(false);
-    case LOST_FOCUS:
-      // Sanitize and update manager
-      float val = sanitizeFloatInputValue(source);
-      if (val > -1.0) {
-        shiftTypeManager.linear_setCoefficient(val);
-        showPreview();
-      } 
-      // Update input text to match sanitized input 
-      // Also reverts input text in the event that it was not a valid numeric
-      // value after parsing
-      source.setText("" + shiftTypeManager.linear_getCoefficient());
-      break;
-    default:
-      break;
+  public float noise_xNoiseStart() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getXNoiseStart();
   }
-}
-
-public void linearNegativeCoeffCheckbox_click(GCheckbox source, GEvent event) {
-  shiftTypeManager.linear_setCoefficientSign(!source.isSelected());
-  showPreview();
-}
-
-// Skew Configs ----------------------------------------------------------------
-
-void skewInputEventHandler(GTextField source, GEvent event, boolean horizontal) {
-  switch(event) {
-    case ENTERED:
-      // Unfocus on enter, then do same actions as LOST_FOCUS case
-      source.setFocus(false);
-    case LOST_FOCUS:
-      // Sanitize and update manager
-      float val = sanitizeFloatInputValue(source);
-      if (val > -1.0) {
-        shiftTypeManager.skew_setSkew(val, horizontal);
-        showPreview();
-      } 
-      // Update input text to match sanitized input 
-      // Also reverts input text in the event that it was not a valid numeric
-      // value after parsing
-      source.setText("" + shiftTypeManager.skew_getSkew(horizontal));
-      break;
-    default:
-      break;
+  public void noise_setYNoiseStart(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setYNoiseStart(val);
   }
-}
+  public float noise_yNoiseStart() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getYNoiseStart();
+  }
+  public void noise_setXNoiseIncrement(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setXNoiseIncrement(val);
+  }
+  public float noise_xNoiseIncrement() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getXNoiseIncrement();
+  }
+  public void noise_setYNoiseIncrement(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setYNoiseIncrement(val);
+  }
+  public float noise_yNoiseIncrement() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getYNoiseIncrement();
+  }
+  public void noise_setNoiseMultiplier(float val) {
+    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setNoiseMultiplier(val);
+  }
+  public float noise_noiseMultiplier() {
+    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getNoiseMultiplier();
+  }
 
-public void xSkewInput_change(GTextField source, GEvent event) {
-  skewInputEventHandler(source, event, true);
-}
-
-public void xSkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
-  shiftTypeManager.skew_setSign(!source.isSelected(), true);
-  showPreview();
-}
-
-public void ySkewInput_change(GTextField source, GEvent event) {
-  skewInputEventHandler(source, event, false);
-}
-
-public void ySkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
-  shiftTypeManager.skew_setSign(!source.isSelected(), false);
-  showPreview();
-}
-
-// X*Y Configs -----------------------------------------------------------------
-
-public void multXCheckbox_click(GCheckbox source, GEvent event) {
-  shiftTypeManager.xymult_setMultX(source.isSelected());
-  showPreview();
-}
-
-public void multXNegativeCheckbox_click(GCheckbox source, GEvent event) {
-  shiftTypeManager.xymult_setXSign(!source.isSelected());
-  showPreview();
-}
-
-public void multYCheckbox_click(GCheckbox source, GEvent event) {
-  shiftTypeManager.xymult_setMultY(source.isSelected());
-  showPreview();
-}
-
-public void multYNegativeCheckbox_click(GCheckbox source, GEvent event) {
-  shiftTypeManager.xymult_setYSign(!source.isSelected());
-  showPreview();
 }
 

@@ -42,6 +42,9 @@ manipulating RGB color channels.
     * [XY Multiply](#xy-multiply)
         * [Options](#options-3)
         * [Shift Calculation](#shift-calculation-3)
+    * [Noise](#noise)
+        * [Options](#options-4)
+        * [Shift Calculation](#shift-calculation-4)
 
 <!-- vim-markdown-toc -->
 
@@ -367,4 +370,40 @@ Where:
 - `xSign` and `ySign`: 1 if positive coefficient, -1 if negative for the
   corresponding dimension
 
+
+### Noise
+
+![Noise shift type](../assets/samples/noise.png?raw=true)
+
+Apply [Perlin noise](https://en.wikipedia.org/wiki/Perlin_noise) to the shift amount.
+
+#### Options
+
+- **X Start:** Starting value for x noise
+- **Y Start:** Starting value for y noise
+- **X Step:** Amount to increment x by each time `noise()` is called. Use a smaller number for smoother results
+- **Y Step:** Amount to increment y by each time `noise()` is called. Use a smaller number for smoother results
+- **Noise Multiplier:** Value to multiply result of `noise()` by. Higher values create more drastic effects
+
+#### Shift Calculation
+
+**Horizontal Offset:**
+
+```
+x + shift + (int)(noiseMultiplier * noise(xNoise, yNoise))
+```
+
+**Vertical Offset:**
+
+
+```
+y + shift + (int)(noiseMultiplier * noise(xNoise, yNoise))
+```
+
+Where:
+
+- `x` and `y`: the coordinates of the pixel
+- `shift`: the horizontal/vertical shift amount
+- `noiseMultiplier`: the noise multiplier value
+- `xNoise` and `yNoise`: noise coordinates, calculated by adding offset to start value each time the corresponding coordinate (`x` or `y`) is incremented
 
