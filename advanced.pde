@@ -259,7 +259,7 @@ public class NoiseShiftType implements ShiftTypeState {
   }
 
   public NoiseShiftType() {
-    this(0.01, 0.01, 0.01, 0.01, 20.0);
+    this(0.01, 0.01, 0.001, 0.001, 25.0);
   }
 
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {

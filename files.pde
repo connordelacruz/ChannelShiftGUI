@@ -51,6 +51,7 @@ void loadImageFile(String path, String name) {
   imgManager.loadImageFile(path);
   // Update window size
   windowManager.updateWindowDimensions(imgManager.sourceImg);
+  // TODO UPDATE CONTROLS WINDOW?
   // Update imgFile (for default output name)
   imgFile = name;
   // Reset steps string

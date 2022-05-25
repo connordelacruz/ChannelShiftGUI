@@ -8,34 +8,43 @@
  * Manages the preview window dimensions
  */
 public class WindowManager {
-  // Window dimensions
-  public int width, height;
-  // Preview window size (does not affect output image size)
-  public int maxWindowSize;
+  // Window dimensions and position
+  public int windowWidth, windowHeight;
+  public int windowX, windowY;
   // Set to true if the preview image has been modified since the last time it
   // was rendered, telling the draw() method that it needs to be re-drawn
   public boolean previewImgUpdated;
 
   public WindowManager() {
-    width = height = 0;
-    maxWindowSize = 800;
-    previewImgUpdated = true;
+    this.windowWidth = this.windowHeight = 0;
+    this.previewImgUpdated = true;
+    surface.setTitle("Sketch Window");
   }
 
-  // Getter/Setter Methods
-
+  /**
+   * Set window size and position based on image dimensions
+   */
   public void updateWindowDimensions(PImage img) {
     int[] dimensions = calculateWindowDimensions(img);
-    width = dimensions[0];
-    height = dimensions[1];
-    surface.setSize(width, height);
-    surface.setLocation((displayWidth / 2) + 50, (displayHeight / 2) - (height / 2));
+    this.windowWidth = dimensions[0];
+    this.windowHeight = dimensions[1];
+    surface.setSize(this.windowWidth, this.windowHeight);
+    // Right side of the screen w/ 50 pixels for padding
+    this.windowX = displayWidth - this.windowWidth - 50;
+    // Vertically center
+    this.windowY = (displayHeight - this.windowHeight) / 2;
+    surface.setLocation(this.windowX, this.windowY);
   }
 
+  /**
+   * Tell window whether preview image was updated
+   */
   public void previewImgUpdated(boolean wasUpdated) {
     previewImgUpdated = wasUpdated;
   }
+
   public void previewImgUpdated() { previewImgUpdated(true); }
+
   public void previewImgDrawn() { previewImgUpdated(false); }
 
   // Display preview image
@@ -46,7 +55,7 @@ public class WindowManager {
       drawPreview(previewImg);
   }
   public void drawPreview(PImage previewImg) {
-    image(previewImg, 0, 0, width, height);
+    image(previewImg, 0, 0, this.windowWidth, this.windowHeight);
     previewImgDrawn();
   }
 
@@ -62,9 +71,14 @@ public class WindowManager {
     float ratio = (float) img.width/img.height;
     // Set longer side to maxWindowSize, then multiply ratio by the shorter side to
     // maintain aspect ratio
+    int maxWindowSize = 0;
+    // Portrait
     if (ratio < 1.0) {
+      maxWindowSize = displayHeight / 2;
       dimensions = new int[]{(int)(maxWindowSize * ratio), maxWindowSize};
+    // Landscape
     } else {
+      maxWindowSize = displayWidth / 2;
       dimensions = new int[]{maxWindowSize, (int)(maxWindowSize / ratio)};
     }
     return dimensions;

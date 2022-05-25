@@ -384,14 +384,13 @@ public void togglePanelVisibility(GPanel panel, boolean show) {
 
 // Setup -----------------------------------------------------------------------
 
-public void createGUI(){
+public void createGUI() {
   G4P.messagesEnabled(false);
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setMouseOverEnabled(false);
-  surface.setTitle("Sketch Window");
-  // Controls window 
-  // displayWidth doesn't seem to work when declared at the top level, so defining x and y here
-  WINDOW_X = (displayWidth / 2) - (WINDOW_WIDTH + 50);
+  // Put to the left of preview window w/ 50 pixels for padding
+  WINDOW_X = windowManager.windowX - (WINDOW_WIDTH + 50);
+  // Vertically center
   WINDOW_Y = (displayHeight / 2) - (WINDOW_HEIGHT / 2);
   controlsWindow = GWindow.getWindow(this, "Channel Shift", WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
   controlsWindow.noLoop();
@@ -1059,7 +1058,7 @@ public void createNoiseShiftTypePanel() {
   setupGeneralLabel(xNoiseIncrementLabel);
   noiseShiftTypePanel.addControl(xNoiseIncrementLabel);
   xNoiseIncrementInput = new GTextField(controlsWindow, NOISE_CONFIG_INPUT_LEFT_X, NOISE_CONFIG_INPUT_INCREMENT_Y, NOISE_CONFIG_INPUT_HALF_WIDTH, NOISE_CONFIG_INPUT_HEIGHT);
-  xNoiseIncrementInput.setText("0.01"); // TODO pull from manager
+  xNoiseIncrementInput.setText("0.001"); // TODO pull from manager
   xNoiseIncrementInput.addEventHandler(this, "xNoiseIncrementInput_change");
   noiseShiftTypePanel.addControl(xNoiseIncrementInput);
   // Y Noise Increment
@@ -1068,7 +1067,7 @@ public void createNoiseShiftTypePanel() {
   setupGeneralLabel(yNoiseIncrementLabel);
   noiseShiftTypePanel.addControl(yNoiseIncrementLabel);
   yNoiseIncrementInput = new GTextField(controlsWindow, NOISE_CONFIG_INPUT_RIGHT_X, NOISE_CONFIG_INPUT_INCREMENT_Y, NOISE_CONFIG_INPUT_HALF_WIDTH, NOISE_CONFIG_INPUT_HEIGHT);
-  yNoiseIncrementInput.setText("0.01"); // TODO pull from manager
+  yNoiseIncrementInput.setText("0.001"); // TODO pull from manager
   yNoiseIncrementInput.addEventHandler(this, "yNoiseIncrementInput_change");
   noiseShiftTypePanel.addControl(yNoiseIncrementInput);
   // Noise Multiplier
@@ -1077,7 +1076,7 @@ public void createNoiseShiftTypePanel() {
   setupGeneralLabel(noiseMultiplierLabel);
   noiseShiftTypePanel.addControl(noiseMultiplierLabel);
   noiseMultiplierInput = new GTextField(controlsWindow, NOISE_CONFIG_INPUT_LEFT_X, NOISE_CONFIG_INPUT_MULTIPLIER_Y, NOISE_CONFIG_INPUT_FULL_WIDTH, NOISE_CONFIG_INPUT_HEIGHT);
-  noiseMultiplierInput.setText("20.0"); // TODO pull from manager
+  noiseMultiplierInput.setText("25.0"); // TODO pull from manager
   noiseMultiplierInput.addEventHandler(this, "noiseMultiplierInput_change");
   noiseShiftTypePanel.addControl(noiseMultiplierInput);
 
