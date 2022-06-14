@@ -202,24 +202,31 @@ public class SkewShiftType implements ShiftTypeState {
 public class XYMultShiftType implements ShiftTypeState {
   public boolean multX, multY;
   public float xSign, ySign;
+  public boolean xDivWidth, yDivHeight;
+  // TODO: bool to div by different dimension?
 
-  public XYMultShiftType(boolean multX, boolean xPositive, boolean multY, boolean yPositive) {
+  public XYMultShiftType(boolean multX, boolean xPositive, boolean xDivWidth, 
+                         boolean multY, boolean yPositive, boolean yDivHeight) {
     this.multX = multX;
     this.multY = multY;
     this.xSign = xPositive ? 1 : -1;
     this.ySign = yPositive ? 1 : -1;
+    this.xDivWidth = xDivWidth;
+    this.yDivHeight = yDivHeight;
   }
   public XYMultShiftType() {
-    this(true, true, false, true);
+    this(true, true, true, false, true, true);
   }
 
+  // TODO: from old code: try dimension * shift instead of x*y?
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     if (horizontal)
-      return x + shift + (multX ? (int)(xSign*x*y / height) : 0);
+      return x + shift + (this.multX ? (int)(this.xSign*x*y / (this.xDivWidth ? width : 1)) : 0);
     else
-      return y + shift + (multY ? (int)(ySign*y*x / width) : 0);
+      return y + shift + (this.multY ? (int)(this.ySign*y*x / (this.yDivHeight ? height : 1)) : 0);
   }
 
+  // TODO: boolean xDivWidth and yDivHeight
   public String stringifyStep() {
     String step = "-xymult";
     if (multX)
@@ -230,16 +237,20 @@ public class XYMultShiftType implements ShiftTypeState {
   }
 
   // Setters
-  public void setMultX(boolean multiply) { multX = multiply; }
-  public void setMultY(boolean multiply) { multY = multiply; }
-  public void setXSign(boolean positive) { xSign = positive ? 1 : -1; }
-  public void setYSign(boolean positive) { ySign = positive ? 1 : -1; }
+  public void setMultX(boolean multiply) { this.multX = multiply; }
+  public void setMultY(boolean multiply) { this.multY = multiply; }
+  public void setXSign(boolean positive) { this.xSign = positive ? 1 : -1; }
+  public void setYSign(boolean positive) { this.ySign = positive ? 1 : -1; }
+  public void setXDivWidth(boolean divWidth) { this.xDivWidth = divWidth; }
+  public void setYDivHeight(boolean divHeight) { this.yDivHeight = divHeight; }
 
   // Getters
-  public boolean multX() { return multX; }
-  public boolean multY() { return multY; }
-  public boolean isPositiveX() { return xSign > 0.0; }
-  public boolean isPositiveY() { return ySign > 0.0; }
+  public boolean multX() { return this.multX; }
+  public boolean multY() { return this.multY; }
+  public boolean isPositiveX() { return this.xSign > 0.0; }
+  public boolean isPositiveY() { return this.ySign > 0.0; }
+  public boolean divideXByWidth() { return this.xDivWidth; }
+  public boolean divideYByHeight() { return this.yDivHeight; }
 }
 
 // Noise -----------------------------------------------------------------------
@@ -389,6 +400,18 @@ public class ShiftTypeManager {
   }
   public boolean xymult_isPositiveY() {
     return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveY();
+  }
+  public void xymult_setXDivWidth(boolean divWidth) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setXDivWidth(divWidth);
+  }
+  public boolean xymult_divideXByWidth() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).divideXByWidth();
+  }
+  public void xymult_setYDivHeight(boolean divHeight) {
+    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setYDivHeight(divHeight);
+  }
+  public boolean xymult_divideYByHeight() {
+    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).divideYByHeight();
   }
 
   // Noise
