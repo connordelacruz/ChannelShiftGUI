@@ -218,7 +218,7 @@ public class XYMultShiftType implements ShiftTypeState {
     this(true, true, true, false, true, true);
   }
 
-  // TODO: from old code: try dimension * shift instead of x*y?
+  // TODO: play around with this, find way to scale effect when divided by 1?
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     if (horizontal)
       return x + shift + (this.multX ? (int)(this.xSign*x*y / (this.xDivWidth ? width : 1)) : 0);
@@ -226,13 +226,12 @@ public class XYMultShiftType implements ShiftTypeState {
       return y + shift + (this.multY ? (int)(this.ySign*y*x / (this.yDivHeight ? height : 1)) : 0);
   }
 
-  // TODO: boolean xDivWidth and yDivHeight
   public String stringifyStep() {
     String step = "-xymult";
     if (multX)
-      step += (isPositiveX() ? "+" : "-") + "x";
+      step += (isPositiveX() ? "+" : "-") + "x" + (this.xDivWidth ? "divW" : "");
     if (multY)
-      step += (isPositiveY() ? "+" : "-") + "y";
+      step += (isPositiveY() ? "+" : "-") + "y" + (this.yDivHeight ? "divH" : "");
     return step;
   }
 
