@@ -48,8 +48,8 @@ public class ScaleShiftType implements ShiftTypeState {
   public float xMultiplier, yMultiplier;
 
   public ScaleShiftType(float xMult, float yMult) {
-    xMultiplier = xMult;
-    yMultiplier = yMult;
+    this.xMultiplier = xMult;
+    this.yMultiplier = yMult;
   }
 
   public ScaleShiftType() {
@@ -58,32 +58,33 @@ public class ScaleShiftType implements ShiftTypeState {
   }
 
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
-    return (int)(horizontal ? x * xMultiplier : y * yMultiplier) + shift; 
+    return (int)(horizontal ? x * this.xMultiplier : y * this.yMultiplier) + shift; 
   }
 
   public String stringifyStep() {
-    return "-scale-x" + xMultiplier + "y" + yMultiplier;
+    return "-scale-x" + this.xMultiplier + "y" + this.yMultiplier;
   }
 
   // Set multipliers
-  public void setXMultiplier(float val) { xMultiplier = val; }
-  public void setYMultiplier(float val) { yMultiplier = val; }
+  public void setXMultiplier(float val) { this.xMultiplier = val; }
+  public void setYMultiplier(float val) { this.yMultiplier = val; }
   public void setMultiplier(float val, boolean horizontal) {
     if (horizontal)
-      xMultiplier = val;
+      this.xMultiplier = val;
     else
-      yMultiplier = val;
+      this.yMultiplier = val;
   }
   public void setMultipliers(float xMult, float yMult) {
-    xMultiplier = xMult;
-    yMultiplier = yMult;
+    this.xMultiplier = xMult;
+    this.yMultiplier = yMult;
   }
 
   // Get multipliers
   public float getMultiplier(boolean horizontal) {
-    return horizontal ? xMultiplier : yMultiplier;
+    return horizontal ? this.xMultiplier : this.yMultiplier;
   }
 }
+
 
 // Linear ----------------------------------------------------------------------
 
