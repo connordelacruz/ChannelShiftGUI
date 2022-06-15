@@ -1,102 +1,5 @@
 // =============================================================================
-// G4P Variable Declarations
-// =============================================================================
-
-// WINDOW ======================================================================
-GWindow controlsWindow;
-// CHANNELS ====================================================================
-// Source Toggle ---------------------------------------------------------------
-GPanel srcChannelPanel;
-GToggleGroup srcChannelToggle; 
-ChannelOption srcR, srcG, srcB; 
-// Keep track of toggles in global w/ index corresponding to channel
-ChannelOption[] srcToggles;
-// Target Toggle ---------------------------------------------------------------
-GPanel targChannelPanel;
-GToggleGroup targChannelToggle; 
-ChannelOption targR, targG, targB; 
-// Keep track of toggles in global w/ index corresponding to channel
-ChannelOption[] targToggles;
-// RANDOMIZE ===================================================================
-// TODO checkbox for swapping channels
-GPanel randomizePanel, randomizeCheckboxPanel;
-GButton randomizeBtn; 
-GCheckbox randSrcCheckbox, randTargCheckbox, 
-          randXShiftCheckbox, randYShiftCheckbox;
-GTextField randXMaxInput, randYMaxInput;
-GLabel randXMaxLabel, randYMaxLabel;
-GTabManager randMaxTabManager;
-// ADVANCED OPTIONS ============================================================
-// TODO randomize/reset buttons? add a randomize method to interface and call it on current state
-GPanel advancedOptionsPanel;
-// Type Select
-GDropList shiftTypeSelect;
-GLabel shiftTypeLabel;
-// Per-Type configs
-GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel, noiseShiftTypePanel;
-// Keep track of shift type config panels w/ indices matching globals
-GPanel[] shiftTypeConfigPanels;
-// Default (just a label) ------------------------------------------------------
-GLabel defaultShiftConfigLabel;
-// Multiply --------------------------------------------------------------------
-// TODO RENAME TO SCALE
-GLabel xMultiplierLabel, yMultiplierLabel;
-GTextField xMultiplierInput, yMultiplierInput;
-GTabManager multiplierTabManager;
-// Linear ----------------------------------------------------------------------
-GLabel linearCoeffLabel;
-GTextField linearCoeffInput;
-GToggleGroup linearEqTypeToggle;
-GOption linearYEquals, linearXEquals;
-GCheckbox linearNegativeCoeffCheckbox;
-// Skew ------------------------------------------------------------------------
-GLabel xSkewLabel, ySkewLabel;
-GTextField xSkewInput, ySkewInput;
-GTabManager skewTabManager;
-GCheckbox xSkewNegativeCheckbox, ySkewNegativeCheckbox;
-// X*Y -------------------------------------------------------------------------
-GLabel multXLabel, multYLabel;
-GCheckbox multXCheckbox, multYCheckbox;
-GCheckbox multXNegativeCheckbox, multYNegativeCheckbox;
-GCheckbox xDivWidthCheckbox, yDivHeightCheckbox;
-// Noise -----------------------------------------------------------------------
-// Start
-GLabel xNoiseStartLabel, yNoiseStartLabel;
-GTextField xNoiseStartInput, yNoiseStartInput;
-// Increment
-GLabel xNoiseIncrementLabel, yNoiseIncrementLabel;
-GTextField xNoiseIncrementInput, yNoiseIncrementInput;
-// Multiplier
-GLabel noiseMultiplierLabel;
-GTextField noiseMultiplierInput;
-// Tab MGMT
-GTabManager noiseTabManager;
-// SHIFT =======================================================================
-// X Slider --------------------------------------------------------------------
-GPanel xShiftPanel;
-GSlider xSlider; 
-GToggleGroup xSliderToggle; 
-GOption xSliderPercent, xSliderPixels; 
-GTextField xSliderInput;
-// Y Slider --------------------------------------------------------------------
-GPanel yShiftPanel;
-GSlider ySlider; 
-GToggleGroup ySliderToggle; 
-GOption ySliderPercent, ySliderPixels; 
-GTextField ySliderInput;
-// BOTTOM ======================================================================
-// Reset/Confirm Buttons -------------------------------------------------------
-GPanel resetConfirmPanel;
-GButton resetBtn, confirmBtn; 
-GCheckbox recursiveCheckbox;
-// Save/Load Buttons -----------------------------------------------------------
-GPanel loadSavePanel;
-GButton loadBtn; 
-GButton saveBtn; 
-
-
-// =============================================================================
-// Globals
+// GUI Globals + G4P Variable Declarations
 // =============================================================================
 
 // COMMON ======================================================================
@@ -104,15 +7,19 @@ GButton saveBtn;
 // Start positioning at 10px to add some padding
 int X_START = 10;
 int Y_START = 10; 
+
 // Margins ---------------------------------------------------------------------
 // Single margin
 int X_MARGIN = X_START;
 int Y_MARGIN = Y_START;
 // Subtract from widths to get margins on either side
 int X_MARGINS = 2 * X_MARGIN;
+
 // Panels ----------------------------------------------------------------------
 // Panel labels are ~20, add this so children don't overlap
 int PANEL_Y_START = 20;
+
+
 // WINDOW ======================================================================
 // x/y to be set when creating window
 int WINDOW_X = 0;
@@ -124,6 +31,9 @@ int WINDOW_MAIN_WIDTH = 650;
 int WINDOW_ADV_WIDTH = 200;
 // Total width
 int WINDOW_WIDTH = WINDOW_MAIN_WIDTH + WINDOW_ADV_WIDTH;
+// G4P
+GWindow controlsWindow;
+
 // CHANNELS ====================================================================
 // TODO make parent panel
 // General ---------------------------------------------------------------------
@@ -133,12 +43,30 @@ int CHANNEL_PANEL_HEIGHT = 3 * CHANNEL_TOGGLE_HEIGHT + PANEL_Y_START;
 int R_CHANNEL_Y = PANEL_Y_START;
 int G_CHANNEL_Y = PANEL_Y_START + CHANNEL_TOGGLE_HEIGHT;
 int B_CHANNEL_Y = PANEL_Y_START + 2 * CHANNEL_TOGGLE_HEIGHT;
+
 // Source ----------------------------------------------------------------------
 int SRC_CHANNEL_X = X_START;
 int SRC_CHANNEL_Y = Y_START;
+
+// G4P
+GPanel srcChannelPanel;
+GToggleGroup srcChannelToggle; 
+ChannelOption srcR, srcG, srcB; 
+// Keep track of toggles in global w/ index corresponding to channel
+ChannelOption[] srcToggles;
+
 // Target ----------------------------------------------------------------------
 int TARG_CHANNEL_X = SRC_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
 int TARG_CHANNEL_Y = Y_START;
+
+// G4P
+GPanel targChannelPanel;
+GToggleGroup targChannelToggle; 
+ChannelOption targR, targG, targB; 
+// Keep track of toggles in global w/ index corresponding to channel
+ChannelOption[] targToggles;
+
+
 // RANDOMIZE ===================================================================
 // Panel -----------------------------------------------------------------------
 // End of target channel panel + margins
@@ -146,6 +74,10 @@ int RAND_PANEL_X = TARG_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
 int RAND_PANEL_Y = Y_START;
 // Fill rest of window (minus right margin)
 int RAND_PANEL_WIDTH = WINDOW_MAIN_WIDTH - RAND_PANEL_X - X_MARGIN;
+
+// G4P
+GPanel randomizePanel;
+
 // Randomize Checkboxes + Panel ------------------------------------------------
 int RAND_CHECKBOX_PANEL_X = X_MARGIN; 
 int RAND_CHECKBOX_PANEL_Y = PANEL_Y_START;
@@ -159,6 +91,12 @@ int RAND_CHECKBOX_RIGHT_X = RAND_CHECKBOX_LEFT_X + RAND_CHECKBOX_WIDTH + X_MARGI
 int RAND_CHECKBOX_TOP_Y = 0;
 int RAND_CHECKBOX_BOTTOM_Y = RAND_CHECKBOX_HEIGHT;
 int RAND_CHECKBOX_PANEL_HEIGHT = 2 * RAND_CHECKBOX_HEIGHT; 
+
+// G4P
+GPanel randomizeCheckboxPanel;
+GCheckbox randSrcCheckbox, randTargCheckbox, 
+          randXShiftCheckbox, randYShiftCheckbox;
+
 // Max Shift Inputs ------------------------------------------------------------
 // Labels are full width for text alignment
 int RAND_MAX_LABEL_WIDTH = RAND_PANEL_WIDTH / 2;
@@ -174,23 +112,42 @@ int RAND_MAX_LABEL_LEFT_X = 0;
 int RAND_MAX_INPUT_LEFT_X = X_MARGIN;
 int RAND_MAX_LABEL_RIGHT_X = RAND_MAX_LABEL_WIDTH;
 int RAND_MAX_INPUT_RIGHT_X = RAND_MAX_INPUT_LEFT_X + RAND_MAX_INPUT_WIDTH + X_MARGINS;
+
+// G4P
+GTextField randXMaxInput, randYMaxInput;
+GTabManager randMaxTabManager;
+GLabel randXMaxLabel, randYMaxLabel;
+
 // Randomize Button ------------------------------------------------------------
 int RAND_BTN_WIDTH = RAND_PANEL_WIDTH;
 int RAND_BTN_HEIGHT = 30;
 int RAND_BTN_X = 0;
 int RAND_BTN_Y = RAND_MAX_LABEL_Y + RAND_MAX_TOTAL_HEIGHT;
 int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
+
+// G4P
+GButton randomizeBtn; 
+
+
 // SHIFT TYPE SELECT ===========================================================
 // Panel -----------------------------------------------------------------------
 int ADV_OPTS_PANEL_X = WINDOW_MAIN_WIDTH + X_MARGIN;
 int ADV_OPTS_PANEL_Y = Y_START;
 int ADV_OPTS_PANEL_WIDTH = WINDOW_ADV_WIDTH - X_MARGINS;
 int ADV_OPTS_PANEL_HEIGHT = WINDOW_HEIGHT - (2 * Y_MARGIN);
+
+// G4P
+GPanel advancedOptionsPanel;
+
 // Label -----------------------------------------------------------------------
 int TYPE_LABEL_X = X_MARGIN;
 int TYPE_LABEL_Y = PANEL_Y_START;
 int TYPE_LABEL_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
 int TYPE_LABEL_HEIGHT = 20;
+
+// G4P
+GLabel shiftTypeLabel;
+
 // Dropdown --------------------------------------------------------------------
 int TYPE_SELECT_X = X_MARGIN;
 int TYPE_SELECT_Y = TYPE_LABEL_Y + TYPE_LABEL_HEIGHT;
@@ -198,18 +155,33 @@ int TYPE_SELECT_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
 int TYPE_SELECT_HEIGHT = 100; 
 int TYPE_SELECT_MAX_ITEMS = 4;
 int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
+
+// G4P
+GDropList shiftTypeSelect;
+
+
 // ADVANCED ====================================================================
 // Panel -----------------------------------------------------------------------
 int TYPE_PANEL_X = 0;
 int TYPE_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
 int TYPE_PANEL_WIDTH = ADV_OPTS_PANEL_WIDTH;
 int TYPE_PANEL_HEIGHT = ADV_OPTS_PANEL_HEIGHT - TYPE_PANEL_Y;
+
+
 // SHIFT TYPES =================================================================
+GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel, noiseShiftTypePanel;
+// Keep track of shift type config panels w/ indices matching globals
+GPanel[] shiftTypeConfigPanels;
+
 // Default Shift Type Panel ----------------------------------------------------
 int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
 int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
 int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_PANEL_HEIGHT - PANEL_Y_START;
+
+// G4P
+GLabel defaultShiftConfigLabel;
+
 // Scale Shift Type Panel ------------------------------------------------------
 int SCALE_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int SCALE_CONFIG_LABEL_HEIGHT = 20;
@@ -221,6 +193,13 @@ int SCALE_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
 int SCALE_CONFIG_INPUT_TOP_Y = SCALE_CONFIG_LABEL_TOP_Y + SCALE_CONFIG_LABEL_HEIGHT;
 int SCALE_CONFIG_LABEL_BOTTOM_Y = SCALE_CONFIG_INPUT_TOP_Y + SCALE_CONFIG_INPUT_HEIGHT + Y_MARGIN;
 int SCALE_CONFIG_INPUT_BOTTOM_Y = SCALE_CONFIG_LABEL_BOTTOM_Y + SCALE_CONFIG_LABEL_HEIGHT;
+
+// G4P
+// TODO RENAME TO SCALE
+GLabel xMultiplierLabel, yMultiplierLabel;
+GTextField xMultiplierInput, yMultiplierInput;
+GTabManager multiplierTabManager;
+
 // Linear Shift Type Panel -----------------------------------------------------
 // TODO extract common w/ multiply to type_config_ general vars
 // Toggles
@@ -243,6 +222,14 @@ int LINEAR_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
 int LINEAR_CONFIG_CHECKBOX_HEIGHT = LINEAR_CONFIG_TOGGLE_HEIGHT;
 int LINEAR_CONFIG_CHECKBOX_X = 0;
 int LINEAR_CONFIG_CHECKBOX_Y = LINEAR_CONFIG_INPUT_Y + LINEAR_CONFIG_INPUT_HEIGHT + Y_MARGIN;
+
+// G4P
+GLabel linearCoeffLabel;
+GTextField linearCoeffInput;
+GToggleGroup linearEqTypeToggle;
+GOption linearYEquals, linearXEquals;
+GCheckbox linearNegativeCoeffCheckbox;
+
 // Skew Shift Type Panel -------------------------------------------------------
 int SKEW_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
 int SKEW_CONFIG_LABEL_HEIGHT = 20;
@@ -259,6 +246,13 @@ int SKEW_CONFIG_CHECKBOX_TOP_Y = SKEW_CONFIG_INPUT_TOP_Y + SKEW_CONFIG_INPUT_HEI
 int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_CHECKBOX_TOP_Y + SKEW_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
 int SKEW_CONFIG_INPUT_BOTTOM_Y = SKEW_CONFIG_LABEL_BOTTOM_Y + SKEW_CONFIG_LABEL_HEIGHT;
 int SKEW_CONFIG_CHECKBOX_BOTTOM_Y = SKEW_CONFIG_INPUT_BOTTOM_Y + SKEW_CONFIG_INPUT_HEIGHT;
+
+// G4P
+GLabel xSkewLabel, ySkewLabel;
+GTextField xSkewInput, ySkewInput;
+GTabManager skewTabManager;
+GCheckbox xSkewNegativeCheckbox, ySkewNegativeCheckbox;
+
 // X*Y Mult Shift Type Panel ---------------------------------------------------
 int XYMULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH;
 int XYMULT_CONFIG_LABEL_HEIGHT = 20;
@@ -276,6 +270,13 @@ int XYMULT_CONFIG_Y_LABEL_Y = XYMULT_CONFIG_XDIVWIDTH_CHECKBOX_Y + XYMULT_CONFIG
 int XYMULT_CONFIG_YMULT_CHECKBOX_Y = XYMULT_CONFIG_Y_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
 int XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_YMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
 int XYMULT_CONFIG_YDIVHEIGHT_CHECKBOX_Y = XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+
+// G4P
+GLabel multXLabel, multYLabel;
+GCheckbox multXCheckbox, multYCheckbox;
+GCheckbox multXNegativeCheckbox, multYNegativeCheckbox;
+GCheckbox xDivWidthCheckbox, yDivHeightCheckbox;
+
 // Noise -----------------------------------------------------------------------
 // Common Label/Input Values
 int NOISE_CONFIG_LABEL_FULL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
@@ -298,6 +299,20 @@ int NOISE_CONFIG_INPUT_INCREMENT_Y = NOISE_CONFIG_LABEL_INCREMENT_Y + NOISE_CONF
 int NOISE_CONFIG_LABEL_MULTIPLIER_Y = NOISE_CONFIG_INPUT_INCREMENT_Y + NOISE_CONFIG_LABEL_HEIGHT + Y_MARGIN;
 int NOISE_CONFIG_INPUT_MULTIPLIER_Y = NOISE_CONFIG_LABEL_MULTIPLIER_Y + NOISE_CONFIG_LABEL_HEIGHT;
 
+// G4P
+// Start
+GLabel xNoiseStartLabel, yNoiseStartLabel;
+GTextField xNoiseStartInput, yNoiseStartInput;
+// Increment
+GLabel xNoiseIncrementLabel, yNoiseIncrementLabel;
+GTextField xNoiseIncrementInput, yNoiseIncrementInput;
+// Multiplier
+GLabel noiseMultiplierLabel;
+GTextField noiseMultiplierInput;
+// Tab MGMT
+GTabManager noiseTabManager;
+
+
 // SHIFT SLIDERS ===============================================================
 // General ---------------------------------------------------------------------
 int SLIDER_TOGGLE_WIDTH = 75;
@@ -316,12 +331,30 @@ int SLIDER_Y = PANEL_Y_START;
 int SLIDER_TOGGLE_X = SLIDER_X + SLIDER_WIDTH;
 int SLIDER_PERCENT_TOGGLE_Y = PANEL_Y_START;
 int SLIDER_PIXELS_TOGGLE_Y = SLIDER_PERCENT_TOGGLE_Y + SLIDER_TOGGLE_HEIGHT;
+
 // Horizontal Shift ------------------------------------------------------------
 int X_SLIDER_PANEL_X = X_START; 
 int X_SLIDER_PANEL_Y = RAND_PANEL_Y + RAND_PANEL_HEIGHT + Y_MARGIN; 
+
+// G4P
+GPanel xShiftPanel;
+GSlider xSlider; 
+GToggleGroup xSliderToggle; 
+GOption xSliderPercent, xSliderPixels; 
+GTextField xSliderInput;
+
 // Vertical Shift --------------------------------------------------------------
 int Y_SLIDER_PANEL_X = X_START; 
 int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
+
+// G4P
+GPanel yShiftPanel;
+GSlider ySlider; 
+GToggleGroup ySliderToggle; 
+GOption ySliderPercent, ySliderPixels; 
+GTextField ySliderInput;
+
+
 // LOAD/SAVE BUTTONS ===========================================================
 int LOAD_SAVE_PANEL_X = X_START;
 int LOAD_SAVE_PANEL_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
@@ -332,6 +365,13 @@ int LOAD_BTN_X = 0;
 int LOAD_BTN_Y = 0;
 int SAVE_BTN_X = 0;
 int SAVE_BTN_Y = LOAD_BTN_Y + LOAD_SAVE_BTN_HEIGHT + Y_MARGIN;
+
+// G4P
+GPanel loadSavePanel;
+GButton loadBtn; 
+GButton saveBtn; 
+
+
 // RESET/CONFIRM BUTTONS =======================================================
 int RESET_CONFIRM_PANEL_X = LOAD_SAVE_PANEL_X + LOAD_SAVE_PANEL_WIDTH + X_MARGINS;
 int RESET_CONFIRM_PANEL_Y = LOAD_SAVE_PANEL_Y;
@@ -346,7 +386,15 @@ int CONFIRM_BTN_Y = RESET_BTN_Y + RESET_CONFIRM_BTN_HEIGHT + Y_MARGIN;
 int RECURSIVE_CHECKBOX_X = 0;
 int RECURSIVE_CHECKBOX_Y = CONFIRM_BTN_Y + RESET_CONFIRM_BTN_HEIGHT;
 
+// G4P
+GPanel resetConfirmPanel;
+GButton resetBtn, confirmBtn; 
+GCheckbox recursiveCheckbox;
 
+
+// TODO ========================================================================
+// TODO: RE-ORGANIZE THESE TO ALSO BE DECLARED IN THEIR RELEVANT SECTIONS??:
+// TODO ========================================================================
 // =============================================================================
 // COMMON SETUP HELPERS
 // =============================================================================
