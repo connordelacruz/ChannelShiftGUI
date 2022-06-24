@@ -1,3 +1,4 @@
+import java.util.Arrays;
 // =============================================================================
 // Globals related to working PImage objects
 // =============================================================================
@@ -17,62 +18,66 @@ public class ImgManager {
   public boolean recursiveIteration;
 
   public ImgManager() {
-    imgWidth = imgHeight = 0;
-    recursiveIteration = true;
+    this.imgWidth = this.imgHeight = 0;
+    this.recursiveIteration = true;
   }
 
   // Getter/Setter
 
   public void loadImageFile(String path) {
     // Initialize images
-    sourceImg = loadImage(path);
-    targetImg = sourceImg.copy();
-    previewImg = sourceImg.copy();
+    this.sourceImg = loadImage(path);
+    this.targetImg = sourceImg.copy();
+    this.previewImg = sourceImg.copy();
     // This seems to fix a bug where the recursive option doesn't do anything
-    sourceImg.loadPixels();
-    targetImg.loadPixels();
-    previewImg.loadPixels();
+    this.sourceImg.loadPixels();
+    this.targetImg.loadPixels();
+    this.previewImg.loadPixels();
     // Update width/height vars
-    imgWidth = sourceImg.width;
-    imgHeight = sourceImg.height;
+    this.imgWidth = this.sourceImg.width;
+    this.imgHeight = this.sourceImg.height;
   }
 
-  public void toggleRecursiveIteration(boolean recursive) { recursiveIteration = recursive; }
+  public void toggleRecursiveIteration(boolean recursive) { this.recursiveIteration = recursive; }
 
   // Confirm Current Step
   public void confirmStep() {
     // Update targetImg to match preview
-    copyPreviewToTarget();
+    this.copyPreviewToTarget();
     // If recursive, sourceImg.pixels = targetImg.pixels
-    if (recursiveIteration)
-      copyTargetPixelsToSource();
+    if (this.recursiveIteration)
+      this.copyTargetPixelsToSource();
   }
 
   // Image Utility Methods
   // TODO: doc, better names?
 
   public void savePreviewImg(String path) {
-    previewImg.save(path);
+    this.previewImg.save(path);
   }
 
   public void copyTargetToPreview() {
-    previewImg = targetImg.copy();
-    previewImg.loadPixels();
+    this.previewImg = this.targetImg.copy();
+    this.previewImg.loadPixels();
   }
 
   public void copyPreviewToTarget() {
-    targetImg = previewImg.copy();
-    targetImg.loadPixels();
+    this.targetImg = this.previewImg.copy();
+    this.targetImg.loadPixels();
   }
 
   public void updatePreview() {
-    previewImg.updatePixels();
+    this.previewImg.updatePixels();
   }
 
   // For recursive iterations
   public void copyTargetPixelsToSource() {
-    sourceImg.pixels = targetImg.pixels;
-    sourceImg.updatePixels();
+    this.sourceImg.pixels = this.targetImg.pixels;
+    this.sourceImg.updatePixels();
+  }
+
+  public boolean hasPrevieImageBeenModified() {
+    return Arrays.equals(this.previewImg.pixels, this.targetImg.pixels);
   }
 
 }
