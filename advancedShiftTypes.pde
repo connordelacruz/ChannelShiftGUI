@@ -41,6 +41,7 @@ public class DefaultShiftType implements ShiftTypeState {
   }
 }
 
+
 // Scale -----------------------------------------------------------------------
 
 public class ScaleShiftType implements ShiftTypeState {
@@ -109,37 +110,38 @@ public class LinearShiftType implements ShiftTypeState {
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
     int offset;
     // y= equation
-    if (yEquals) 
-      offset = horizontal ? x + (int)((y - shift) / (mSign * m)) : y + (int)((mSign * m) * x + shift);
+    if (this.yEquals) 
+      offset = horizontal ? x + (int)((y - shift) / (this.mSign * this.m)) : y + (int)((this.mSign * this.m) * x + shift);
     // x= equation
     else 
-      offset = horizontal ? x + (int)((mSign * m) * y + shift) : y + (int)((x - shift) / (mSign * m));
+      offset = horizontal ? x + (int)((this.mSign * this.m) * y + shift) : y + (int)((x - shift) / (this.mSign * this.m));
     return offset; 
   }
 
   public String stringifyStep() {
     String step = "-line-";
-    String sign = isPositiveCoefficient() ? "" : "-";
-    if (yEquals) {
-      step += "y=" + sign + m + "x";
+    String sign = this.isPositiveCoefficient() ? "" : "-";
+    if (this.yEquals) {
+      step += "y=" + sign + this.m + "x";
     } else {
-      step += "x=" + sign + m + "y";
+      step += "x=" + sign + this.m + "y";
     }
     return step;
   }
 
   // Setters
-  public void setCoefficient(float val) { m = val; }
-  public void setCoefficientSign(boolean positive) { mSign = positive ? 1 : -1; }
-  public void setEquationType(boolean isYEquals) { yEquals = isYEquals; }
-  public void yEqualsEquation() { setEquationType(true); }
-  public void xEqualsEquation() { setEquationType(false); }
+  public void setCoefficient(float val) { this.m = val; }
+  public void setCoefficientSign(boolean positive) { this.mSign = positive ? 1 : -1; }
+  public void setEquationType(boolean isYEquals) { this.yEquals = isYEquals; }
+  public void yEqualsEquation() { this.setEquationType(true); }
+  public void xEqualsEquation() { this.setEquationType(false); }
 
   // Getters
-  public float getCoefficient() { return m; }
-  public boolean isPositiveCoefficient() { return mSign > 0.0; }
-  public boolean isYEqualsEquation() { return yEquals; }
+  public float getCoefficient() { return this.m; }
+  public boolean isPositiveCoefficient() { return this.mSign > 0.0; }
+  public boolean isYEqualsEquation() { return this.yEquals; }
 }
+
 
 // Skew ------------------------------------------------------------------------
 
@@ -159,44 +161,45 @@ public class SkewShiftType implements ShiftTypeState {
   }
 
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
-    return horizontal ? x + shift + (int)(xSign * xSkew * y) : y + shift + (int)(ySign * ySkew * x);
+    return horizontal ? x + shift + (int)(this.xSign * this.xSkew * y) : y + shift + (int)(this.ySign * this.ySkew * x);
   }
 
   public String stringifyStep() {
     String step = "-skew";
-    if (xSkew > 0.0)
-      step += "-x=" + (isPositiveX() ? "" : "-") + xSkew;
+    if (this.xSkew > 0.0)
+      step += "-x=" + (this.isPositiveX() ? "" : "-") + this.xSkew;
     if (ySkew > 0.0)
-      step += "-y=" + (isPositiveY() ? "" : "-") + ySkew;
+      step += "-y=" + (this.isPositiveY() ? "" : "-") + this.ySkew;
     return step;
   }
 
   // Setters
-  public void setXSkew(float val) { xSkew = val; }
-  public void setYSkew(float val) { ySkew = val; }
+  public void setXSkew(float val) { this.xSkew = val; }
+  public void setYSkew(float val) { this.ySkew = val; }
   public void setSkew(float val, boolean horizontal) { 
     if (horizontal)
-      xSkew = val;
+      this.xSkew = val;
     else
-      ySkew = val;
+      this.ySkew = val;
   }
-  public void setXSign(boolean positive) { xSign = positive ? 1 : -1; }
-  public void setYSign(boolean positive) { ySign = positive ? 1 : -1; }
+  public void setXSign(boolean positive) { this.xSign = positive ? 1 : -1; }
+  public void setYSign(boolean positive) { this.ySign = positive ? 1 : -1; }
   public void setSign(boolean positive, boolean horizontal) {
     if (horizontal)
-      setXSign(positive);
+      this.setXSign(positive);
     else
-      setYSign(positive);
+      this.setYSign(positive);
   }
 
   // Getters
-  public float getXSkew() { return xSkew; }
-  public float getYSkew() { return ySkew; }
-  public float getSkew(boolean horizontal) { return horizontal ? xSkew : ySkew; }
-  public boolean isPositiveX() { return xSign > 0.0; }
-  public boolean isPositiveY() { return ySign > 0.0; }
-  public boolean isPositive(boolean horizontal) { return horizontal ? isPositiveX() : isPositiveY(); }
+  public float getXSkew() { return this.xSkew; }
+  public float getYSkew() { return this.ySkew; }
+  public float getSkew(boolean horizontal) { return horizontal ? this.xSkew : this.ySkew; }
+  public boolean isPositiveX() { return this.xSign > 0.0; }
+  public boolean isPositiveY() { return this.ySign > 0.0; }
+  public boolean isPositive(boolean horizontal) { return horizontal ? this.isPositiveX() : this.isPositiveY(); }
 }
+
 
 // X*Y -------------------------------------------------------------------------
 
@@ -230,9 +233,9 @@ public class XYMultShiftType implements ShiftTypeState {
   public String stringifyStep() {
     String step = "-xymult";
     if (multX)
-      step += (isPositiveX() ? "+" : "-") + "x" + (this.xDivWidth ? "divW" : "");
+      step += (this.isPositiveX() ? "+" : "-") + "x" + (this.xDivWidth ? "divW" : "");
     if (multY)
-      step += (isPositiveY() ? "+" : "-") + "y" + (this.yDivHeight ? "divH" : "");
+      step += (this.isPositiveY() ? "+" : "-") + "y" + (this.yDivHeight ? "divH" : "");
     return step;
   }
 
@@ -252,6 +255,7 @@ public class XYMultShiftType implements ShiftTypeState {
   public boolean divideXByWidth() { return this.xDivWidth; }
   public boolean divideYByHeight() { return this.yDivHeight; }
 }
+
 
 // Noise -----------------------------------------------------------------------
 
@@ -274,30 +278,34 @@ public class NoiseShiftType implements ShiftTypeState {
   }
 
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
-    float xNoise = xNoiseStart + (xNoiseIncrement * x);
-    float yNoise = yNoiseStart + (yNoiseIncrement * y);
-    return (horizontal ? x : y) + shift + (int)(noiseMultiplier * noise(xNoise, yNoise));
+    float xNoise = this.xNoiseStart + (this.xNoiseIncrement * x);
+    float yNoise = this.yNoiseStart + (this.yNoiseIncrement * y);
+    return (horizontal ? x : y) + shift + (int)(this.noiseMultiplier * noise(xNoise, yNoise));
   }
 
   public String stringifyStep() {
-    String step = "-noise-x" + xNoiseStart + "+" + xNoiseIncrement + "-y" + yNoiseStart + "+" + yNoiseIncrement + "mult" + noiseMultiplier;
+    String step = "-noise-x" + this.xNoiseStart + "+" + this.xNoiseIncrement + "-y" + this.yNoiseStart + "+" + this.yNoiseIncrement + "mult" + this.noiseMultiplier;
     return step;
   }
   
   // Setters
-  public void setXNoiseStart(float val) { xNoiseStart = val; }
-  public void setYNoiseStart(float val) { yNoiseStart = val; }
-  public void setXNoiseIncrement(float val) { xNoiseIncrement = val; }
-  public void setYNoiseIncrement(float val) { yNoiseIncrement = val; }
-  public void setNoiseMultiplier(float val) { noiseMultiplier = val; }
+  public void setXNoiseStart(float val) { this.xNoiseStart = val; }
+  public void setYNoiseStart(float val) { this.yNoiseStart = val; }
+  public void setXNoiseIncrement(float val) { this.xNoiseIncrement = val; }
+  public void setYNoiseIncrement(float val) { this.yNoiseIncrement = val; }
+  public void setNoiseMultiplier(float val) { this.noiseMultiplier = val; }
   // Getters
-  public float getXNoiseStart() { return xNoiseStart; }
-  public float getYNoiseStart() { return yNoiseStart; }
-  public float getXNoiseIncrement() { return xNoiseIncrement; }
-  public float getYNoiseIncrement() { return yNoiseIncrement; }
-  public float getNoiseMultiplier() { return noiseMultiplier; }
+  public float getXNoiseStart() { return this.xNoiseStart; }
+  public float getYNoiseStart() { return this.yNoiseStart; }
+  public float getXNoiseIncrement() { return this.xNoiseIncrement; }
+  public float getYNoiseIncrement() { return this.yNoiseIncrement; }
+  public float getNoiseMultiplier() { return this.noiseMultiplier; }
 }
 
+
+// TODO ========================================================================
+// TODO: CONTINUE:
+// TODO ========================================================================
 // Manager =====================================================================
 
 public class ShiftTypeManager {
