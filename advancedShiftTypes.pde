@@ -303,9 +303,6 @@ public class NoiseShiftType implements ShiftTypeState {
 }
 
 
-// TODO ========================================================================
-// TODO: CONTINUE:
-// TODO ========================================================================
 // Manager =====================================================================
 
 public class ShiftTypeManager {
@@ -315,144 +312,143 @@ public class ShiftTypeManager {
   public int state;
 
   public ShiftTypeManager() {
-    shiftTypes = new ShiftTypeState[TOTAL_SHIFT_TYPES];
+    this.shiftTypes = new ShiftTypeState[TOTAL_SHIFT_TYPES];
     // Initialize state objects
-    shiftTypes[TYPE_DEFAULT] = new DefaultShiftType();
-    shiftTypes[TYPE_SCALE] = new ScaleShiftType();
-    shiftTypes[TYPE_LINEAR] = new LinearShiftType();
-    shiftTypes[TYPE_SKEW] = new SkewShiftType();
-    shiftTypes[TYPE_XYMULT] = new XYMultShiftType();
-    shiftTypes[TYPE_NOISE] = new NoiseShiftType();
+    this.shiftTypes[TYPE_DEFAULT] = new DefaultShiftType();
+    this.shiftTypes[TYPE_SCALE] = new ScaleShiftType();
+    this.shiftTypes[TYPE_LINEAR] = new LinearShiftType();
+    this.shiftTypes[TYPE_SKEW] = new SkewShiftType();
+    this.shiftTypes[TYPE_XYMULT] = new XYMultShiftType();
+    this.shiftTypes[TYPE_NOISE] = new NoiseShiftType();
     // Start w/ default
-    state = TYPE_DEFAULT;
+    this.state = TYPE_DEFAULT;
   }
 
   public int calculateShiftOffset(int x, int y, int width, int height, int shift, boolean horizontal) {
-    return shiftTypes[state].calculateShiftOffset(x, y, width, height, shift, horizontal);
+    return this.shiftTypes[state].calculateShiftOffset(x, y, width, height, shift, horizontal);
   }
 
   public void setShiftType(int shiftType) {
     // Handle out of bounds index
-    state = shiftType < shiftTypes.length ? shiftType : 0;
+    state = shiftType < this.shiftTypes.length ? shiftType : 0;
   }
 
-  public boolean isDefaultType() { return state == TYPE_DEFAULT; }
+  public boolean isDefaultType() { return this.state == TYPE_DEFAULT; }
 
-  public String stringifyStep() { return shiftTypes[state].stringifyStep(); }
+  public String stringifyStep() { return this.shiftTypes[state].stringifyStep(); }
 
   // Config Setters
 
   // Scale
   public void scale_setMultiplier(float val, boolean horizontal) {
-    ((ScaleShiftType)shiftTypes[TYPE_SCALE]).setMultiplier(val, horizontal);
+    ((ScaleShiftType)this.shiftTypes[TYPE_SCALE]).setMultiplier(val, horizontal);
   }
   public float scale_getMultiplier(boolean horizontal) {
-    return ((ScaleShiftType)shiftTypes[TYPE_SCALE]).getMultiplier(horizontal);
+    return ((ScaleShiftType)this.shiftTypes[TYPE_SCALE]).getMultiplier(horizontal);
   }
 
   // Linear
   public void linear_setCoefficient(float val) {
-    ((LinearShiftType)shiftTypes[TYPE_LINEAR]).setCoefficient(val);
+    ((LinearShiftType)this.shiftTypes[TYPE_LINEAR]).setCoefficient(val);
   }
   public float linear_getCoefficient() {
-    return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).getCoefficient();
+    return ((LinearShiftType)this.shiftTypes[TYPE_LINEAR]).getCoefficient();
   }
   public void linear_setCoefficientSign(boolean positive) {
-    ((LinearShiftType)shiftTypes[TYPE_LINEAR]).setCoefficientSign(positive);
+    ((LinearShiftType)this.shiftTypes[TYPE_LINEAR]).setCoefficientSign(positive);
   }
   public boolean linear_isPositiveCoefficient() {
-    return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).isPositiveCoefficient();
+    return ((LinearShiftType)this.shiftTypes[TYPE_LINEAR]).isPositiveCoefficient();
   }
   public void linear_setEquationType(boolean isYEquals) {
-    ((LinearShiftType)shiftTypes[TYPE_LINEAR]).setEquationType(isYEquals);
+    ((LinearShiftType)this.shiftTypes[TYPE_LINEAR]).setEquationType(isYEquals);
   }
   public boolean linear_isYEqualsEquation() {
-    return ((LinearShiftType)shiftTypes[TYPE_LINEAR]).isYEqualsEquation();
+    return ((LinearShiftType)this.shiftTypes[TYPE_LINEAR]).isYEqualsEquation();
   }
 
   // Skew
   public void skew_setSkew(float val, boolean horizontal) {
-    ((SkewShiftType)shiftTypes[TYPE_SKEW]).setSkew(val, horizontal);
+    ((SkewShiftType)this.shiftTypes[TYPE_SKEW]).setSkew(val, horizontal);
   }
   public float skew_getSkew(boolean horizontal) {
-    return ((SkewShiftType)shiftTypes[TYPE_SKEW]).getSkew(horizontal);
+    return ((SkewShiftType)this.shiftTypes[TYPE_SKEW]).getSkew(horizontal);
   }
   public void skew_setSign(boolean positive, boolean horizontal) {
-    ((SkewShiftType)shiftTypes[TYPE_SKEW]).setSign(positive, horizontal);
+    ((SkewShiftType)this.shiftTypes[TYPE_SKEW]).setSign(positive, horizontal);
   }
   public boolean skew_isPositive(boolean horizontal) {
-    return ((SkewShiftType)shiftTypes[TYPE_SKEW]).isPositive(horizontal);
+    return ((SkewShiftType)this.shiftTypes[TYPE_SKEW]).isPositive(horizontal);
   }
 
   // X*Y
   public void xymult_setMultX(boolean multiply) {
-    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultX(multiply);
+    ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).setMultX(multiply);
   }
   public boolean xymult_multX() {
-    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).multX();
+    return ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).multX();
   }
   public void xymult_setMultY(boolean multiply) {
-    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setMultY(multiply);
+    ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).setMultY(multiply);
   }
   public boolean xymult_multY() {
-    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).multY();
+    return ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).multY();
   }
   public void xymult_setXSign(boolean positive) {
-    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setXSign(positive);
+    ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).setXSign(positive);
   }
   public boolean xymult_isPositiveX() {
-    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveX();
+    return ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).isPositiveX();
   }
   public void xymult_setYSign(boolean positive) {
-    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setYSign(positive);
+    ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).setYSign(positive);
   }
   public boolean xymult_isPositiveY() {
-    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).isPositiveY();
+    return ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).isPositiveY();
   }
   public void xymult_setXDivWidth(boolean divWidth) {
-    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setXDivWidth(divWidth);
+    ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).setXDivWidth(divWidth);
   }
   public boolean xymult_divideXByWidth() {
-    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).divideXByWidth();
+    return ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).divideXByWidth();
   }
   public void xymult_setYDivHeight(boolean divHeight) {
-    ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).setYDivHeight(divHeight);
+    ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).setYDivHeight(divHeight);
   }
   public boolean xymult_divideYByHeight() {
-    return ((XYMultShiftType)shiftTypes[TYPE_XYMULT]).divideYByHeight();
+    return ((XYMultShiftType)this.shiftTypes[TYPE_XYMULT]).divideYByHeight();
   }
 
   // Noise
   public void noise_setXNoiseStart(float val) {
-    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setXNoiseStart(val);
+    ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).setXNoiseStart(val);
   }
   public float noise_xNoiseStart() {
-    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getXNoiseStart();
+    return ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).getXNoiseStart();
   }
   public void noise_setYNoiseStart(float val) {
-    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setYNoiseStart(val);
+    ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).setYNoiseStart(val);
   }
   public float noise_yNoiseStart() {
-    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getYNoiseStart();
+    return ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).getYNoiseStart();
   }
   public void noise_setXNoiseIncrement(float val) {
-    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setXNoiseIncrement(val);
+    ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).setXNoiseIncrement(val);
   }
   public float noise_xNoiseIncrement() {
-    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getXNoiseIncrement();
+    return ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).getXNoiseIncrement();
   }
   public void noise_setYNoiseIncrement(float val) {
-    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setYNoiseIncrement(val);
+    ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).setYNoiseIncrement(val);
   }
   public float noise_yNoiseIncrement() {
-    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getYNoiseIncrement();
+    return ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).getYNoiseIncrement();
   }
   public void noise_setNoiseMultiplier(float val) {
-    ((NoiseShiftType)shiftTypes[TYPE_NOISE]).setNoiseMultiplier(val);
+    ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).setNoiseMultiplier(val);
   }
   public float noise_noiseMultiplier() {
-    return ((NoiseShiftType)shiftTypes[TYPE_NOISE]).getNoiseMultiplier();
+    return ((NoiseShiftType)this.shiftTypes[TYPE_NOISE]).getNoiseMultiplier();
   }
-
 }
 
