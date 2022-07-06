@@ -2,404 +2,29 @@
 // GUI Globals + G4P Variable Declarations
 // =============================================================================
 
-// COMMON ======================================================================
+// =============================================================================
+// Common
+// =============================================================================
+
+// GLOBALS =====================================================================
+
 // Positioning -----------------------------------------------------------------
 // Start positioning at 10px to add some padding
 int X_START = 10;
 int Y_START = 10; 
-
 // Margins ---------------------------------------------------------------------
 // Single margin
 int X_MARGIN = X_START;
 int Y_MARGIN = Y_START;
 // Subtract from widths to get margins on either side
 int X_MARGINS = 2 * X_MARGIN;
-
 // Panels ----------------------------------------------------------------------
 // Panel labels are ~20, add this so children don't overlap
 int PANEL_Y_START = 20;
 
+// FUNCTIONS ===================================================================
 
-// WINDOW ======================================================================
-// x/y to be set when creating window
-int WINDOW_X = 0;
-int WINDOW_Y = 0;
-int WINDOW_HEIGHT = 475;
-// The main sketch section
-int WINDOW_MAIN_WIDTH = 650;
-// Advanced options sidebar
-int WINDOW_ADV_WIDTH = 200;
-// Total width
-int WINDOW_WIDTH = WINDOW_MAIN_WIDTH + WINDOW_ADV_WIDTH;
-// G4P
-GWindow controlsWindow;
-
-// CHANNELS ====================================================================
-// TODO make parent panel
-// General ---------------------------------------------------------------------
-int CHANNEL_TOGGLE_WIDTH = 150;
-int CHANNEL_TOGGLE_HEIGHT = 25;
-int CHANNEL_PANEL_HEIGHT = 3 * CHANNEL_TOGGLE_HEIGHT + PANEL_Y_START;
-int R_CHANNEL_Y = PANEL_Y_START;
-int G_CHANNEL_Y = PANEL_Y_START + CHANNEL_TOGGLE_HEIGHT;
-int B_CHANNEL_Y = PANEL_Y_START + 2 * CHANNEL_TOGGLE_HEIGHT;
-
-// Source ----------------------------------------------------------------------
-int SRC_CHANNEL_X = X_START;
-int SRC_CHANNEL_Y = Y_START;
-
-// G4P
-GPanel srcChannelPanel;
-GToggleGroup srcChannelToggle; 
-ChannelOption srcR, srcG, srcB; 
-// Keep track of toggles in global w/ index corresponding to channel
-ChannelOption[] srcToggles;
-
-// Target ----------------------------------------------------------------------
-int TARG_CHANNEL_X = SRC_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
-int TARG_CHANNEL_Y = Y_START;
-
-// G4P
-GPanel targChannelPanel;
-GToggleGroup targChannelToggle; 
-ChannelOption targR, targG, targB; 
-// Keep track of toggles in global w/ index corresponding to channel
-ChannelOption[] targToggles;
-
-
-// RANDOMIZE ===================================================================
-// Panel -----------------------------------------------------------------------
-// End of target channel panel + margins
-int RAND_PANEL_X = TARG_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
-int RAND_PANEL_Y = Y_START;
-// Fill rest of window (minus right margin)
-int RAND_PANEL_WIDTH = WINDOW_MAIN_WIDTH - RAND_PANEL_X - X_MARGIN;
-
-// G4P
-GPanel randomizePanel;
-
-// Randomize Checkboxes + Panel ------------------------------------------------
-int RAND_CHECKBOX_PANEL_X = X_MARGIN; 
-int RAND_CHECKBOX_PANEL_Y = PANEL_Y_START;
-int RAND_CHECKBOX_PANEL_WIDTH = RAND_PANEL_WIDTH - X_MARGINS;
-// Half of panel width, 2 checkboxes per row
-int RAND_CHECKBOX_WIDTH = (RAND_CHECKBOX_PANEL_WIDTH / 2) - X_MARGINS;
-int RAND_CHECKBOX_HEIGHT = 30;
-// Checkbox positioning
-int RAND_CHECKBOX_LEFT_X = 0;
-int RAND_CHECKBOX_RIGHT_X = RAND_CHECKBOX_LEFT_X + RAND_CHECKBOX_WIDTH + X_MARGINS;
-int RAND_CHECKBOX_TOP_Y = 0;
-int RAND_CHECKBOX_BOTTOM_Y = RAND_CHECKBOX_HEIGHT;
-int RAND_CHECKBOX_PANEL_HEIGHT = 2 * RAND_CHECKBOX_HEIGHT; 
-
-// G4P
-GPanel randomizeCheckboxPanel;
-GCheckbox randSrcCheckbox, randTargCheckbox, 
-          randXShiftCheckbox, randYShiftCheckbox;
-
-// Max Shift Inputs ------------------------------------------------------------
-// Labels are full width for text alignment
-int RAND_MAX_LABEL_WIDTH = RAND_PANEL_WIDTH / 2;
-int RAND_MAX_LABEL_HEIGHT = 20;
-// Inputs have margins (so they don't overlap)
-int RAND_MAX_INPUT_WIDTH = RAND_MAX_LABEL_WIDTH - X_MARGINS;
-int RAND_MAX_INPUT_HEIGHT = 20;
-int RAND_MAX_TOTAL_HEIGHT = RAND_MAX_LABEL_HEIGHT + RAND_MAX_INPUT_HEIGHT + Y_MARGIN;
-int RAND_MAX_LABEL_Y = RAND_CHECKBOX_PANEL_Y + RAND_CHECKBOX_PANEL_HEIGHT;
-int RAND_MAX_INPUT_Y = RAND_MAX_LABEL_Y + RAND_MAX_LABEL_HEIGHT;
-// Add margins to input but not label
-int RAND_MAX_LABEL_LEFT_X = 0;
-int RAND_MAX_INPUT_LEFT_X = X_MARGIN;
-int RAND_MAX_LABEL_RIGHT_X = RAND_MAX_LABEL_WIDTH;
-int RAND_MAX_INPUT_RIGHT_X = RAND_MAX_INPUT_LEFT_X + RAND_MAX_INPUT_WIDTH + X_MARGINS;
-
-// G4P
-GTextField randXMaxInput, randYMaxInput;
-GTabManager randMaxTabManager;
-GLabel randXMaxLabel, randYMaxLabel;
-
-// Randomize Button ------------------------------------------------------------
-int RAND_BTN_WIDTH = RAND_PANEL_WIDTH;
-int RAND_BTN_HEIGHT = 30;
-int RAND_BTN_X = 0;
-int RAND_BTN_Y = RAND_MAX_LABEL_Y + RAND_MAX_TOTAL_HEIGHT;
-int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
-
-// G4P
-GButton randomizeBtn; 
-
-
-// SHIFT TYPE SELECT ===========================================================
-// Panel -----------------------------------------------------------------------
-int ADV_OPTS_PANEL_X = WINDOW_MAIN_WIDTH + X_MARGIN;
-int ADV_OPTS_PANEL_Y = Y_START;
-int ADV_OPTS_PANEL_WIDTH = WINDOW_ADV_WIDTH - X_MARGINS;
-int ADV_OPTS_PANEL_HEIGHT = WINDOW_HEIGHT - (2 * Y_MARGIN);
-
-// G4P
-GPanel advancedOptionsPanel;
-
-// Label -----------------------------------------------------------------------
-int TYPE_LABEL_X = X_MARGIN;
-int TYPE_LABEL_Y = PANEL_Y_START;
-int TYPE_LABEL_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
-int TYPE_LABEL_HEIGHT = 20;
-
-// G4P
-GLabel shiftTypeLabel;
-
-// Dropdown --------------------------------------------------------------------
-int TYPE_SELECT_X = X_MARGIN;
-int TYPE_SELECT_Y = TYPE_LABEL_Y + TYPE_LABEL_HEIGHT;
-int TYPE_SELECT_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
-int TYPE_SELECT_HEIGHT = 100; 
-int TYPE_SELECT_MAX_ITEMS = 4;
-int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
-
-// G4P
-GDropList shiftTypeSelect;
-
-
-// ADVANCED ====================================================================
-// Panel -----------------------------------------------------------------------
-int TYPE_PANEL_X = 0;
-int TYPE_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
-int TYPE_PANEL_WIDTH = ADV_OPTS_PANEL_WIDTH;
-int TYPE_PANEL_HEIGHT = ADV_OPTS_PANEL_HEIGHT - TYPE_PANEL_Y;
-
-
-// SHIFT TYPES =================================================================
-GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel, noiseShiftTypePanel;
-// Keep track of shift type config panels w/ indices matching globals
-GPanel[] shiftTypeConfigPanels;
-
-// Default Shift Type Panel ----------------------------------------------------
-int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
-int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
-int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
-int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_PANEL_HEIGHT - PANEL_Y_START;
-
-// G4P
-GLabel defaultShiftConfigLabel;
-
-// Scale Shift Type Panel ------------------------------------------------------
-int SCALE_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
-int SCALE_CONFIG_LABEL_HEIGHT = 20;
-int SCALE_CONFIG_INPUT_WIDTH = SCALE_CONFIG_LABEL_WIDTH;
-int SCALE_CONFIG_INPUT_HEIGHT = 20;
-int SCALE_CONFIG_LABEL_X = X_MARGIN;
-int SCALE_CONFIG_INPUT_X = X_MARGIN;
-int SCALE_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
-int SCALE_CONFIG_INPUT_TOP_Y = SCALE_CONFIG_LABEL_TOP_Y + SCALE_CONFIG_LABEL_HEIGHT;
-int SCALE_CONFIG_LABEL_BOTTOM_Y = SCALE_CONFIG_INPUT_TOP_Y + SCALE_CONFIG_INPUT_HEIGHT + Y_MARGIN;
-int SCALE_CONFIG_INPUT_BOTTOM_Y = SCALE_CONFIG_LABEL_BOTTOM_Y + SCALE_CONFIG_LABEL_HEIGHT;
-
-// G4P
-// TODO RENAME TO SCALE
-GLabel xMultiplierLabel, yMultiplierLabel;
-GTextField xMultiplierInput, yMultiplierInput;
-GTabManager multiplierTabManager;
-
-// Linear Shift Type Panel -----------------------------------------------------
-// TODO extract common w/ multiply to type_config_ general vars
-// Toggles
-int LINEAR_CONFIG_TOGGLE_WIDTH = TYPE_PANEL_WIDTH / 2;
-int LINEAR_CONFIG_TOGGLE_HEIGHT = 20;
-int LINEAR_CONFIG_TOGGLE_Y = PANEL_Y_START;
-int LINEAR_CONFIG_TOGGLE_LEFT_X = 0;
-int LINEAR_CONFIG_TOGGLE_RIGHT_X = LINEAR_CONFIG_TOGGLE_WIDTH;
-// Coefficient input
-int LINEAR_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
-int LINEAR_CONFIG_LABEL_HEIGHT = 20;
-int LINEAR_CONFIG_INPUT_WIDTH = LINEAR_CONFIG_LABEL_WIDTH;
-int LINEAR_CONFIG_INPUT_HEIGHT = 20;
-int LINEAR_CONFIG_LABEL_X = X_MARGIN;
-int LINEAR_CONFIG_LABEL_Y = LINEAR_CONFIG_TOGGLE_Y + LINEAR_CONFIG_TOGGLE_HEIGHT + Y_MARGIN;
-int LINEAR_CONFIG_INPUT_X = X_MARGIN;
-int LINEAR_CONFIG_INPUT_Y = LINEAR_CONFIG_LABEL_Y + LINEAR_CONFIG_LABEL_HEIGHT;
-// Coefficient Sign
-int LINEAR_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
-int LINEAR_CONFIG_CHECKBOX_HEIGHT = LINEAR_CONFIG_TOGGLE_HEIGHT;
-int LINEAR_CONFIG_CHECKBOX_X = 0;
-int LINEAR_CONFIG_CHECKBOX_Y = LINEAR_CONFIG_INPUT_Y + LINEAR_CONFIG_INPUT_HEIGHT + Y_MARGIN;
-
-// G4P
-GLabel linearCoeffLabel;
-GTextField linearCoeffInput;
-GToggleGroup linearEqTypeToggle;
-GOption linearYEquals, linearXEquals;
-GCheckbox linearNegativeCoeffCheckbox;
-
-// Skew Shift Type Panel -------------------------------------------------------
-int SKEW_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
-int SKEW_CONFIG_LABEL_HEIGHT = 20;
-int SKEW_CONFIG_INPUT_WIDTH = SKEW_CONFIG_LABEL_WIDTH;
-int SKEW_CONFIG_INPUT_HEIGHT = 20;
-int SKEW_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
-int SKEW_CONFIG_CHECKBOX_HEIGHT = 20;
-int SKEW_CONFIG_LABEL_X = X_MARGIN;
-int SKEW_CONFIG_INPUT_X = X_MARGIN;
-int SKEW_CONFIG_CHECKBOX_X = 0;
-int SKEW_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
-int SKEW_CONFIG_INPUT_TOP_Y = SKEW_CONFIG_LABEL_TOP_Y + SKEW_CONFIG_LABEL_HEIGHT;
-int SKEW_CONFIG_CHECKBOX_TOP_Y = SKEW_CONFIG_INPUT_TOP_Y + SKEW_CONFIG_INPUT_HEIGHT;
-int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_CHECKBOX_TOP_Y + SKEW_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
-int SKEW_CONFIG_INPUT_BOTTOM_Y = SKEW_CONFIG_LABEL_BOTTOM_Y + SKEW_CONFIG_LABEL_HEIGHT;
-int SKEW_CONFIG_CHECKBOX_BOTTOM_Y = SKEW_CONFIG_INPUT_BOTTOM_Y + SKEW_CONFIG_INPUT_HEIGHT;
-
-// G4P
-GLabel xSkewLabel, ySkewLabel;
-GTextField xSkewInput, ySkewInput;
-GTabManager skewTabManager;
-GCheckbox xSkewNegativeCheckbox, ySkewNegativeCheckbox;
-
-// X*Y Mult Shift Type Panel ---------------------------------------------------
-int XYMULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH;
-int XYMULT_CONFIG_LABEL_HEIGHT = 20;
-int XYMULT_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
-int XYMULT_CONFIG_CHECKBOX_HEIGHT = 20;
-int XYMULT_CONFIG_LABEL_X = 0;
-int XYMULT_CONFIG_CHECKBOX_X = 0;
-// X Multiply
-int XYMULT_CONFIG_X_LABEL_Y = PANEL_Y_START;
-int XYMULT_CONFIG_XMULT_CHECKBOX_Y = XYMULT_CONFIG_X_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
-int XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_XMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
-int XYMULT_CONFIG_XDIVWIDTH_CHECKBOX_Y = XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
-// Y Multiply
-int XYMULT_CONFIG_Y_LABEL_Y = XYMULT_CONFIG_XDIVWIDTH_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
-int XYMULT_CONFIG_YMULT_CHECKBOX_Y = XYMULT_CONFIG_Y_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
-int XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_YMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
-int XYMULT_CONFIG_YDIVHEIGHT_CHECKBOX_Y = XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
-
-// G4P
-GLabel multXLabel, multYLabel;
-GCheckbox multXCheckbox, multYCheckbox;
-GCheckbox multXNegativeCheckbox, multYNegativeCheckbox;
-GCheckbox xDivWidthCheckbox, yDivHeightCheckbox;
-
-// Noise -----------------------------------------------------------------------
-// Common Label/Input Values
-int NOISE_CONFIG_LABEL_FULL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
-int NOISE_CONFIG_LABEL_HALF_WIDTH = (TYPE_PANEL_WIDTH / 2) - X_MARGINS;
-int NOISE_CONFIG_LABEL_HEIGHT = 20;
-int NOISE_CONFIG_INPUT_FULL_WIDTH = NOISE_CONFIG_LABEL_FULL_WIDTH;
-int NOISE_CONFIG_INPUT_HALF_WIDTH = NOISE_CONFIG_LABEL_HALF_WIDTH;
-int NOISE_CONFIG_INPUT_HEIGHT = NOISE_CONFIG_LABEL_HEIGHT;
-int NOISE_CONFIG_LABEL_LEFT_X = X_MARGIN;
-int NOISE_CONFIG_LABEL_RIGHT_X = NOISE_CONFIG_LABEL_LEFT_X + NOISE_CONFIG_LABEL_HALF_WIDTH + X_MARGINS;
-int NOISE_CONFIG_INPUT_LEFT_X = X_MARGIN;
-int NOISE_CONFIG_INPUT_RIGHT_X = NOISE_CONFIG_INPUT_LEFT_X + NOISE_CONFIG_INPUT_HALF_WIDTH + X_MARGINS;
-// Noise Start Y
-int NOISE_CONFIG_LABEL_START_Y = PANEL_Y_START;
-int NOISE_CONFIG_INPUT_START_Y = NOISE_CONFIG_LABEL_START_Y + NOISE_CONFIG_LABEL_HEIGHT;
-// Noise Increment Y
-int NOISE_CONFIG_LABEL_INCREMENT_Y = NOISE_CONFIG_INPUT_START_Y + NOISE_CONFIG_LABEL_HEIGHT + Y_MARGIN;
-int NOISE_CONFIG_INPUT_INCREMENT_Y = NOISE_CONFIG_LABEL_INCREMENT_Y + NOISE_CONFIG_LABEL_HEIGHT;
-// Noise Multiplier Y
-int NOISE_CONFIG_LABEL_MULTIPLIER_Y = NOISE_CONFIG_INPUT_INCREMENT_Y + NOISE_CONFIG_LABEL_HEIGHT + Y_MARGIN;
-int NOISE_CONFIG_INPUT_MULTIPLIER_Y = NOISE_CONFIG_LABEL_MULTIPLIER_Y + NOISE_CONFIG_LABEL_HEIGHT;
-
-// G4P
-// Start
-GLabel xNoiseStartLabel, yNoiseStartLabel;
-GTextField xNoiseStartInput, yNoiseStartInput;
-// Increment
-GLabel xNoiseIncrementLabel, yNoiseIncrementLabel;
-GTextField xNoiseIncrementInput, yNoiseIncrementInput;
-// Multiplier
-GLabel noiseMultiplierLabel;
-GTextField noiseMultiplierInput;
-// Tab MGMT
-GTabManager noiseTabManager;
-
-
-// SHIFT SLIDERS ===============================================================
-// General ---------------------------------------------------------------------
-int SLIDER_TOGGLE_WIDTH = 75;
-int SLIDER_INPUT_WIDTH = 75;
-int SLIDER_INPUT_HEIGHT = 20;
-float SLIDER_TRACK_WIDTH = 12.0;
-int SLIDER_HEIGHT = 60;
-int SLIDER_PANEL_WIDTH = WINDOW_MAIN_WIDTH - X_MARGINS;
-int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
-int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - (SLIDER_INPUT_WIDTH + SLIDER_TOGGLE_WIDTH);
-int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
-int SLIDER_INPUT_X = 0;
-int SLIDER_INPUT_Y = PANEL_Y_START + (SLIDER_HEIGHT - SLIDER_INPUT_HEIGHT) / 2;
-int SLIDER_X = SLIDER_INPUT_X + SLIDER_INPUT_WIDTH;
-int SLIDER_Y = PANEL_Y_START;
-int SLIDER_TOGGLE_X = SLIDER_X + SLIDER_WIDTH;
-int SLIDER_PERCENT_TOGGLE_Y = PANEL_Y_START;
-int SLIDER_PIXELS_TOGGLE_Y = SLIDER_PERCENT_TOGGLE_Y + SLIDER_TOGGLE_HEIGHT;
-
-// Horizontal Shift ------------------------------------------------------------
-int X_SLIDER_PANEL_X = X_START; 
-int X_SLIDER_PANEL_Y = RAND_PANEL_Y + RAND_PANEL_HEIGHT + Y_MARGIN; 
-
-// G4P
-GPanel xShiftPanel;
-GSlider xSlider; 
-GToggleGroup xSliderToggle; 
-GOption xSliderPercent, xSliderPixels; 
-GTextField xSliderInput;
-
-// Vertical Shift --------------------------------------------------------------
-int Y_SLIDER_PANEL_X = X_START; 
-int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
-
-// G4P
-GPanel yShiftPanel;
-GSlider ySlider; 
-GToggleGroup ySliderToggle; 
-GOption ySliderPercent, ySliderPixels; 
-GTextField ySliderInput;
-
-
-// LOAD/SAVE BUTTONS ===========================================================
-int LOAD_SAVE_PANEL_X = X_START;
-int LOAD_SAVE_PANEL_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
-int LOAD_SAVE_PANEL_WIDTH = WINDOW_MAIN_WIDTH / 2 - X_MARGINS;
-int LOAD_SAVE_BTN_HEIGHT = 30;
-int LOAD_SAVE_PANEL_HEIGHT = 2 * (LOAD_SAVE_BTN_HEIGHT + Y_MARGIN);
-int LOAD_BTN_X = 0;
-int LOAD_BTN_Y = 0;
-int SAVE_BTN_X = 0;
-int SAVE_BTN_Y = LOAD_BTN_Y + LOAD_SAVE_BTN_HEIGHT + Y_MARGIN;
-
-// G4P
-GPanel loadSavePanel;
-GButton loadBtn; 
-GButton saveBtn; 
-
-
-// RESET/CONFIRM BUTTONS =======================================================
-int RESET_CONFIRM_PANEL_X = LOAD_SAVE_PANEL_X + LOAD_SAVE_PANEL_WIDTH + X_MARGINS;
-int RESET_CONFIRM_PANEL_Y = LOAD_SAVE_PANEL_Y;
-int RESET_CONFIRM_PANEL_WIDTH = LOAD_SAVE_PANEL_WIDTH;
-int RESET_CONFIRM_BTN_HEIGHT = LOAD_SAVE_BTN_HEIGHT;
-int RECURSIVE_CHECKBOX_HEIGHT = 30;
-int RESET_CONFIRM_PANEL_HEIGHT = 2 * (RESET_CONFIRM_BTN_HEIGHT + Y_MARGIN) + RECURSIVE_CHECKBOX_HEIGHT;
-int RESET_BTN_X = 0;
-int RESET_BTN_Y = 0;
-int CONFIRM_BTN_X = 0;
-int CONFIRM_BTN_Y = RESET_BTN_Y + RESET_CONFIRM_BTN_HEIGHT + Y_MARGIN;
-int RECURSIVE_CHECKBOX_X = 0;
-int RECURSIVE_CHECKBOX_Y = CONFIRM_BTN_Y + RESET_CONFIRM_BTN_HEIGHT;
-
-// G4P
-GPanel resetConfirmPanel;
-GButton resetBtn, confirmBtn; 
-GCheckbox recursiveCheckbox;
-
-
-// TODO ========================================================================
-// TODO: RE-ORGANIZE THESE TO ALSO BE DECLARED IN THEIR RELEVANT SECTIONS??:
-// TODO ========================================================================
-// =============================================================================
-// COMMON SETUP HELPERS
-// =============================================================================
-
-// General Configs -------------------------------------------------------------
+// Setup Helper Methods --------------------------------------------------------
 
 // Common panel formatting
 public void setupGeneralPanel(GPanel panel) {
@@ -430,43 +55,26 @@ public void togglePanelVisibility(GPanel panel, boolean show) {
 
 
 // =============================================================================
-// WINDOW 
+// Window
 // =============================================================================
 
-// Setup -----------------------------------------------------------------------
+// GLOBALS =====================================================================
 
-public void createGUI() {
-  G4P.messagesEnabled(false);
-  G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
-  G4P.setMouseOverEnabled(false);
-  // Put to the left of preview window w/ 50 pixels for padding
-  WINDOW_X = windowManager.windowX - (WINDOW_WIDTH + 50);
-  // Vertically center
-  WINDOW_Y = (displayHeight / 2) - (WINDOW_HEIGHT / 2);
-  controlsWindow = GWindow.getWindow(this, "Channel Shift", WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
-  controlsWindow.noLoop();
-  controlsWindow.setActionOnClose(G4P.KEEP_OPEN);
-  controlsWindow.addDrawHandler(this, "controlsWindow_draw");
-  controlsWindow.addMouseHandler(this, "controlsWindow_mouse");
-  // Source channel toggle 
-  createSrcChannelPanel();
-  // Target channel toggle 
-  createTargChannelPanel();
-  // Randomize  options
-  createRandomizePanel();
-  // Shift type
-  createAdvancedOptionsPanel();
-  // Horizontal shift slider 
-  createXShiftPanel();
-  // Vertical shift slider 
-  createYShiftPanel();
-  // Load/save buttons 
-  createLoadSavePanel();
-  // Preview/Confirm buttons
-  createResetConfirmPanel();
+// Positioning and Dimensions --------------------------------------------------
+// x/y to be set when creating window
+int WINDOW_X = 0;
+int WINDOW_Y = 0;
+int WINDOW_HEIGHT = 475;
+// The main sketch section
+int WINDOW_MAIN_WIDTH = 650;
+// Advanced options sidebar
+int WINDOW_ADV_WIDTH = 200;
+// Total width
+int WINDOW_WIDTH = WINDOW_MAIN_WIDTH + WINDOW_ADV_WIDTH;
+// G4P -------------------------------------------------------------------------
+GWindow controlsWindow;
 
-  controlsWindow.loop();
-}
+// FUNCTIONS ===================================================================
 
 // Event Handlers --------------------------------------------------------------
 
@@ -474,10 +82,42 @@ synchronized public void controlsWindow_draw(PApplet appc, GWinData data) {
   appc.background(230);
 } 
 
+
 // =============================================================================
-// CHANNEL TOGGLE PANELS
+// Channel Toggle Panels
 // =============================================================================
 
+// GLOBALS =====================================================================
+
+// General ---------------------------------------------------------------------
+int CHANNEL_TOGGLE_WIDTH = 150;
+int CHANNEL_TOGGLE_HEIGHT = 25;
+int CHANNEL_PANEL_HEIGHT = 3 * CHANNEL_TOGGLE_HEIGHT + PANEL_Y_START;
+int R_CHANNEL_Y = PANEL_Y_START;
+int G_CHANNEL_Y = PANEL_Y_START + CHANNEL_TOGGLE_HEIGHT;
+int B_CHANNEL_Y = PANEL_Y_START + 2 * CHANNEL_TOGGLE_HEIGHT;
+// Source ----------------------------------------------------------------------
+int SRC_CHANNEL_X = X_START;
+int SRC_CHANNEL_Y = Y_START;
+// G4P
+GPanel srcChannelPanel;
+GToggleGroup srcChannelToggle; 
+ChannelOption srcR, srcG, srcB; 
+// Keep track of toggles in global w/ index corresponding to channel
+ChannelOption[] srcToggles;
+// Target ----------------------------------------------------------------------
+int TARG_CHANNEL_X = SRC_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
+int TARG_CHANNEL_Y = Y_START;
+// G4P
+GPanel targChannelPanel;
+GToggleGroup targChannelToggle; 
+ChannelOption targR, targG, targB; 
+// Keep track of toggles in global w/ index corresponding to channel
+ChannelOption[] targToggles;
+
+// FUNCTIONS ===================================================================
+
+// Parent panel setup
 public void createChannelPanel(GPanel channelPanel, GToggleGroup channelToggle, ChannelOption R, ChannelOption G, ChannelOption B, boolean src) {
   // Configure options
   R.addEventHandler(this, "channelOption_clicked");
@@ -493,6 +133,7 @@ public void createChannelPanel(GPanel channelPanel, GToggleGroup channelToggle, 
   channelPanel.addControl(B);
 }
 
+// Source channel panel
 public void createSrcChannelPanel() {
   // Initialize panel
   srcChannelPanel = new GPanel(controlsWindow, SRC_CHANNEL_X, SRC_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_PANEL_HEIGHT, "Source Channel");
@@ -508,6 +149,7 @@ public void createSrcChannelPanel() {
   srcToggles = new ChannelOption[]{ srcR, srcG, srcB };
 }
 
+// Target channel panel
 public void createTargChannelPanel() {
   // Initialize panel
   targChannelPanel = new GPanel(controlsWindow, TARG_CHANNEL_X, TARG_CHANNEL_Y, CHANNEL_TOGGLE_WIDTH, CHANNEL_PANEL_HEIGHT, "Target Channel");
@@ -525,80 +167,65 @@ public void createTargChannelPanel() {
 
 
 // =============================================================================
-// CHANNEL SHIFT PANELS 
+// Randomize Panel
 // =============================================================================
 
-/**
- * Common setup for channel shift slider panels. GUI objects must be
- * initialized before calling to avoid weird null pointer exceptions
- */
-public void createChannelShiftPanel(
-    GPanel shiftPanel, int colorScheme, 
-    GSlider slider, String sliderEventHandler, 
-    GTextField sliderInput, String sliderInputEventHandler,
-    GToggleGroup sliderToggle, 
-    GOption sliderPercent, String percentEventHandler, 
-    GOption sliderPixels, String pixelsEventHandler
-    ) {
-  setupGeneralPanel(shiftPanel, colorScheme);
-  // Slider
-  slider.setShowValue(true);
-  slider.setShowLimits(true);
-  slider.setLimits(0, 0, 100);
-  slider.setShowTicks(true);
-  slider.setNumberFormat(G4P.INTEGER, 0);
-  slider.setLocalColorScheme(colorScheme);
-  slider.setOpaque(true);
-  slider.addEventHandler(this, sliderEventHandler);
-  shiftPanel.addControl(slider);
-  // Text Input
-  sliderInput.setLocalColorScheme(colorScheme);
-  sliderInput.setOpaque(true);
-  sliderInput.setText("0");
-  sliderInput.addEventHandler(this, sliderInputEventHandler);
-  shiftPanel.addControl(sliderInput);
-  // Percent/Pixel toggles
-  // TODO: extract common from toggles to method
-  sliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  sliderPercent.setText("Percent");
-  sliderPercent.setLocalColorScheme(colorScheme);
-  sliderPercent.setOpaque(true);
-  sliderPercent.addEventHandler(this, percentEventHandler);
-  sliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  sliderPixels.setText("Pixels");
-  sliderPixels.setLocalColorScheme(colorScheme);
-  sliderPixels.setOpaque(true);
-  sliderPixels.addEventHandler(this, pixelsEventHandler);
-  sliderToggle.addControl(sliderPercent);
-  shiftPanel.addControl(sliderPercent);
-  sliderPercent.setSelected(true);
-  sliderToggle.addControl(sliderPixels);
-  shiftPanel.addControl(sliderPixels);
-}
+// GLOBALS =====================================================================
 
-public void createXShiftPanel() {
-  xShiftPanel = new GPanel(controlsWindow, X_SLIDER_PANEL_X, X_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
-  xSlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
-  xSliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
-  xSliderToggle = new GToggleGroup();
-  xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  xSliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderInput, "xSliderInput_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
-}
+// Panel -----------------------------------------------------------------------
+// End of target channel panel + margins
+int RAND_PANEL_X = TARG_CHANNEL_X + CHANNEL_TOGGLE_WIDTH + X_MARGINS;
+int RAND_PANEL_Y = Y_START;
+// Fill rest of window (minus right margin)
+int RAND_PANEL_WIDTH = WINDOW_MAIN_WIDTH - RAND_PANEL_X - X_MARGIN;
+// G4P
+GPanel randomizePanel;
+// Randomize Checkboxes + Panel ------------------------------------------------
+int RAND_CHECKBOX_PANEL_X = X_MARGIN; 
+int RAND_CHECKBOX_PANEL_Y = PANEL_Y_START;
+int RAND_CHECKBOX_PANEL_WIDTH = RAND_PANEL_WIDTH - X_MARGINS;
+// Half of panel width, 2 checkboxes per row
+int RAND_CHECKBOX_WIDTH = (RAND_CHECKBOX_PANEL_WIDTH / 2) - X_MARGINS;
+int RAND_CHECKBOX_HEIGHT = 30;
+// Checkbox positioning
+int RAND_CHECKBOX_LEFT_X = 0;
+int RAND_CHECKBOX_RIGHT_X = RAND_CHECKBOX_LEFT_X + RAND_CHECKBOX_WIDTH + X_MARGINS;
+int RAND_CHECKBOX_TOP_Y = 0;
+int RAND_CHECKBOX_BOTTOM_Y = RAND_CHECKBOX_HEIGHT;
+int RAND_CHECKBOX_PANEL_HEIGHT = 2 * RAND_CHECKBOX_HEIGHT; 
+// G4P
+GPanel randomizeCheckboxPanel;
+GCheckbox randSrcCheckbox, randTargCheckbox, 
+          randXShiftCheckbox, randYShiftCheckbox;
+// Max Shift Inputs ------------------------------------------------------------
+// Labels are full width for text alignment
+int RAND_MAX_LABEL_WIDTH = RAND_PANEL_WIDTH / 2;
+int RAND_MAX_LABEL_HEIGHT = 20;
+// Inputs have margins (so they don't overlap)
+int RAND_MAX_INPUT_WIDTH = RAND_MAX_LABEL_WIDTH - X_MARGINS;
+int RAND_MAX_INPUT_HEIGHT = 20;
+int RAND_MAX_TOTAL_HEIGHT = RAND_MAX_LABEL_HEIGHT + RAND_MAX_INPUT_HEIGHT + Y_MARGIN;
+int RAND_MAX_LABEL_Y = RAND_CHECKBOX_PANEL_Y + RAND_CHECKBOX_PANEL_HEIGHT;
+int RAND_MAX_INPUT_Y = RAND_MAX_LABEL_Y + RAND_MAX_LABEL_HEIGHT;
+// Add margins to input but not label
+int RAND_MAX_LABEL_LEFT_X = 0;
+int RAND_MAX_INPUT_LEFT_X = X_MARGIN;
+int RAND_MAX_LABEL_RIGHT_X = RAND_MAX_LABEL_WIDTH;
+int RAND_MAX_INPUT_RIGHT_X = RAND_MAX_INPUT_LEFT_X + RAND_MAX_INPUT_WIDTH + X_MARGINS;
+// G4P
+GTextField randXMaxInput, randYMaxInput;
+GLabel randXMaxLabel, randYMaxLabel;
+GTabManager randMaxTabManager;
+// Randomize Button ------------------------------------------------------------
+int RAND_BTN_WIDTH = RAND_PANEL_WIDTH;
+int RAND_BTN_HEIGHT = 30;
+int RAND_BTN_X = 0;
+int RAND_BTN_Y = RAND_MAX_LABEL_Y + RAND_MAX_TOTAL_HEIGHT;
+int RAND_PANEL_HEIGHT = RAND_CHECKBOX_PANEL_HEIGHT + RAND_MAX_TOTAL_HEIGHT + RAND_BTN_HEIGHT + PANEL_Y_START;
+// G4P
+GButton randomizeBtn;
 
-public void createYShiftPanel() {
-  yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_PANEL_X, Y_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
-  ySlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
-  ySliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
-  ySliderToggle = new GToggleGroup();
-  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderInput, "ySliderInput_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
-}
-
-// =============================================================================
-// RANDOMIZE PANEL
-// =============================================================================
+// FUNCTIONS ===================================================================
 
 public void createRandomizePanel() {
   randomizePanel = new GPanel(controlsWindow, RAND_PANEL_X, RAND_PANEL_Y, RAND_PANEL_WIDTH, RAND_PANEL_HEIGHT, "Randomize Options");
@@ -656,126 +283,88 @@ public void createRandomizePanel() {
 
 
 // =============================================================================
-// LOAD/SAVE/RESET/CONFIRM PANEL
+// Shift Type Select
 // =============================================================================
 
-// Load/Save Panel -------------------------------------------------------------
+// GLOBALS =====================================================================
 
-public void createLoadSavePanel() {
-  loadSavePanel = new GPanel(controlsWindow, LOAD_SAVE_PANEL_X, LOAD_SAVE_PANEL_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_PANEL_HEIGHT);
-  setupGeneralPanel(loadSavePanel);
-  loadSavePanel.setOpaque(false);
-  // Load button
-  loadBtn = new GButton(controlsWindow, LOAD_BTN_X, LOAD_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
-  loadBtn.setText("Load Image");
-  loadBtn.setTextBold();
-  loadBtn.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
-  loadBtn.addEventHandler(this, "loadBtn_click");
-  loadSavePanel.addControl(loadBtn);
-  // Save button 
-  saveBtn = new GButton(controlsWindow, SAVE_BTN_X, SAVE_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
-  saveBtn.setText("Save Result");
-  saveBtn.setTextBold();
-  saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
-  saveBtn.addEventHandler(this, "saveBtn_click");
-  loadSavePanel.addControl(saveBtn);
-}
+// Panel -----------------------------------------------------------------------
+int ADV_OPTS_PANEL_X = WINDOW_MAIN_WIDTH + X_MARGIN;
+int ADV_OPTS_PANEL_Y = Y_START;
+int ADV_OPTS_PANEL_WIDTH = WINDOW_ADV_WIDTH - X_MARGINS;
+int ADV_OPTS_PANEL_HEIGHT = WINDOW_HEIGHT - (2 * Y_MARGIN);
+// G4P
+GPanel advancedOptionsPanel;
+// Label -----------------------------------------------------------------------
+int TYPE_LABEL_X = X_MARGIN;
+int TYPE_LABEL_Y = PANEL_Y_START;
+int TYPE_LABEL_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
+int TYPE_LABEL_HEIGHT = 20;
+// G4P
+GLabel shiftTypeLabel;
+// Dropdown --------------------------------------------------------------------
+int TYPE_SELECT_X = X_MARGIN;
+int TYPE_SELECT_Y = TYPE_LABEL_Y + TYPE_LABEL_HEIGHT;
+int TYPE_SELECT_WIDTH = ADV_OPTS_PANEL_WIDTH - X_MARGINS;
+int TYPE_SELECT_HEIGHT = 100; 
+int TYPE_SELECT_MAX_ITEMS = 4;
+int TYPE_SELECT_BTN_WIDTH = TYPE_SELECT_WIDTH / 4;
+// G4P
+GDropList shiftTypeSelect;
 
-// Preview/Confirm Panel -------------------------------------------------------
+// FUNCTIONS ===================================================================
 
-public void createResetConfirmPanel() {
-  resetConfirmPanel = new GPanel(controlsWindow, RESET_CONFIRM_PANEL_X, RESET_CONFIRM_PANEL_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_PANEL_HEIGHT);
-  setupGeneralPanel(resetConfirmPanel);
-  resetConfirmPanel.setOpaque(false);
-  // Reset Button
-  resetBtn = new GButton(controlsWindow, RESET_BTN_X, RESET_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
-  resetBtn.setText("Reset Step");
-  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
-  resetBtn.addEventHandler(this, "resetBtn_click");
-  resetConfirmPanel.addControl(resetBtn);
-  // Confirm Button 
-  confirmBtn = new GButton(controlsWindow, CONFIRM_BTN_X, CONFIRM_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
-  confirmBtn.setText("Confirm Step");
-  confirmBtn.addEventHandler(this, "confirmBtn_click");
-  resetConfirmPanel.addControl(confirmBtn);
-  // Recursive checkbox
-  recursiveCheckbox = new GCheckbox(controlsWindow, RECURSIVE_CHECKBOX_X, RECURSIVE_CHECKBOX_Y, RESET_CONFIRM_PANEL_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
-  recursiveCheckbox.setSelected(true);
-  recursiveCheckbox.setText("Recursive", GAlign.CENTER, GAlign.MIDDLE);
-  recursiveCheckbox.setOpaque(true);
-  recursiveCheckbox.addEventHandler(this, "recursiveCheckbox_click");
-  resetConfirmPanel.addControl(recursiveCheckbox);
-}
+// -----------------------------------------------------------------------------
+// Functions are declared after the various advanced options configs since it
+// uses on the setup functions for each of those.
+// -----------------------------------------------------------------------------
 
 
 // =============================================================================
-// ADVANCED OPTIONS PANEL
+// Advanced Options Panels
 // =============================================================================
 
-// Setup -----------------------------------------------------------------------
+// GLOBALS =====================================================================
 
-public void createAdvancedOptionsPanel() {
-  advancedOptionsPanel = new GPanel(controlsWindow, ADV_OPTS_PANEL_X, ADV_OPTS_PANEL_Y, ADV_OPTS_PANEL_WIDTH, ADV_OPTS_PANEL_HEIGHT, "Advanced Options");
-  setupGeneralPanel(advancedOptionsPanel, GCScheme.PURPLE_SCHEME);
-  // Shift Type Dropdown
-  shiftTypeLabel = new GLabel(controlsWindow, TYPE_LABEL_X, TYPE_LABEL_Y, TYPE_LABEL_WIDTH, TYPE_LABEL_HEIGHT, "Shift Type:");
-  setupGeneralLabel(shiftTypeLabel);
-  advancedOptionsPanel.addControl(shiftTypeLabel);
-  shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
-  shiftTypeSelect.setItems(SHIFT_TYPES, TYPE_DEFAULT);
-  shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
-  advancedOptionsPanel.addControl(shiftTypeSelect);
-  // Keep track of each config panel in global
-  shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
-  // Add type config panels and add them to shiftTypeConfigPanels
-  createDefaultShiftTypePanel();
-  createScaleShiftTypePanel();
-  createLinearShiftTypePanel();
-  createSkewShiftTypePanel();
-  createXYMultShiftTypePanel();
-  createNoiseShiftTypePanel();
-}
+// Common ----------------------------------------------------------------------
+int TYPE_PANEL_X = 0;
+int TYPE_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
+int TYPE_PANEL_WIDTH = ADV_OPTS_PANEL_WIDTH;
+int TYPE_PANEL_HEIGHT = ADV_OPTS_PANEL_HEIGHT - TYPE_PANEL_Y;
 
-// Helpers ---------------------------------------------------------------------
-
-public void hideShiftTypePanel(GPanel panel) {
-  togglePanelVisibility(panel, false);
-  // Move off screen to avoid issues w/ click through lag
-  panel.moveTo(WINDOW_WIDTH, WINDOW_HEIGHT);
-}
-public void showShiftTypePanel(GPanel panel) {
-  // Move on screen
-  panel.moveTo(TYPE_PANEL_X, TYPE_PANEL_Y);
-  togglePanelVisibility(panel, true);
-}
-
-// Event Handlers --------------------------------------------------------------
-
-public void shiftTypeSelect_change(GDropList source, GEvent event) {
-  // Hide previously selected panel
-  hideShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
-  shiftTypeManager.setShiftType(source.getSelectedIndex());
-  // Show newly selected panel
-  showShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
-  showPreview();
-}
-
-// Type config panels (called above) -------------------------------------------
-
-public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
-  setupGeneralPanel(panel);
-  panel.setText(SHIFT_TYPES[shiftTypeIndex] + " Shift Settings");
-  // Hide by default
-  hideShiftTypePanel(panel);
-  // Add to global
-  shiftTypeConfigPanels[shiftTypeIndex] = panel;
-}
 
 // =============================================================================
-// SHIFT TYPE CONFIGS 
+// Shift Type Panels
 // =============================================================================
 
-// Default =====================================================================
+// GLOBALS =====================================================================
+
+// G4P -------------------------------------------------------------------------
+GPanel defaultShiftTypePanel, scaleShiftTypePanel, linearShiftTypePanel, skewShiftTypePanel, xyMultShiftTypePanel, noiseShiftTypePanel;
+// Keep track of shift type config panels w/ indices matching globals
+GPanel[] shiftTypeConfigPanels;
+
+
+// TODO ========================================================================
+// TODO: MAKE THE STRUCTURE OF THESE SECTIONS CONSISTENT:
+// TODO ========================================================================
+
+
+// =============================================================================
+// Default Shift Type Panel
+// =============================================================================
+
+// GLOBALS =====================================================================
+
+// Positioning and Dimensions --------------------------------------------------
+int DEFAULT_CONFIG_LABEL_X = X_MARGIN;
+int DEFAULT_CONFIG_LABEL_Y = PANEL_Y_START;
+int DEFAULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int DEFAULT_CONFIG_LABEL_HEIGHT = TYPE_PANEL_HEIGHT - PANEL_Y_START;
+// G4P -------------------------------------------------------------------------
+GLabel defaultShiftConfigLabel;
+
+// FUNCTIONS ===================================================================
 
 // Setup -----------------------------------------------------------------------
 
@@ -795,7 +384,30 @@ public void createDefaultShiftTypePanel() {
 }
 
 
-// Scale =======================================================================
+// =============================================================================
+// Scale Shift Type Panel
+// =============================================================================
+
+// GLOBALS =====================================================================
+
+// Positioning and Dimensions --------------------------------------------------
+int SCALE_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int SCALE_CONFIG_LABEL_HEIGHT = 20;
+int SCALE_CONFIG_INPUT_WIDTH = SCALE_CONFIG_LABEL_WIDTH;
+int SCALE_CONFIG_INPUT_HEIGHT = 20;
+int SCALE_CONFIG_LABEL_X = X_MARGIN;
+int SCALE_CONFIG_INPUT_X = X_MARGIN;
+int SCALE_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
+int SCALE_CONFIG_INPUT_TOP_Y = SCALE_CONFIG_LABEL_TOP_Y + SCALE_CONFIG_LABEL_HEIGHT;
+int SCALE_CONFIG_LABEL_BOTTOM_Y = SCALE_CONFIG_INPUT_TOP_Y + SCALE_CONFIG_INPUT_HEIGHT + Y_MARGIN;
+int SCALE_CONFIG_INPUT_BOTTOM_Y = SCALE_CONFIG_LABEL_BOTTOM_Y + SCALE_CONFIG_LABEL_HEIGHT;
+// G4P -------------------------------------------------------------------------
+// TODO Rename to scale
+GLabel xMultiplierLabel, yMultiplierLabel;
+GTextField xMultiplierInput, yMultiplierInput;
+GTabManager multiplierTabManager;
+
+// FUNCTIONS ===================================================================
 
 // Setup -----------------------------------------------------------------------
 
@@ -861,7 +473,43 @@ public void yMultiplierInput_change(GTextField source, GEvent event) {
 }
 
 
-// Linear ======================================================================
+// =============================================================================
+// Linear Shift Type Panel
+// =============================================================================
+
+// GLOBALS =====================================================================
+
+// TODO extract common w/ multiply to type_config_ general vars
+// Toggles ---------------------------------------------------------------------
+int LINEAR_CONFIG_TOGGLE_WIDTH = TYPE_PANEL_WIDTH / 2;
+int LINEAR_CONFIG_TOGGLE_HEIGHT = 20;
+int LINEAR_CONFIG_TOGGLE_Y = PANEL_Y_START;
+int LINEAR_CONFIG_TOGGLE_LEFT_X = 0;
+int LINEAR_CONFIG_TOGGLE_RIGHT_X = LINEAR_CONFIG_TOGGLE_WIDTH;
+// G4P
+GToggleGroup linearEqTypeToggle;
+GOption linearYEquals, linearXEquals;
+// Coefficient Input -----------------------------------------------------------
+int LINEAR_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int LINEAR_CONFIG_LABEL_HEIGHT = 20;
+int LINEAR_CONFIG_INPUT_WIDTH = LINEAR_CONFIG_LABEL_WIDTH;
+int LINEAR_CONFIG_INPUT_HEIGHT = 20;
+int LINEAR_CONFIG_LABEL_X = X_MARGIN;
+int LINEAR_CONFIG_LABEL_Y = LINEAR_CONFIG_TOGGLE_Y + LINEAR_CONFIG_TOGGLE_HEIGHT + Y_MARGIN;
+int LINEAR_CONFIG_INPUT_X = X_MARGIN;
+int LINEAR_CONFIG_INPUT_Y = LINEAR_CONFIG_LABEL_Y + LINEAR_CONFIG_LABEL_HEIGHT;
+// G4P
+GLabel linearCoeffLabel;
+GTextField linearCoeffInput;
+// Coefficient Sign ------------------------------------------------------------
+int LINEAR_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
+int LINEAR_CONFIG_CHECKBOX_HEIGHT = LINEAR_CONFIG_TOGGLE_HEIGHT;
+int LINEAR_CONFIG_CHECKBOX_X = 0;
+int LINEAR_CONFIG_CHECKBOX_Y = LINEAR_CONFIG_INPUT_Y + LINEAR_CONFIG_INPUT_HEIGHT + Y_MARGIN;
+// G4P
+GCheckbox linearNegativeCoeffCheckbox;
+
+// FUNCTIONS ===================================================================
 
 // Setup -----------------------------------------------------------------------
 
@@ -941,7 +589,44 @@ public void linearNegativeCoeffCheckbox_click(GCheckbox source, GEvent event) {
 }
 
 
-// Skew ========================================================================
+// =============================================================================
+// Skew Shift Type Panel
+// =============================================================================
+
+// GLOBALS =====================================================================
+
+// Labels ----------------------------------------------------------------------
+int SKEW_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int SKEW_CONFIG_LABEL_HEIGHT = 20;
+int SKEW_CONFIG_LABEL_X = X_MARGIN;
+// Inputs ----------------------------------------------------------------------
+int SKEW_CONFIG_INPUT_WIDTH = SKEW_CONFIG_LABEL_WIDTH;
+int SKEW_CONFIG_INPUT_HEIGHT = 20;
+int SKEW_CONFIG_INPUT_X = X_MARGIN;
+// G4P Tab Manager
+GTabManager skewTabManager;
+// Checkboxes ------------------------------------------------------------------
+int SKEW_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
+int SKEW_CONFIG_CHECKBOX_HEIGHT = 20;
+int SKEW_CONFIG_CHECKBOX_X = 0;
+// X Skew Label, Input, and Checkbox -------------------------------------------
+int SKEW_CONFIG_LABEL_TOP_Y = PANEL_Y_START;
+int SKEW_CONFIG_INPUT_TOP_Y = SKEW_CONFIG_LABEL_TOP_Y + SKEW_CONFIG_LABEL_HEIGHT;
+int SKEW_CONFIG_CHECKBOX_TOP_Y = SKEW_CONFIG_INPUT_TOP_Y + SKEW_CONFIG_INPUT_HEIGHT;
+// G4P
+GLabel xSkewLabel;
+GTextField xSkewInput;
+GCheckbox xSkewNegativeCheckbox;
+// Y Skew Label, Input, and Checkbox -------------------------------------------
+int SKEW_CONFIG_LABEL_BOTTOM_Y = SKEW_CONFIG_CHECKBOX_TOP_Y + SKEW_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
+int SKEW_CONFIG_INPUT_BOTTOM_Y = SKEW_CONFIG_LABEL_BOTTOM_Y + SKEW_CONFIG_LABEL_HEIGHT;
+int SKEW_CONFIG_CHECKBOX_BOTTOM_Y = SKEW_CONFIG_INPUT_BOTTOM_Y + SKEW_CONFIG_INPUT_HEIGHT;
+// G4P
+GLabel ySkewLabel;
+GTextField ySkewInput;
+GCheckbox ySkewNegativeCheckbox;
+
+// FUNCTIONS ===================================================================
 
 // Setup -----------------------------------------------------------------------
 
@@ -1023,7 +708,42 @@ public void ySkewNegativeCheckbox_click(GCheckbox source, GEvent event) {
 }
 
 
-// X*Y =========================================================================
+// =============================================================================
+// X*Y Mult Shift Type Panel
+// =============================================================================
+
+// GLOBALS =====================================================================
+
+// Labels ----------------------------------------------------------------------
+int XYMULT_CONFIG_LABEL_WIDTH = TYPE_PANEL_WIDTH;
+int XYMULT_CONFIG_LABEL_HEIGHT = 20;
+int XYMULT_CONFIG_LABEL_X = 0;
+// Checkboxes ------------------------------------------------------------------
+int XYMULT_CONFIG_CHECKBOX_WIDTH = TYPE_PANEL_WIDTH;
+int XYMULT_CONFIG_CHECKBOX_HEIGHT = 20;
+int XYMULT_CONFIG_CHECKBOX_X = 0;
+// X Multiply Label and Checkboxes ---------------------------------------------
+int XYMULT_CONFIG_X_LABEL_Y = PANEL_Y_START;
+int XYMULT_CONFIG_XMULT_CHECKBOX_Y = XYMULT_CONFIG_X_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
+int XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_XMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+int XYMULT_CONFIG_XDIVWIDTH_CHECKBOX_Y = XYMULT_CONFIG_XNEGATIVE_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+// G4P
+GLabel multXLabel;
+GCheckbox multXCheckbox;
+GCheckbox multXNegativeCheckbox;
+GCheckbox xDivWidthCheckbox;
+// Y Multiply Label and Checkboxes ---------------------------------------------
+int XYMULT_CONFIG_Y_LABEL_Y = XYMULT_CONFIG_XDIVWIDTH_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT + Y_MARGIN;
+int XYMULT_CONFIG_YMULT_CHECKBOX_Y = XYMULT_CONFIG_Y_LABEL_Y + XYMULT_CONFIG_LABEL_HEIGHT;
+int XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y = XYMULT_CONFIG_YMULT_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+int XYMULT_CONFIG_YDIVHEIGHT_CHECKBOX_Y = XYMULT_CONFIG_YNEGATIVE_CHECKBOX_Y + XYMULT_CONFIG_CHECKBOX_HEIGHT;
+// G4P
+GLabel multYLabel;
+GCheckbox multYCheckbox;
+GCheckbox multYNegativeCheckbox;
+GCheckbox yDivHeightCheckbox;
+
+// FUNCTIONS ===================================================================
 
 // Setup -----------------------------------------------------------------------
 
@@ -1105,7 +825,49 @@ public void yDivHeightCheckbox_click(GCheckbox source, GEvent event) {
 }
 
 
-// Noise =======================================================================
+// =============================================================================
+// Noise Shift Type Panel
+// =============================================================================
+
+// GLOBALS =====================================================================
+
+// Labels ----------------------------------------------------------------------
+int NOISE_CONFIG_LABEL_FULL_WIDTH = TYPE_PANEL_WIDTH - X_MARGINS;
+int NOISE_CONFIG_LABEL_HALF_WIDTH = (TYPE_PANEL_WIDTH / 2) - X_MARGINS;
+int NOISE_CONFIG_LABEL_HEIGHT = 20;
+int NOISE_CONFIG_LABEL_LEFT_X = X_MARGIN;
+int NOISE_CONFIG_LABEL_RIGHT_X = NOISE_CONFIG_LABEL_LEFT_X + NOISE_CONFIG_LABEL_HALF_WIDTH + X_MARGINS;
+// Inputs ----------------------------------------------------------------------
+int NOISE_CONFIG_INPUT_FULL_WIDTH = NOISE_CONFIG_LABEL_FULL_WIDTH;
+int NOISE_CONFIG_INPUT_HALF_WIDTH = NOISE_CONFIG_LABEL_HALF_WIDTH;
+int NOISE_CONFIG_INPUT_HEIGHT = NOISE_CONFIG_LABEL_HEIGHT;
+int NOISE_CONFIG_INPUT_LEFT_X = X_MARGIN;
+int NOISE_CONFIG_INPUT_RIGHT_X = NOISE_CONFIG_INPUT_LEFT_X + NOISE_CONFIG_INPUT_HALF_WIDTH + X_MARGINS;
+// TODO: what about noise start/increment x?
+// Noise Start Y ---------------------------------------------------------------
+int NOISE_CONFIG_LABEL_START_Y = PANEL_Y_START;
+int NOISE_CONFIG_INPUT_START_Y = NOISE_CONFIG_LABEL_START_Y + NOISE_CONFIG_LABEL_HEIGHT;
+// Noise Increment Y -----------------------------------------------------------
+int NOISE_CONFIG_LABEL_INCREMENT_Y = NOISE_CONFIG_INPUT_START_Y + NOISE_CONFIG_LABEL_HEIGHT + Y_MARGIN;
+int NOISE_CONFIG_INPUT_INCREMENT_Y = NOISE_CONFIG_LABEL_INCREMENT_Y + NOISE_CONFIG_LABEL_HEIGHT;
+// Noise Multiplier Y ----------------------------------------------------------
+int NOISE_CONFIG_LABEL_MULTIPLIER_Y = NOISE_CONFIG_INPUT_INCREMENT_Y + NOISE_CONFIG_LABEL_HEIGHT + Y_MARGIN;
+int NOISE_CONFIG_INPUT_MULTIPLIER_Y = NOISE_CONFIG_LABEL_MULTIPLIER_Y + NOISE_CONFIG_LABEL_HEIGHT;
+
+// G4P TODO: MOVE TO RELEVANT SECTIONS ONCE X VARS ARE IMPLEMENTED!
+// Start
+GLabel xNoiseStartLabel, yNoiseStartLabel;
+GTextField xNoiseStartInput, yNoiseStartInput;
+// Increment
+GLabel xNoiseIncrementLabel, yNoiseIncrementLabel;
+GTextField xNoiseIncrementInput, yNoiseIncrementInput;
+// Multiplier
+GLabel noiseMultiplierLabel;
+GTextField noiseMultiplierInput;
+// Tab MGMT
+GTabManager noiseTabManager;
+
+// FUNCTIONS ===================================================================
 
 // Setup -----------------------------------------------------------------------
 
@@ -1264,5 +1026,332 @@ public void noiseMultiplierInput_change(GTextField source, GEvent event) {
     default:
       break;
   }
+}
+
+
+// TODO ========================================================================
+// TODO: CONTINUE CLEANUP FROM HERE
+// TODO ========================================================================
+
+
+// SHIFT SLIDERS ===============================================================
+// General ---------------------------------------------------------------------
+int SLIDER_TOGGLE_WIDTH = 75;
+int SLIDER_INPUT_WIDTH = 75;
+int SLIDER_INPUT_HEIGHT = 20;
+float SLIDER_TRACK_WIDTH = 12.0;
+int SLIDER_HEIGHT = 60;
+int SLIDER_PANEL_WIDTH = WINDOW_MAIN_WIDTH - X_MARGINS;
+int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
+int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - (SLIDER_INPUT_WIDTH + SLIDER_TOGGLE_WIDTH);
+int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
+int SLIDER_INPUT_X = 0;
+int SLIDER_INPUT_Y = PANEL_Y_START + (SLIDER_HEIGHT - SLIDER_INPUT_HEIGHT) / 2;
+int SLIDER_X = SLIDER_INPUT_X + SLIDER_INPUT_WIDTH;
+int SLIDER_Y = PANEL_Y_START;
+int SLIDER_TOGGLE_X = SLIDER_X + SLIDER_WIDTH;
+int SLIDER_PERCENT_TOGGLE_Y = PANEL_Y_START;
+int SLIDER_PIXELS_TOGGLE_Y = SLIDER_PERCENT_TOGGLE_Y + SLIDER_TOGGLE_HEIGHT;
+
+// Horizontal Shift ------------------------------------------------------------
+int X_SLIDER_PANEL_X = X_START; 
+int X_SLIDER_PANEL_Y = RAND_PANEL_Y + RAND_PANEL_HEIGHT + Y_MARGIN; 
+
+// G4P
+GPanel xShiftPanel;
+GSlider xSlider; 
+GToggleGroup xSliderToggle; 
+GOption xSliderPercent, xSliderPixels; 
+GTextField xSliderInput;
+
+// Vertical Shift --------------------------------------------------------------
+int Y_SLIDER_PANEL_X = X_START; 
+int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
+
+// G4P
+GPanel yShiftPanel;
+GSlider ySlider; 
+GToggleGroup ySliderToggle; 
+GOption ySliderPercent, ySliderPixels; 
+GTextField ySliderInput;
+
+
+// =============================================================================
+// Load/Save Panel
+// =============================================================================
+
+// GLOBALS =====================================================================
+
+// Panel -----------------------------------------------------------------------
+int LOAD_SAVE_PANEL_X = X_START;
+int LOAD_SAVE_PANEL_Y = Y_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
+int LOAD_SAVE_PANEL_WIDTH = WINDOW_MAIN_WIDTH / 2 - X_MARGINS;
+// G4P
+GPanel loadSavePanel;
+// Buttons ---------------------------------------------------------------------
+int LOAD_SAVE_BTN_HEIGHT = 30;
+int LOAD_SAVE_PANEL_HEIGHT = 2 * (LOAD_SAVE_BTN_HEIGHT + Y_MARGIN);
+int LOAD_BTN_X = 0;
+int LOAD_BTN_Y = 0;
+int SAVE_BTN_X = 0;
+int SAVE_BTN_Y = LOAD_BTN_Y + LOAD_SAVE_BTN_HEIGHT + Y_MARGIN;
+// G4P
+GButton loadBtn; 
+GButton saveBtn;
+
+// FUNCTIONS ===================================================================
+
+public void createLoadSavePanel() {
+  loadSavePanel = new GPanel(controlsWindow, LOAD_SAVE_PANEL_X, LOAD_SAVE_PANEL_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_PANEL_HEIGHT);
+  setupGeneralPanel(loadSavePanel);
+  loadSavePanel.setOpaque(false);
+  // Load button
+  loadBtn = new GButton(controlsWindow, LOAD_BTN_X, LOAD_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
+  loadBtn.setText("Load Image");
+  loadBtn.setTextBold();
+  loadBtn.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
+  loadBtn.addEventHandler(this, "loadBtn_click");
+  loadSavePanel.addControl(loadBtn);
+  // Save button 
+  saveBtn = new GButton(controlsWindow, SAVE_BTN_X, SAVE_BTN_Y, LOAD_SAVE_PANEL_WIDTH, LOAD_SAVE_BTN_HEIGHT);
+  saveBtn.setText("Save Result");
+  saveBtn.setTextBold();
+  saveBtn.setLocalColorScheme(GCScheme.GREEN_SCHEME);
+  saveBtn.addEventHandler(this, "saveBtn_click");
+  loadSavePanel.addControl(saveBtn);
+}
+
+
+// =============================================================================
+// Reset/Confirm Panel
+// =============================================================================
+
+// GLOBALS =====================================================================
+
+// Buttons ---------------------------------------------------------------------
+int RESET_CONFIRM_BTN_HEIGHT = LOAD_SAVE_BTN_HEIGHT;
+int RESET_BTN_X = 0;
+int RESET_BTN_Y = 0;
+int CONFIRM_BTN_X = 0;
+int CONFIRM_BTN_Y = RESET_BTN_Y + RESET_CONFIRM_BTN_HEIGHT + Y_MARGIN;
+// G4P
+GButton resetBtn, confirmBtn; 
+// Recursive Checkbox ----------------------------------------------------------
+int RECURSIVE_CHECKBOX_HEIGHT = 30;
+int RECURSIVE_CHECKBOX_X = 0;
+int RECURSIVE_CHECKBOX_Y = CONFIRM_BTN_Y + RESET_CONFIRM_BTN_HEIGHT;
+// G4P
+GCheckbox recursiveCheckbox;
+// Panel -----------------------------------------------------------------------
+int RESET_CONFIRM_PANEL_X = LOAD_SAVE_PANEL_X + LOAD_SAVE_PANEL_WIDTH + X_MARGINS;
+int RESET_CONFIRM_PANEL_Y = LOAD_SAVE_PANEL_Y;
+int RESET_CONFIRM_PANEL_WIDTH = LOAD_SAVE_PANEL_WIDTH;
+int RESET_CONFIRM_PANEL_HEIGHT = 2 * (RESET_CONFIRM_BTN_HEIGHT + Y_MARGIN) + RECURSIVE_CHECKBOX_HEIGHT;
+// G4P
+GPanel resetConfirmPanel;
+
+// FUNCTIONS ===================================================================
+
+public void createResetConfirmPanel() {
+  resetConfirmPanel = new GPanel(controlsWindow, RESET_CONFIRM_PANEL_X, RESET_CONFIRM_PANEL_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_PANEL_HEIGHT);
+  setupGeneralPanel(resetConfirmPanel);
+  resetConfirmPanel.setOpaque(false);
+  // Reset Button
+  resetBtn = new GButton(controlsWindow, RESET_BTN_X, RESET_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
+  resetBtn.setText("Reset Step");
+  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
+  resetBtn.addEventHandler(this, "resetBtn_click");
+  resetConfirmPanel.addControl(resetBtn);
+  // Confirm Button 
+  confirmBtn = new GButton(controlsWindow, CONFIRM_BTN_X, CONFIRM_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
+  confirmBtn.setText("Confirm Step");
+  confirmBtn.addEventHandler(this, "confirmBtn_click");
+  resetConfirmPanel.addControl(confirmBtn);
+  // Recursive checkbox
+  recursiveCheckbox = new GCheckbox(controlsWindow, RECURSIVE_CHECKBOX_X, RECURSIVE_CHECKBOX_Y, RESET_CONFIRM_PANEL_WIDTH, RECURSIVE_CHECKBOX_HEIGHT);
+  recursiveCheckbox.setSelected(true);
+  recursiveCheckbox.setText("Recursive", GAlign.CENTER, GAlign.MIDDLE);
+  recursiveCheckbox.setOpaque(true);
+  recursiveCheckbox.addEventHandler(this, "recursiveCheckbox_click");
+  resetConfirmPanel.addControl(recursiveCheckbox);
+}
+
+
+// =============================================================================
+// Setup Window and Panels
+// =============================================================================
+
+public void createGUI() {
+  G4P.messagesEnabled(false);
+  G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
+  G4P.setMouseOverEnabled(false);
+  // Put to the left of preview window w/ 50 pixels for padding
+  WINDOW_X = windowManager.windowX - (WINDOW_WIDTH + 50);
+  // Vertically center
+  WINDOW_Y = (displayHeight / 2) - (WINDOW_HEIGHT / 2);
+  controlsWindow = GWindow.getWindow(this, "Channel Shift", WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
+  controlsWindow.noLoop();
+  controlsWindow.setActionOnClose(G4P.KEEP_OPEN);
+  controlsWindow.addDrawHandler(this, "controlsWindow_draw");
+  controlsWindow.addMouseHandler(this, "controlsWindow_mouse");
+  // Source channel toggle 
+  createSrcChannelPanel();
+  // Target channel toggle 
+  createTargChannelPanel();
+  // Randomize  options
+  createRandomizePanel();
+  // Shift type
+  createAdvancedOptionsPanel();
+  // Horizontal shift slider 
+  createXShiftPanel();
+  // Vertical shift slider 
+  createYShiftPanel();
+  // Load/save buttons 
+  createLoadSavePanel();
+  // Preview/Confirm buttons
+  createResetConfirmPanel();
+
+  controlsWindow.loop();
+}
+
+
+// TODO ========================================================================
+// TODO: RE-ORGANIZE THESE TO ALSO BE DECLARED IN THEIR RELEVANT SECTIONS??:
+// TODO ========================================================================
+
+// =============================================================================
+// CHANNEL SHIFT PANELS 
+// =============================================================================
+
+/**
+ * Common setup for channel shift slider panels. GUI objects must be
+ * initialized before calling to avoid weird null pointer exceptions
+ */
+public void createChannelShiftPanel(
+    GPanel shiftPanel, int colorScheme, 
+    GSlider slider, String sliderEventHandler, 
+    GTextField sliderInput, String sliderInputEventHandler,
+    GToggleGroup sliderToggle, 
+    GOption sliderPercent, String percentEventHandler, 
+    GOption sliderPixels, String pixelsEventHandler
+    ) {
+  setupGeneralPanel(shiftPanel, colorScheme);
+  // Slider
+  slider.setShowValue(true);
+  slider.setShowLimits(true);
+  slider.setLimits(0, 0, 100);
+  slider.setShowTicks(true);
+  slider.setNumberFormat(G4P.INTEGER, 0);
+  slider.setLocalColorScheme(colorScheme);
+  slider.setOpaque(true);
+  slider.addEventHandler(this, sliderEventHandler);
+  shiftPanel.addControl(slider);
+  // Text Input
+  sliderInput.setLocalColorScheme(colorScheme);
+  sliderInput.setOpaque(true);
+  sliderInput.setText("0");
+  sliderInput.addEventHandler(this, sliderInputEventHandler);
+  shiftPanel.addControl(sliderInput);
+  // Percent/Pixel toggles
+  // TODO: extract common from toggles to method
+  sliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  sliderPercent.setText("Percent");
+  sliderPercent.setLocalColorScheme(colorScheme);
+  sliderPercent.setOpaque(true);
+  sliderPercent.addEventHandler(this, percentEventHandler);
+  sliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  sliderPixels.setText("Pixels");
+  sliderPixels.setLocalColorScheme(colorScheme);
+  sliderPixels.setOpaque(true);
+  sliderPixels.addEventHandler(this, pixelsEventHandler);
+  sliderToggle.addControl(sliderPercent);
+  shiftPanel.addControl(sliderPercent);
+  sliderPercent.setSelected(true);
+  sliderToggle.addControl(sliderPixels);
+  shiftPanel.addControl(sliderPixels);
+}
+
+public void createXShiftPanel() {
+  xShiftPanel = new GPanel(controlsWindow, X_SLIDER_PANEL_X, X_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
+  xSlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
+  xSliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
+  xSliderToggle = new GToggleGroup();
+  xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  xSliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderInput, "xSliderInput_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
+}
+
+public void createYShiftPanel() {
+  yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_PANEL_X, Y_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
+  ySlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
+  ySliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
+  ySliderToggle = new GToggleGroup();
+  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderInput, "ySliderInput_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
+}
+
+
+// =============================================================================
+// ADVANCED OPTIONS PANEL
+// =============================================================================
+
+// Setup -----------------------------------------------------------------------
+
+public void createAdvancedOptionsPanel() {
+  advancedOptionsPanel = new GPanel(controlsWindow, ADV_OPTS_PANEL_X, ADV_OPTS_PANEL_Y, ADV_OPTS_PANEL_WIDTH, ADV_OPTS_PANEL_HEIGHT, "Advanced Options");
+  setupGeneralPanel(advancedOptionsPanel, GCScheme.PURPLE_SCHEME);
+  // Shift Type Dropdown
+  shiftTypeLabel = new GLabel(controlsWindow, TYPE_LABEL_X, TYPE_LABEL_Y, TYPE_LABEL_WIDTH, TYPE_LABEL_HEIGHT, "Shift Type:");
+  setupGeneralLabel(shiftTypeLabel);
+  advancedOptionsPanel.addControl(shiftTypeLabel);
+  shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
+  shiftTypeSelect.setItems(SHIFT_TYPES, TYPE_DEFAULT);
+  shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
+  advancedOptionsPanel.addControl(shiftTypeSelect);
+  // Keep track of each config panel in global
+  shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
+  // Add type config panels and add them to shiftTypeConfigPanels
+  createDefaultShiftTypePanel();
+  createScaleShiftTypePanel();
+  createLinearShiftTypePanel();
+  createSkewShiftTypePanel();
+  createXYMultShiftTypePanel();
+  createNoiseShiftTypePanel();
+}
+
+// Helpers ---------------------------------------------------------------------
+
+public void hideShiftTypePanel(GPanel panel) {
+  togglePanelVisibility(panel, false);
+  // Move off screen to avoid issues w/ click through lag
+  panel.moveTo(WINDOW_WIDTH, WINDOW_HEIGHT);
+}
+public void showShiftTypePanel(GPanel panel) {
+  // Move on screen
+  panel.moveTo(TYPE_PANEL_X, TYPE_PANEL_Y);
+  togglePanelVisibility(panel, true);
+}
+
+// Event Handlers --------------------------------------------------------------
+
+public void shiftTypeSelect_change(GDropList source, GEvent event) {
+  // Hide previously selected panel
+  hideShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
+  shiftTypeManager.setShiftType(source.getSelectedIndex());
+  // Show newly selected panel
+  showShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
+  showPreview();
+}
+
+// Type config panels (called above) -------------------------------------------
+
+public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
+  setupGeneralPanel(panel);
+  panel.setText(SHIFT_TYPES[shiftTypeIndex] + " Shift Settings");
+  // Hide by default
+  hideShiftTypePanel(panel);
+  // Add to global
+  shiftTypeConfigPanels[shiftTypeIndex] = panel;
 }
 
