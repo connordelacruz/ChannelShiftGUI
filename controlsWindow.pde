@@ -315,14 +315,58 @@ GDropList shiftTypeSelect;
 // FUNCTIONS ===================================================================
 
 // -----------------------------------------------------------------------------
-// Functions are declared after the various advanced options configs since it
-// uses on the setup functions for each of those.
+// NOTE: Functions are declared after the various advanced options configs
+// since it uses on the setup functions for each of those. 
+//
+// See "Setup Shift Type Select" section.
 // -----------------------------------------------------------------------------
+
+// Helpers ---------------------------------------------------------------------
+
+public void hideShiftTypePanel(GPanel panel) {
+  togglePanelVisibility(panel, false);
+  // Move off screen to avoid issues w/ click through lag
+  panel.moveTo(WINDOW_WIDTH, WINDOW_HEIGHT);
+}
+public void showShiftTypePanel(GPanel panel) {
+  // Move on screen
+  panel.moveTo(TYPE_PANEL_X, TYPE_PANEL_Y);
+  togglePanelVisibility(panel, true);
+}
+
+// Event Handlers --------------------------------------------------------------
+
+public void shiftTypeSelect_change(GDropList source, GEvent event) {
+  // Hide previously selected panel
+  hideShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
+  shiftTypeManager.setShiftType(source.getSelectedIndex());
+  // Show newly selected panel
+  showShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
+  showPreview();
+}
+
+// Type config panels (called above) -------------------------------------------
+
+public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
+  setupGeneralPanel(panel);
+  panel.setText(SHIFT_TYPES[shiftTypeIndex] + " Shift Settings");
+  // Hide by default
+  hideShiftTypePanel(panel);
+  // Add to global
+  shiftTypeConfigPanels[shiftTypeIndex] = panel;
+}
 
 
 // =============================================================================
 // Advanced Options Panels
 // =============================================================================
+
+// -----------------------------------------------------------------------------
+// NOTE: Functions are declared after the various advanced options configs
+// since it uses on the setup functions for each of those. 
+//
+// See "Setup Advanced Options Panels" section.
+// -----------------------------------------------------------------------------
 
 // GLOBALS =====================================================================
 
@@ -1029,34 +1073,88 @@ public void noiseMultiplierInput_change(GTextField source, GEvent event) {
 }
 
 
-// TODO ========================================================================
-// TODO: CONTINUE CLEANUP FROM HERE
-// TODO ========================================================================
+// =============================================================================
+// Setup Advanced Options Panels
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// NOTE: Variable and function delcarations for each of these are in the above
+// sections. The setup code was moved here since it's dependent on those.
+// -----------------------------------------------------------------------------
+
+public void createAdvancedOptionsPanel() {
+  advancedOptionsPanel = new GPanel(controlsWindow, ADV_OPTS_PANEL_X, ADV_OPTS_PANEL_Y, ADV_OPTS_PANEL_WIDTH, ADV_OPTS_PANEL_HEIGHT, "Advanced Options");
+  setupGeneralPanel(advancedOptionsPanel, GCScheme.PURPLE_SCHEME);
+  // Shift Type Dropdown
+  shiftTypeLabel = new GLabel(controlsWindow, TYPE_LABEL_X, TYPE_LABEL_Y, TYPE_LABEL_WIDTH, TYPE_LABEL_HEIGHT, "Shift Type:");
+  setupGeneralLabel(shiftTypeLabel);
+  advancedOptionsPanel.addControl(shiftTypeLabel);
+  shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
+  shiftTypeSelect.setItems(SHIFT_TYPES, TYPE_DEFAULT);
+  shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
+  advancedOptionsPanel.addControl(shiftTypeSelect);
+  // Keep track of each config panel in global
+  shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
+  // Add type config panels and add them to shiftTypeConfigPanels
+  createDefaultShiftTypePanel();
+  createScaleShiftTypePanel();
+  createLinearShiftTypePanel();
+  createSkewShiftTypePanel();
+  createXYMultShiftTypePanel();
+  createNoiseShiftTypePanel();
+}
 
 
-// SHIFT SLIDERS ===============================================================
+// =============================================================================
+// Setup Shift Type Select
+// =============================================================================
+
+
+// =============================================================================
+// Channel Shift Slider Controls
+// =============================================================================
+
+// GLOBALS =====================================================================
+
 // General ---------------------------------------------------------------------
-int SLIDER_TOGGLE_WIDTH = 75;
-int SLIDER_INPUT_WIDTH = 75;
-int SLIDER_INPUT_HEIGHT = 20;
-float SLIDER_TRACK_WIDTH = 12.0;
-int SLIDER_HEIGHT = 60;
+// NOTE: The positioning variables for various controls are tightly coupled to
+// the width/height of others, so it's hard to group these by control type.
+// Sorry about the mess!
+
+// Full width panel (minus margins)
 int SLIDER_PANEL_WIDTH = WINDOW_MAIN_WIDTH - X_MARGINS;
-int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
+// Arbitrary toggle and input widths
+int SLIDER_INPUT_WIDTH = 75;
+int SLIDER_TOGGLE_WIDTH = 75;
+// Fill up remaining horizontal space in the panel with slider
 int SLIDER_WIDTH = SLIDER_PANEL_WIDTH - (SLIDER_INPUT_WIDTH + SLIDER_TOGGLE_WIDTH);
+// Width of the track the slider is dragged along
+float SLIDER_TRACK_WIDTH = 12.0;
+
+// Arbitrary slider and input height
+int SLIDER_HEIGHT = 60;
+int SLIDER_INPUT_HEIGHT = 20;
+// Make toggles half the slider height (since 2 will be stacked on top of each other)
 int SLIDER_TOGGLE_HEIGHT = SLIDER_HEIGHT / 2;
+// Make panel tall enough to fit the slider + margin
+int SLIDER_PANEL_HEIGHT = SLIDER_HEIGHT + PANEL_Y_START;
+
 int SLIDER_INPUT_X = 0;
+// Vertically align input with slider
 int SLIDER_INPUT_Y = PANEL_Y_START + (SLIDER_HEIGHT - SLIDER_INPUT_HEIGHT) / 2;
+// Put slider to the right of the input
 int SLIDER_X = SLIDER_INPUT_X + SLIDER_INPUT_WIDTH;
 int SLIDER_Y = PANEL_Y_START;
+// Put toggle to the right of the slider
 int SLIDER_TOGGLE_X = SLIDER_X + SLIDER_WIDTH;
+// Place 1st toggle at the top of the panel, 2nd toggle below it
 int SLIDER_PERCENT_TOGGLE_Y = PANEL_Y_START;
 int SLIDER_PIXELS_TOGGLE_Y = SLIDER_PERCENT_TOGGLE_Y + SLIDER_TOGGLE_HEIGHT;
 
 // Horizontal Shift ------------------------------------------------------------
 int X_SLIDER_PANEL_X = X_START; 
+// Place panel below randomize panel
 int X_SLIDER_PANEL_Y = RAND_PANEL_Y + RAND_PANEL_HEIGHT + Y_MARGIN; 
-
 // G4P
 GPanel xShiftPanel;
 GSlider xSlider; 
@@ -1066,14 +1164,84 @@ GTextField xSliderInput;
 
 // Vertical Shift --------------------------------------------------------------
 int Y_SLIDER_PANEL_X = X_START; 
+// Place panel below horizontal shift panel
 int Y_SLIDER_PANEL_Y = X_SLIDER_PANEL_Y + SLIDER_PANEL_HEIGHT + Y_MARGIN;
-
 // G4P
 GPanel yShiftPanel;
 GSlider ySlider; 
 GToggleGroup ySliderToggle; 
 GOption ySliderPercent, ySliderPixels; 
 GTextField ySliderInput;
+
+// FUNCTIONS ===================================================================
+
+/**
+ * Common setup for channel shift slider panels. GUI objects must be
+ * initialized before calling to avoid weird null pointer exceptions
+ */
+public void createChannelShiftPanel(
+    GPanel shiftPanel, int colorScheme, 
+    GSlider slider, String sliderEventHandler, 
+    GTextField sliderInput, String sliderInputEventHandler,
+    GToggleGroup sliderToggle, 
+    GOption sliderPercent, String percentEventHandler, 
+    GOption sliderPixels, String pixelsEventHandler
+    ) {
+  setupGeneralPanel(shiftPanel, colorScheme);
+  // Slider
+  slider.setShowValue(true);
+  slider.setShowLimits(true);
+  slider.setLimits(0, 0, 100);
+  slider.setShowTicks(true);
+  slider.setNumberFormat(G4P.INTEGER, 0);
+  slider.setLocalColorScheme(colorScheme);
+  slider.setOpaque(true);
+  slider.addEventHandler(this, sliderEventHandler);
+  shiftPanel.addControl(slider);
+  // Text Input
+  sliderInput.setLocalColorScheme(colorScheme);
+  sliderInput.setOpaque(true);
+  sliderInput.setText("0");
+  sliderInput.addEventHandler(this, sliderInputEventHandler);
+  shiftPanel.addControl(sliderInput);
+  // Percent/Pixel toggles
+  // TODO: extract common from toggles to method
+  sliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  sliderPercent.setText("Percent");
+  sliderPercent.setLocalColorScheme(colorScheme);
+  sliderPercent.setOpaque(true);
+  sliderPercent.addEventHandler(this, percentEventHandler);
+  sliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  sliderPixels.setText("Pixels");
+  sliderPixels.setLocalColorScheme(colorScheme);
+  sliderPixels.setOpaque(true);
+  sliderPixels.addEventHandler(this, pixelsEventHandler);
+  sliderToggle.addControl(sliderPercent);
+  shiftPanel.addControl(sliderPercent);
+  sliderPercent.setSelected(true);
+  sliderToggle.addControl(sliderPixels);
+  shiftPanel.addControl(sliderPixels);
+}
+
+public void createXShiftPanel() {
+  xShiftPanel = new GPanel(controlsWindow, X_SLIDER_PANEL_X, X_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
+  xSlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
+  xSliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
+  xSliderToggle = new GToggleGroup();
+  xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  xSliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderInput, "xSliderInput_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
+}
+
+public void createYShiftPanel() {
+  yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_PANEL_X, Y_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
+  ySlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
+  ySliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
+  ySliderToggle = new GToggleGroup();
+  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
+  createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderInput, "ySliderInput_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
+}
 
 
 // =============================================================================
@@ -1212,146 +1380,5 @@ public void createGUI() {
   createResetConfirmPanel();
 
   controlsWindow.loop();
-}
-
-
-// TODO ========================================================================
-// TODO: RE-ORGANIZE THESE TO ALSO BE DECLARED IN THEIR RELEVANT SECTIONS??:
-// TODO ========================================================================
-
-// =============================================================================
-// CHANNEL SHIFT PANELS 
-// =============================================================================
-
-/**
- * Common setup for channel shift slider panels. GUI objects must be
- * initialized before calling to avoid weird null pointer exceptions
- */
-public void createChannelShiftPanel(
-    GPanel shiftPanel, int colorScheme, 
-    GSlider slider, String sliderEventHandler, 
-    GTextField sliderInput, String sliderInputEventHandler,
-    GToggleGroup sliderToggle, 
-    GOption sliderPercent, String percentEventHandler, 
-    GOption sliderPixels, String pixelsEventHandler
-    ) {
-  setupGeneralPanel(shiftPanel, colorScheme);
-  // Slider
-  slider.setShowValue(true);
-  slider.setShowLimits(true);
-  slider.setLimits(0, 0, 100);
-  slider.setShowTicks(true);
-  slider.setNumberFormat(G4P.INTEGER, 0);
-  slider.setLocalColorScheme(colorScheme);
-  slider.setOpaque(true);
-  slider.addEventHandler(this, sliderEventHandler);
-  shiftPanel.addControl(slider);
-  // Text Input
-  sliderInput.setLocalColorScheme(colorScheme);
-  sliderInput.setOpaque(true);
-  sliderInput.setText("0");
-  sliderInput.addEventHandler(this, sliderInputEventHandler);
-  shiftPanel.addControl(sliderInput);
-  // Percent/Pixel toggles
-  // TODO: extract common from toggles to method
-  sliderPercent.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  sliderPercent.setText("Percent");
-  sliderPercent.setLocalColorScheme(colorScheme);
-  sliderPercent.setOpaque(true);
-  sliderPercent.addEventHandler(this, percentEventHandler);
-  sliderPixels.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  sliderPixels.setText("Pixels");
-  sliderPixels.setLocalColorScheme(colorScheme);
-  sliderPixels.setOpaque(true);
-  sliderPixels.addEventHandler(this, pixelsEventHandler);
-  sliderToggle.addControl(sliderPercent);
-  shiftPanel.addControl(sliderPercent);
-  sliderPercent.setSelected(true);
-  sliderToggle.addControl(sliderPixels);
-  shiftPanel.addControl(sliderPixels);
-}
-
-public void createXShiftPanel() {
-  xShiftPanel = new GPanel(controlsWindow, X_SLIDER_PANEL_X, X_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Horizontal Shift");
-  xSlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
-  xSliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
-  xSliderToggle = new GToggleGroup();
-  xSliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  xSliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  createChannelShiftPanel(xShiftPanel, GCScheme.RED_SCHEME, xSlider, "xSlider_change", xSliderInput, "xSliderInput_change", xSliderToggle, xSliderPercent, "xSliderPercent_clicked", xSliderPixels, "xSliderPixels_clicked");
-}
-
-public void createYShiftPanel() {
-  yShiftPanel = new GPanel(controlsWindow, Y_SLIDER_PANEL_X, Y_SLIDER_PANEL_Y, SLIDER_PANEL_WIDTH, SLIDER_PANEL_HEIGHT, "Vertical Shift");
-  ySlider = new GSlider(controlsWindow, SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_TRACK_WIDTH);
-  ySliderInput = new GTextField(controlsWindow, SLIDER_INPUT_X, SLIDER_INPUT_Y, SLIDER_INPUT_WIDTH, SLIDER_INPUT_HEIGHT);
-  ySliderToggle = new GToggleGroup();
-  ySliderPercent = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PERCENT_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  ySliderPixels = new GOption(controlsWindow, SLIDER_TOGGLE_X, SLIDER_PIXELS_TOGGLE_Y, SLIDER_TOGGLE_WIDTH, SLIDER_TOGGLE_HEIGHT);
-  createChannelShiftPanel(yShiftPanel, GCScheme.GREEN_SCHEME, ySlider, "ySlider_change", ySliderInput, "ySliderInput_change", ySliderToggle, ySliderPercent, "ySliderPercent_clicked", ySliderPixels, "ySliderPixels_clicked");
-}
-
-
-// =============================================================================
-// ADVANCED OPTIONS PANEL
-// =============================================================================
-
-// Setup -----------------------------------------------------------------------
-
-public void createAdvancedOptionsPanel() {
-  advancedOptionsPanel = new GPanel(controlsWindow, ADV_OPTS_PANEL_X, ADV_OPTS_PANEL_Y, ADV_OPTS_PANEL_WIDTH, ADV_OPTS_PANEL_HEIGHT, "Advanced Options");
-  setupGeneralPanel(advancedOptionsPanel, GCScheme.PURPLE_SCHEME);
-  // Shift Type Dropdown
-  shiftTypeLabel = new GLabel(controlsWindow, TYPE_LABEL_X, TYPE_LABEL_Y, TYPE_LABEL_WIDTH, TYPE_LABEL_HEIGHT, "Shift Type:");
-  setupGeneralLabel(shiftTypeLabel);
-  advancedOptionsPanel.addControl(shiftTypeLabel);
-  shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
-  shiftTypeSelect.setItems(SHIFT_TYPES, TYPE_DEFAULT);
-  shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
-  advancedOptionsPanel.addControl(shiftTypeSelect);
-  // Keep track of each config panel in global
-  shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
-  // Add type config panels and add them to shiftTypeConfigPanels
-  createDefaultShiftTypePanel();
-  createScaleShiftTypePanel();
-  createLinearShiftTypePanel();
-  createSkewShiftTypePanel();
-  createXYMultShiftTypePanel();
-  createNoiseShiftTypePanel();
-}
-
-// Helpers ---------------------------------------------------------------------
-
-public void hideShiftTypePanel(GPanel panel) {
-  togglePanelVisibility(panel, false);
-  // Move off screen to avoid issues w/ click through lag
-  panel.moveTo(WINDOW_WIDTH, WINDOW_HEIGHT);
-}
-public void showShiftTypePanel(GPanel panel) {
-  // Move on screen
-  panel.moveTo(TYPE_PANEL_X, TYPE_PANEL_Y);
-  togglePanelVisibility(panel, true);
-}
-
-// Event Handlers --------------------------------------------------------------
-
-public void shiftTypeSelect_change(GDropList source, GEvent event) {
-  // Hide previously selected panel
-  hideShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
-  shiftTypeManager.setShiftType(source.getSelectedIndex());
-  // Show newly selected panel
-  showShiftTypePanel(shiftTypeConfigPanels[shiftTypeManager.state]);
-  showPreview();
-}
-
-// Type config panels (called above) -------------------------------------------
-
-public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
-  setupGeneralPanel(panel);
-  panel.setText(SHIFT_TYPES[shiftTypeIndex] + " Shift Settings");
-  // Hide by default
-  hideShiftTypePanel(panel);
-  // Add to global
-  shiftTypeConfigPanels[shiftTypeIndex] = panel;
 }
 

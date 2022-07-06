@@ -92,5 +92,6 @@ void setup() {
 
 void draw() {
   windowManager.updatePreview(imgManager.previewImg);
+  // TODO: update modified state
 }
 
