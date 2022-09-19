@@ -314,13 +314,6 @@ GDropList shiftTypeSelect;
 
 // FUNCTIONS ===================================================================
 
-// -----------------------------------------------------------------------------
-// NOTE: Functions are declared after the various advanced options configs
-// since it uses on the setup functions for each of those. 
-//
-// See "Setup Shift Type Select" section.
-// -----------------------------------------------------------------------------
-
 // Helpers ---------------------------------------------------------------------
 
 public void hideShiftTypePanel(GPanel panel) {
@@ -361,13 +354,6 @@ public void setupShiftTypePanel(GPanel panel, int shiftTypeIndex) {
 // Advanced Options Panels
 // =============================================================================
 
-// -----------------------------------------------------------------------------
-// NOTE: Functions are declared after the various advanced options configs
-// since it uses on the setup functions for each of those. 
-//
-// See "Setup Advanced Options Panels" section.
-// -----------------------------------------------------------------------------
-
 // GLOBALS =====================================================================
 
 // Common ----------------------------------------------------------------------
@@ -375,6 +361,30 @@ int TYPE_PANEL_X = 0;
 int TYPE_PANEL_Y = TYPE_SELECT_Y + TYPE_SELECT_HEIGHT + Y_MARGIN;
 int TYPE_PANEL_WIDTH = ADV_OPTS_PANEL_WIDTH;
 int TYPE_PANEL_HEIGHT = ADV_OPTS_PANEL_HEIGHT - TYPE_PANEL_Y;
+
+// FUNCTIONS ===================================================================
+
+public void createAdvancedOptionsPanel() {
+  advancedOptionsPanel = new GPanel(controlsWindow, ADV_OPTS_PANEL_X, ADV_OPTS_PANEL_Y, ADV_OPTS_PANEL_WIDTH, ADV_OPTS_PANEL_HEIGHT, "Advanced Options");
+  setupGeneralPanel(advancedOptionsPanel, GCScheme.PURPLE_SCHEME);
+  // Shift Type Dropdown
+  shiftTypeLabel = new GLabel(controlsWindow, TYPE_LABEL_X, TYPE_LABEL_Y, TYPE_LABEL_WIDTH, TYPE_LABEL_HEIGHT, "Shift Type:");
+  setupGeneralLabel(shiftTypeLabel);
+  advancedOptionsPanel.addControl(shiftTypeLabel);
+  shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
+  shiftTypeSelect.setItems(SHIFT_TYPES, TYPE_DEFAULT);
+  shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
+  advancedOptionsPanel.addControl(shiftTypeSelect);
+  // Keep track of each config panel in global
+  shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
+  // Add type config panels and add them to shiftTypeConfigPanels
+  createDefaultShiftTypePanel();
+  createScaleShiftTypePanel();
+  createLinearShiftTypePanel();
+  createSkewShiftTypePanel();
+  createXYMultShiftTypePanel();
+  createNoiseShiftTypePanel();
+}
 
 
 // =============================================================================
@@ -1071,43 +1081,6 @@ public void noiseMultiplierInput_change(GTextField source, GEvent event) {
       break;
   }
 }
-
-
-// =============================================================================
-// Setup Advanced Options Panels
-// =============================================================================
-
-// -----------------------------------------------------------------------------
-// NOTE: Variable and function delcarations for each of these are in the above
-// sections. The setup code was moved here since it's dependent on those.
-// -----------------------------------------------------------------------------
-
-public void createAdvancedOptionsPanel() {
-  advancedOptionsPanel = new GPanel(controlsWindow, ADV_OPTS_PANEL_X, ADV_OPTS_PANEL_Y, ADV_OPTS_PANEL_WIDTH, ADV_OPTS_PANEL_HEIGHT, "Advanced Options");
-  setupGeneralPanel(advancedOptionsPanel, GCScheme.PURPLE_SCHEME);
-  // Shift Type Dropdown
-  shiftTypeLabel = new GLabel(controlsWindow, TYPE_LABEL_X, TYPE_LABEL_Y, TYPE_LABEL_WIDTH, TYPE_LABEL_HEIGHT, "Shift Type:");
-  setupGeneralLabel(shiftTypeLabel);
-  advancedOptionsPanel.addControl(shiftTypeLabel);
-  shiftTypeSelect = new GDropList(controlsWindow, TYPE_SELECT_X, TYPE_SELECT_Y, TYPE_SELECT_WIDTH, TYPE_SELECT_HEIGHT, TYPE_SELECT_MAX_ITEMS, TYPE_SELECT_BTN_WIDTH);
-  shiftTypeSelect.setItems(SHIFT_TYPES, TYPE_DEFAULT);
-  shiftTypeSelect.addEventHandler(this, "shiftTypeSelect_change");
-  advancedOptionsPanel.addControl(shiftTypeSelect);
-  // Keep track of each config panel in global
-  shiftTypeConfigPanels = new GPanel[TOTAL_SHIFT_TYPES];
-  // Add type config panels and add them to shiftTypeConfigPanels
-  createDefaultShiftTypePanel();
-  createScaleShiftTypePanel();
-  createLinearShiftTypePanel();
-  createSkewShiftTypePanel();
-  createXYMultShiftTypePanel();
-  createNoiseShiftTypePanel();
-}
-
-
-// =============================================================================
-// Setup Shift Type Select
-// =============================================================================
 
 
 // =============================================================================
