@@ -76,8 +76,8 @@ public class ImgManager {
     this.sourceImg.updatePixels();
   }
 
-  public boolean hasPrevieImageBeenModified() {
-    return Arrays.equals(this.previewImg.pixels, this.targetImg.pixels);
+  public boolean hasPreviewImageBeenModified() {
+    return !Arrays.equals(this.previewImg.pixels, this.targetImg.pixels);
   }
 
 }

@@ -53,6 +53,19 @@ public void togglePanelVisibility(GPanel panel, boolean show) {
   panel.setVisible(show);
 }
 
+// Set disabled styles for a button
+// TODO: create custom color scheme for consistency? It's kinda unintuitive in g4p
+public void setDisabledColorScheme(GButton button) {
+  // Text
+  button.setLocalColor(2, color(125, 125, 125));
+  // Border
+  button.setLocalColor(3, color(125, 125, 125));
+  // Background
+  button.setLocalColor(4, color(200, 200, 200));
+  button.setLocalColor(6, color(200, 200, 200));
+  button.setLocalColor(14, color(200, 200, 200));
+}
+
 
 // =============================================================================
 // Window
@@ -71,6 +84,8 @@ int WINDOW_MAIN_WIDTH = 650;
 int WINDOW_ADV_WIDTH = 200;
 // Total width
 int WINDOW_WIDTH = WINDOW_MAIN_WIDTH + WINDOW_ADV_WIDTH;
+// Window title text
+String WINDOW_TITLE_TEXT = "Channel Shift";
 // G4P -------------------------------------------------------------------------
 GWindow controlsWindow;
 
@@ -80,7 +95,15 @@ GWindow controlsWindow;
 
 synchronized public void controlsWindow_draw(PApplet appc, GWinData data) { 
   appc.background(230);
-} 
+}
+
+public void updateControlsWindow(boolean wasPreviewImageModified) {
+  // Add * to title if modified
+  String windowTitleSuffix = wasPreviewImageModified ? "*" : "";
+  controlsWindow.setTitle(WINDOW_TITLE_TEXT + windowTitleSuffix);
+  // Enable/disable confirm/reset buttons
+  updateConfirmResetButtons(wasPreviewImageModified);
+}
 
 
 // =============================================================================
@@ -1276,6 +1299,8 @@ int RESET_BTN_Y = 0;
 int CONFIRM_BTN_X = 0;
 int CONFIRM_BTN_Y = RESET_BTN_Y + RESET_CONFIRM_BTN_HEIGHT + Y_MARGIN;
 // G4P
+int RESET_BTN_COLORSCHEME = GCScheme.YELLOW_SCHEME;
+int CONFIRM_BTN_COLORSCHEME = GCScheme.BLUE_SCHEME;
 GButton resetBtn, confirmBtn; 
 // Recursive Checkbox ----------------------------------------------------------
 int RECURSIVE_CHECKBOX_HEIGHT = 30;
@@ -1293,6 +1318,20 @@ GPanel resetConfirmPanel;
 
 // FUNCTIONS ===================================================================
 
+// Utility function to enable/disable confirm/reset buttons based on whether changes were made
+public void updateConfirmResetButtons(boolean wasPreviewImageModified) {
+  resetBtn.setEnabled(wasPreviewImageModified);
+  confirmBtn.setEnabled(wasPreviewImageModified);
+  // Handle styling of buttons if disabled
+  if (wasPreviewImageModified) {
+    resetBtn.setLocalColorScheme(RESET_BTN_COLORSCHEME);
+    confirmBtn.setLocalColorScheme(CONFIRM_BTN_COLORSCHEME);
+  } else {
+    setDisabledColorScheme(resetBtn);
+    setDisabledColorScheme(confirmBtn);
+  }
+}
+
 public void createResetConfirmPanel() {
   resetConfirmPanel = new GPanel(controlsWindow, RESET_CONFIRM_PANEL_X, RESET_CONFIRM_PANEL_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_PANEL_HEIGHT);
   setupGeneralPanel(resetConfirmPanel);
@@ -1300,12 +1339,13 @@ public void createResetConfirmPanel() {
   // Reset Button
   resetBtn = new GButton(controlsWindow, RESET_BTN_X, RESET_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
   resetBtn.setText("Reset Step");
-  resetBtn.setLocalColorScheme(GCScheme.YELLOW_SCHEME);
+  resetBtn.setLocalColorScheme(RESET_BTN_COLORSCHEME);
   resetBtn.addEventHandler(this, "resetBtn_click");
   resetConfirmPanel.addControl(resetBtn);
   // Confirm Button 
   confirmBtn = new GButton(controlsWindow, CONFIRM_BTN_X, CONFIRM_BTN_Y, RESET_CONFIRM_PANEL_WIDTH, RESET_CONFIRM_BTN_HEIGHT);
   confirmBtn.setText("Confirm Step");
+  resetBtn.setLocalColorScheme(CONFIRM_BTN_COLORSCHEME);
   confirmBtn.addEventHandler(this, "confirmBtn_click");
   resetConfirmPanel.addControl(confirmBtn);
   // Recursive checkbox
@@ -1330,7 +1370,8 @@ public void createGUI() {
   WINDOW_X = windowManager.windowX - (WINDOW_WIDTH + 50);
   // Vertically center
   WINDOW_Y = (displayHeight / 2) - (WINDOW_HEIGHT / 2);
-  controlsWindow = GWindow.getWindow(this, "Channel Shift", WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
+  // TODO: extract window title to constant
+  controlsWindow = GWindow.getWindow(this, WINDOW_TITLE_TEXT, WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT, JAVA2D);
   controlsWindow.noLoop();
   controlsWindow.setActionOnClose(G4P.KEEP_OPEN);
   controlsWindow.addDrawHandler(this, "controlsWindow_draw");

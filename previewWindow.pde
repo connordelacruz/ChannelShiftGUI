@@ -15,10 +15,13 @@ public class WindowManager {
   // was rendered, telling the draw() method that it needs to be re-drawn
   public boolean previewImgUpdated;
 
+  // Window title text
+  public static final String WINDOW_TITLE_TEXT = "Image Preview";
+
   public WindowManager() {
     this.windowWidth = this.windowHeight = 0;
     this.previewImgUpdated = true;
-    surface.setTitle("Sketch Window");
+    surface.setTitle(this.WINDOW_TITLE_TEXT);
   }
 
   /**
@@ -57,6 +60,12 @@ public class WindowManager {
   public void drawPreview(PImage previewImg) {
     image(previewImg, 0, 0, this.windowWidth, this.windowHeight);
     previewImgDrawn();
+  }
+
+  // Update window title if image was modified
+  public void updateWindowTitle(boolean wasPreviewImageModified) {
+    String windowTitleSuffix = wasPreviewImageModified ? "*" : "";
+    surface.setTitle(this.WINDOW_TITLE_TEXT + windowTitleSuffix);
   }
 
   // Helpers
