@@ -83,7 +83,7 @@ public class WindowManager {
     int maxWindowSize = 0;
     // Portrait
     if (ratio < 1.0) {
-      maxWindowSize = displayHeight / 2;
+      maxWindowSize = 2 * displayHeight / 3;
       dimensions = new int[]{(int)(maxWindowSize * ratio), maxWindowSize};
     // Landscape
     } else {
