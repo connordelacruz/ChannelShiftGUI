@@ -1,3 +1,15 @@
+--------------------------------------------------------------------------------
+
+# DEPRECATED
+
+I've created a web version of this app using p5.js and React and am shifting focus to that version.
+
+You can check it out here: [cheezwhiz.biz](https://cheezwhiz.biz)
+
+Or check out the repo here: https://github.com/connordelacruz/react-p5-channel-shift
+
+--------------------------------------------------------------------------------
+
 # RGB Channel Shift Tool
 
 This Processing sketch provides a GUI interface for datamoshing images by
